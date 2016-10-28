@@ -17,8 +17,7 @@ const Project_1 = require('./Project');
 const Platform_1 = require('./Platform');
 const exec = require('./exec');
 const AndroidExporter_1 = require('./Exporters/AndroidExporter');
-const CodeBlocksExporter_1 = require('./Exporters/CodeBlocksExporter');
-const MakefileExporter_1 = require('./Exporters/MakefileExporter');
+const LinuxExporter_1 = require('./Exporters/LinuxExporter');
 const EmscriptenExporter_1 = require('./Exporters/EmscriptenExporter');
 const TizenExporter_1 = require('./Exporters/TizenExporter');
 const VisualStudioExporter_1 = require('./Exporters/VisualStudioExporter');
@@ -233,12 +232,8 @@ function exportKoremakeProject(from, to, platform, options) {
             exporter = new AndroidExporter_1.AndroidExporter();
         else if (platform === Platform_1.Platform.HTML5)
             exporter = new EmscriptenExporter_1.EmscriptenExporter();
-        else if (platform === Platform_1.Platform.Linux || platform === Platform_1.Platform.Pi) {
-            if (options.compile)
-                exporter = new MakefileExporter_1.MakefileExporter();
-            else
-                exporter = new CodeBlocksExporter_1.CodeBlocksExporter();
-        }
+        else if (platform === Platform_1.Platform.Linux || platform === Platform_1.Platform.Pi)
+            exporter = new LinuxExporter_1.LinuxExporter();
         else if (platform === Platform_1.Platform.Tizen)
             exporter = new TizenExporter_1.TizenExporter();
         else {

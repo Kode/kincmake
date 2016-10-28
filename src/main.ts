@@ -11,8 +11,7 @@ import * as exec from './exec';
 import {VisualStudioVersion} from './VisualStudioVersion';
 import {Exporter} from './Exporters/Exporter';
 import {AndroidExporter} from './Exporters/AndroidExporter';
-import {CodeBlocksExporter} from './Exporters/CodeBlocksExporter';
-import {MakefileExporter} from './Exporters/MakefileExporter';
+import {LinuxExporter} from './Exporters/LinuxExporter';
 import {EmscriptenExporter} from './Exporters/EmscriptenExporter';
 import {TizenExporter} from './Exporters/TizenExporter';
 import {VisualStudioExporter} from './Exporters/VisualStudioExporter';
@@ -237,10 +236,7 @@ async function exportKoremakeProject(from: string, to: string, platform: string,
 	if (platform === Platform.iOS || platform === Platform.OSX || platform === Platform.tvOS) exporter = new XCodeExporter();
 	else if (platform === Platform.Android) exporter = new AndroidExporter();
 	else if (platform === Platform.HTML5) exporter = new EmscriptenExporter();
-	else if (platform === Platform.Linux || platform === Platform.Pi) {
-		if (options.compile) exporter = new MakefileExporter();
-		else exporter = new CodeBlocksExporter();
-	}
+	else if (platform === Platform.Linux || platform === Platform.Pi) exporter = new LinuxExporter();
 	else if (platform === Platform.Tizen) exporter = new TizenExporter();
 	else {
 		let found = false;
