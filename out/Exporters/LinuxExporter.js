@@ -223,13 +223,18 @@ class LinuxExporter extends Exporter_1.Exporter {
         this.closeFile();
     }
     exportCLion(project, from, to, platform, vrApi, nokrafix, options) {
+        let name = project.getName().replace(/ /g, '_');
         const indir = path.join(__dirname, '..', '..', 'Data', 'linux');
         fs.ensureDirSync(path.resolve(to, project.getName(), '.idea'));
         let misc = fs.readFileSync(path.join(indir, 'idea', 'misc.xml'), 'utf8');
         misc = misc.replace(/{root}/g, path.resolve(from));
         fs.writeFileSync(path.join(to, project.getName(), '.idea', 'misc.xml'), misc, 'utf8');
+        let workspace = fs.readFileSync(path.join(indir, 'idea', 'workspace.xml'), 'utf8');
+        workspace = workspace.replace(/{workingdir}/g, path.resolve(project.getDebugDir()));
+        workspace = workspace.replace(/{project}/g, project.getName());
+        workspace = workspace.replace(/{target}/g, name);
+        fs.writeFileSync(path.join(to, project.getName(), '.idea', 'workspace.xml'), workspace, 'utf8');
         this.writeFile(path.resolve(to, project.getName(), 'CMakeLists.txt'));
-        let name = project.getName().replace(/ /g, '_');
         this.p('cmake_minimum_required(VERSION 3.6)');
         this.p('project(' + name + ')');
         if (project.cpp11) {
