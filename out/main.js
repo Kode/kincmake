@@ -219,7 +219,8 @@ function exportKoremakeProject(from, to, platform, options) {
                     if (index > 0)
                         outfile = outfile.substr(index);
                     outfile = outfile.substr(0, outfile.length - 5);
-                    log.info('Compiling shader ' + (shaderIndex + 1) + ' of ' + shaderCount + ' (' + file.file + ').');
+                    let parsedFile = path.parse(file.file);
+                    log.info('Compiling shader ' + (shaderIndex + 1) + ' of ' + shaderCount + ' (' + parsedFile.name + ').');
                     ++shaderIndex;
                     yield compileShader(from, shaderLang(platform), file.file, path.join(project.getDebugDir(), outfile), 'build', platform);
                 }
