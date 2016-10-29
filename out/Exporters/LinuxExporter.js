@@ -265,7 +265,7 @@ class LinuxExporter extends Exporter_1.Exporter {
         for (let lib of project.getLibs()) {
             libraries += '  ' + lib + '\n';
         }
-        this.p('target_link_libraries(ShaderTest\n' + libraries + ')');
+        this.p('target_link_libraries(' + name + '\n' + libraries + ')');
         this.closeFile();
     }
 }

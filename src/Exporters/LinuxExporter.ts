@@ -138,7 +138,7 @@ export class LinuxExporter extends Exporter {
 		this.closeFile();
 	}
 
-    exportCodeBlocks(project: Project, from: string, to: string, platform: string, vrApi: any, nokrafix: boolean, options: any) {
+	exportCodeBlocks(project: Project, from: string, to: string, platform: string, vrApi: any, nokrafix: boolean, options: any) {
 		this.writeFile(path.resolve(to, project.getName() + '.cbp'));
 		this.p('<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>');
 		this.p('<CodeBlocks_project_file>');
@@ -287,7 +287,7 @@ export class LinuxExporter extends Exporter {
 				files += '  "' + path.resolve(file.file).replace(/\\/g, '/') + '"\n';
 			}
 		}
-		this.p('set(SOURCE_FILES\n' + files + ')')
+		this.p('set(SOURCE_FILES\n' + files + ')');
 
 		this.p('add_executable(' + name + ' ${SOURCE_FILES})');
 
@@ -295,8 +295,8 @@ export class LinuxExporter extends Exporter {
 		for (let lib of project.getLibs()) {
 			libraries += '  ' + lib + '\n';
 		}
-		this.p('target_link_libraries(ShaderTest\n' + libraries + ')');
+		this.p('target_link_libraries(' + name + '\n' + libraries + ')');
 
 		this.closeFile();
-    }
+	}
 }
