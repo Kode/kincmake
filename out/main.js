@@ -2,26 +2,26 @@
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator.throw(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
         function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments)).next());
     });
 };
-const child_process = require('child_process');
-const fs = require('fs-extra');
-const path = require('path');
-const log = require('./log');
-const GraphicsApi_1 = require('./GraphicsApi');
-const Options_1 = require('./Options');
-const Project_1 = require('./Project');
-const Platform_1 = require('./Platform');
-const exec = require('./exec');
-const AndroidExporter_1 = require('./Exporters/AndroidExporter');
-const LinuxExporter_1 = require('./Exporters/LinuxExporter');
-const EmscriptenExporter_1 = require('./Exporters/EmscriptenExporter');
-const TizenExporter_1 = require('./Exporters/TizenExporter');
-const VisualStudioExporter_1 = require('./Exporters/VisualStudioExporter');
-const XCodeExporter_1 = require('./Exporters/XCodeExporter');
+const child_process = require("child_process");
+const fs = require("fs-extra");
+const path = require("path");
+const log = require("./log");
+const GraphicsApi_1 = require("./GraphicsApi");
+const Options_1 = require("./Options");
+const Project_1 = require("./Project");
+const Platform_1 = require("./Platform");
+const exec = require("./exec");
+const AndroidExporter_1 = require("./Exporters/AndroidExporter");
+const LinuxExporter_1 = require("./Exporters/LinuxExporter");
+const EmscriptenExporter_1 = require("./Exporters/EmscriptenExporter");
+const TizenExporter_1 = require("./Exporters/TizenExporter");
+const VisualStudioExporter_1 = require("./Exporters/VisualStudioExporter");
+const XCodeExporter_1 = require("./Exporters/XCodeExporter");
 let debug = false;
 function fromPlatform(platform) {
     switch (platform) {
@@ -116,7 +116,7 @@ function shaderLang(platform) {
             return platform;
     }
 }
-function compileShader(projectDir, type, from, to, temp, platform) {
+function compileShader(projectDir, type, from, to, temp, platform, builddir) {
     return __awaiter(this, void 0, void 0, function* () {
         return new Promise((resolve, reject) => {
             let compilerPath = '';
@@ -136,6 +136,17 @@ function compileShader(projectDir, type, from, to, temp, platform) {
                 }
             }
             if (compilerPath !== '') {
+                if (type === 'metal') {
+                    fs.ensureDirSync(path.join(builddir, 'Sources'));
+                    let fileinfo = path.parse(from);
+                    let funcname = fileinfo.name;
+                    funcname = funcname.replace(/-/g, '_');
+                    funcname = funcname.replace(/\./g, '_');
+                    funcname += '_main';
+                    fs.writeFileSync(to, funcname, 'utf8');
+                    to = path.join(builddir, 'Sources', fileinfo.name + '.' + type);
+                    temp = to + '.temp';
+                }
                 let params = [type, from, to, temp, platform];
                 if (debug)
                     params.push('--debug');
@@ -195,6 +206,9 @@ function exportKoremakeProject(from, to, platform, options) {
         let project;
         try {
             project = yield Project_1.Project.create(from, platform);
+            if (shaderLang(platform) === 'metal') {
+                project.addFile('build/Sources/*', {});
+            }
             project.searchFiles(undefined);
             project.flatten();
         }
@@ -222,7 +236,7 @@ function exportKoremakeProject(from, to, platform, options) {
                     let parsedFile = path.parse(file.file);
                     log.info('Compiling shader ' + (shaderIndex + 1) + ' of ' + shaderCount + ' (' + parsedFile.name + ').');
                     ++shaderIndex;
-                    yield compileShader(from, shaderLang(platform), file.file, path.join(project.getDebugDir(), outfile), 'build', platform);
+                    yield compileShader(from, shaderLang(platform), file.file, path.join(project.getDebugDir(), outfile), 'build', platform, 'build');
                 }
             }
         }

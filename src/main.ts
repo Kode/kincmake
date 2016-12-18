@@ -114,7 +114,7 @@ function shaderLang(platform: string): string {
 	}
 }
 
-async function compileShader(projectDir: string, type: string, from: string, to: string, temp: string, platform: string) {
+async function compileShader(projectDir: string, type: string, from: string, to: string, temp: string, platform: string, builddir: string) {
 	return new Promise<void>((resolve, reject) => {
 		let compilerPath = '';
 		
@@ -136,6 +136,20 @@ async function compileShader(projectDir: string, type: string, from: string, to:
 		}
 
 		if (compilerPath !== '') {
+			if (type === 'metal') {
+				fs.ensureDirSync(path.join(builddir, 'Sources'));
+				let fileinfo = path.parse(from);
+				let funcname = fileinfo.name;
+				funcname = funcname.replace(/-/g, '_');
+				funcname = funcname.replace(/\./g, '_');
+				funcname += '_main';
+
+				fs.writeFileSync(to, funcname, 'utf8');
+
+				to = path.join(builddir, 'Sources', fileinfo.name + '.' + type);
+				temp = to + '.temp';
+			}
+
 			let params = [type, from, to, temp, platform];
 			if (debug) params.push('--debug');
 			let compiler = child_process.spawn(compilerPath, params);
@@ -200,6 +214,9 @@ async function exportKoremakeProject(from: string, to: string, platform: string,
 	let project: Project;
 	try {
 		project = await Project.create(from, platform);
+		if (shaderLang(platform) === 'metal') {
+			project.addFile('build/Sources/*', {});
+		}
 		project.searchFiles(undefined);
 		project.flatten();
 	}
@@ -230,7 +247,7 @@ async function exportKoremakeProject(from: string, to: string, platform: string,
 				log.info('Compiling shader ' + (shaderIndex + 1) + ' of ' + shaderCount + ' (' + parsedFile.name + ').');
 				
 				++shaderIndex;
-				await compileShader(from, shaderLang(platform), file.file, path.join(project.getDebugDir(), outfile), 'build', platform);
+				await compileShader(from, shaderLang(platform), file.file, path.join(project.getDebugDir(), outfile), 'build', platform, 'build');
 			}
 		}
 	}
