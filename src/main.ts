@@ -252,6 +252,10 @@ async function exportKoremakeProject(from: string, to: string, platform: string,
 		}
 	}
 
+	// Run again to find new shader files for Metal
+	project.searchFiles(undefined);
+	project.flatten();
+
 	let exporter: Exporter = null;
 	if (platform === Platform.iOS || platform === Platform.OSX || platform === Platform.tvOS) exporter = new XCodeExporter();
 	else if (platform === Platform.Android) exporter = new AndroidExporter();

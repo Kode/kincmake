@@ -240,6 +240,9 @@ function exportKoremakeProject(from, to, platform, options) {
                 }
             }
         }
+        // Run again to find new shader files for Metal
+        project.searchFiles(undefined);
+        project.flatten();
         let exporter = null;
         if (platform === Platform_1.Platform.iOS || platform === Platform_1.Platform.OSX || platform === Platform_1.Platform.tvOS)
             exporter = new XCodeExporter_1.XCodeExporter();
