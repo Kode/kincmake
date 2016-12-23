@@ -97,6 +97,13 @@ let options = [
 		full: 'noshaders',
 		description: 'Do not compile shaders',
 		value: false
+	},
+	{
+		full: 'kore',
+		short: 'k',
+		description: 'Location of Kore directory',
+		value: true,
+		default: ''
 	}
 ];
 

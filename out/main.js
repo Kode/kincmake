@@ -2,26 +2,26 @@
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator.throw(value)); } catch (e) { reject(e); } }
         function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments)).next());
     });
 };
-const child_process = require("child_process");
-const fs = require("fs-extra");
-const path = require("path");
-const log = require("./log");
-const GraphicsApi_1 = require("./GraphicsApi");
-const Options_1 = require("./Options");
-const Project_1 = require("./Project");
-const Platform_1 = require("./Platform");
-const exec = require("./exec");
-const AndroidExporter_1 = require("./Exporters/AndroidExporter");
-const LinuxExporter_1 = require("./Exporters/LinuxExporter");
-const EmscriptenExporter_1 = require("./Exporters/EmscriptenExporter");
-const TizenExporter_1 = require("./Exporters/TizenExporter");
-const VisualStudioExporter_1 = require("./Exporters/VisualStudioExporter");
-const XCodeExporter_1 = require("./Exporters/XCodeExporter");
+const child_process = require('child_process');
+const fs = require('fs-extra');
+const path = require('path');
+const log = require('./log');
+const GraphicsApi_1 = require('./GraphicsApi');
+const Options_1 = require('./Options');
+const Project_1 = require('./Project');
+const Platform_1 = require('./Platform');
+const exec = require('./exec');
+const AndroidExporter_1 = require('./Exporters/AndroidExporter');
+const LinuxExporter_1 = require('./Exporters/LinuxExporter');
+const EmscriptenExporter_1 = require('./Exporters/EmscriptenExporter');
+const TizenExporter_1 = require('./Exporters/TizenExporter');
+const VisualStudioExporter_1 = require('./Exporters/VisualStudioExporter');
+const XCodeExporter_1 = require('./Exporters/XCodeExporter');
 let debug = false;
 function fromPlatform(platform) {
     switch (platform) {
@@ -345,6 +345,15 @@ function run(options, loglog) {
         }
         if (options.visualstudio !== undefined) {
             Options_1.Options.visualStudioVersion = options.visualstudio;
+        }
+        if (!options.kore) {
+            let p = path.join(__dirname, '..', '..', '..');
+            if (fs.existsSync(p) && fs.statSync(p).isDirectory()) {
+                options.kore = p;
+            }
+        }
+        else {
+            options.kore = path.resolve(options.kore);
         }
         debug = options.debug;
         // if (options.vr != undefined) {

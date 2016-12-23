@@ -362,6 +362,16 @@ export async function run(options: any, loglog: any): Promise<string> {
 		Options.visualStudioVersion = options.visualstudio;	
 	}
 
+	if (!options.kore) {
+		let p = path.join(__dirname, '..', '..', '..');
+		if (fs.existsSync(p) && fs.statSync(p).isDirectory()) {
+			options.kore = p;
+		}
+	}
+	else {
+		options.kore = path.resolve(options.kore);
+	}
+
 	debug = options.debug;
 	
 	// if (options.vr != undefined) {
