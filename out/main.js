@@ -379,7 +379,7 @@ function run(options, loglog) {
                 make = child_process.spawn('make', [], { cwd: path.join(options.to, options.buildPath) });
             }
             else if ((options.customTarget && options.customTarget.baseTarget === Platform_1.Platform.OSX) || options.target === Platform_1.Platform.OSX) {
-                make = child_process.spawn('xcodebuild', ['-project', solutionName + '.xcodeproj'], { cwd: options.to });
+                make = child_process.spawn('xcodebuild', ['-configuration', 'Release', '-project', solutionName + '.xcodeproj'], { cwd: options.to });
             }
             else if ((options.customTarget && options.customTarget.baseTarget === Platform_1.Platform.Windows) || options.target === Platform_1.Platform.Windows) {
                 let vsvars = null;
@@ -393,7 +393,7 @@ function run(options, loglog) {
                     vsvars = process.env.VS110COMNTOOLS + '\\vsvars32.bat';
                 }
                 if (vsvars !== null) {
-                    fs.writeFileSync(path.join(options.to, 'build.bat'), '@call "' + vsvars + '"\n' + '@MSBuild.exe "' + solutionName + '.vcxproj" /m /p:Configuration=Debug,Platform=Win32');
+                    fs.writeFileSync(path.join(options.to, 'build.bat'), '@call "' + vsvars + '"\n' + '@MSBuild.exe "' + solutionName + '.vcxproj" /m /p:Configuration=Release,Platform=Win32');
                     make = child_process.spawn('build.bat', [], { cwd: options.to });
                 }
                 else {

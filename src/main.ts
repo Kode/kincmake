@@ -402,7 +402,7 @@ export async function run(options: any, loglog: any): Promise<string> {
 			make = child_process.spawn('make', [], { cwd: path.join(options.to, options.buildPath) });
 		}
 		else if ((options.customTarget && options.customTarget.baseTarget === Platform.OSX) || options.target === Platform.OSX) {
-			make = child_process.spawn('xcodebuild', ['-project', solutionName + '.xcodeproj'], { cwd: options.to });
+			make = child_process.spawn('xcodebuild', ['-configuration', 'Release', '-project', solutionName + '.xcodeproj'], { cwd: options.to });
 		}
 		else if ((options.customTarget && options.customTarget.baseTarget === Platform.Windows) || options.target === Platform.Windows) {
 			let vsvars: string = null;
@@ -416,7 +416,7 @@ export async function run(options: any, loglog: any): Promise<string> {
 				vsvars = process.env.VS110COMNTOOLS + '\\vsvars32.bat';
 			}
 			if (vsvars !== null) {
-				fs.writeFileSync(path.join(options.to, 'build.bat'), '@call "' + vsvars + '"\n' + '@MSBuild.exe "' + solutionName + '.vcxproj" /m /p:Configuration=Debug,Platform=Win32');
+				fs.writeFileSync(path.join(options.to, 'build.bat'), '@call "' + vsvars + '"\n' + '@MSBuild.exe "' + solutionName + '.vcxproj" /m /p:Configuration=Release,Platform=Win32');
 				make = child_process.spawn('build.bat', [], {cwd: options.to});
 			}
 			else {
