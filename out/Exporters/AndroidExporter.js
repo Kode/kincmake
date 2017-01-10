@@ -1,9 +1,9 @@
 "use strict";
-const Exporter_1 = require('./Exporter');
-const Project_1 = require('../Project');
-const Icon = require('../Icon');
-const fs = require('fs-extra');
-const path = require('path');
+const Exporter_1 = require("./Exporter");
+const Project_1 = require("../Project");
+const Icon = require("../Icon");
+const fs = require("fs-extra");
+const path = require("path");
 class AndroidExporter extends Exporter_1.Exporter {
     constructor() {
         super();

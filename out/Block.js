@@ -1,5 +1,5 @@
 "use strict";
-const fs = require('fs');
+const fs = require("fs");
 class Block {
     constructor(out, indentation) {
         this.out = out;

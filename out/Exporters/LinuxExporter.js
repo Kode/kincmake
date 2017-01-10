@@ -1,8 +1,8 @@
 "use strict";
-const Exporter_1 = require('./Exporter');
-const Platform_1 = require('../Platform');
-const fs = require('fs-extra');
-const path = require('path');
+const Exporter_1 = require("./Exporter");
+const Platform_1 = require("../Platform");
+const fs = require("fs-extra");
+const path = require("path");
 class LinuxExporter extends Exporter_1.Exporter {
     constructor() {
         super();

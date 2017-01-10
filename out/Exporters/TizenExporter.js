@@ -1,7 +1,7 @@
 "use strict";
-const Exporter_1 = require('./Exporter');
-const fs = require('fs-extra');
-const path = require('path');
+const Exporter_1 = require("./Exporter");
+const fs = require("fs-extra");
+const path = require("path");
 class TizenExporter extends Exporter_1.Exporter {
     constructor() {
         super();

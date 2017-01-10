@@ -1,9 +1,9 @@
 "use strict";
-const cp = require('child_process');
-const fs = require('fs');
-const path = require('path');
-const log = require('./log');
-const exec = require('./exec');
+const cp = require("child_process");
+const fs = require("fs");
+const path = require("path");
+const log = require("./log");
+const exec = require("./exec");
 function run(from, to, width, height, format, background, callback) {
     const exe = 'kraffiti' + exec.sys();
     let params = ['from=' + from, 'to=' + to, 'format=' + format, 'keepaspect'];

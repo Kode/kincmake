@@ -1,8 +1,8 @@
 "use strict";
-const Exporter_1 = require('./Exporter');
-const child_process = require('child_process');
-const fs = require('fs-extra');
-const path = require('path');
+const Exporter_1 = require("./Exporter");
+const child_process = require("child_process");
+const fs = require("fs-extra");
+const path = require("path");
 let emmccPath = 'emcc';
 let defines = '';
 let includes = '';

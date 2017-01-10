@@ -2,26 +2,26 @@
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator.throw(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
         function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments)).next());
     });
 };
-const child_process = require('child_process');
-const fs = require('fs-extra');
-const path = require('path');
-const log = require('./log');
-const GraphicsApi_1 = require('./GraphicsApi');
-const Options_1 = require('./Options');
-const Project_1 = require('./Project');
-const Platform_1 = require('./Platform');
-const exec = require('./exec');
-const AndroidExporter_1 = require('./Exporters/AndroidExporter');
-const LinuxExporter_1 = require('./Exporters/LinuxExporter');
-const EmscriptenExporter_1 = require('./Exporters/EmscriptenExporter');
-const TizenExporter_1 = require('./Exporters/TizenExporter');
-const VisualStudioExporter_1 = require('./Exporters/VisualStudioExporter');
-const XCodeExporter_1 = require('./Exporters/XCodeExporter');
+const child_process = require("child_process");
+const fs = require("fs-extra");
+const path = require("path");
+const log = require("./log");
+const GraphicsApi_1 = require("./GraphicsApi");
+const Options_1 = require("./Options");
+const Project_1 = require("./Project");
+const Platform_1 = require("./Platform");
+const exec = require("./exec");
+const AndroidExporter_1 = require("./Exporters/AndroidExporter");
+const LinuxExporter_1 = require("./Exporters/LinuxExporter");
+const EmscriptenExporter_1 = require("./Exporters/EmscriptenExporter");
+const TizenExporter_1 = require("./Exporters/TizenExporter");
+const VisualStudioExporter_1 = require("./Exporters/VisualStudioExporter");
+const XCodeExporter_1 = require("./Exporters/XCodeExporter");
 let debug = false;
 function fromPlatform(platform) {
     switch (platform) {
@@ -318,7 +318,7 @@ function compileProject(make, project, solutionName, options) {
                     fs.copySync(path.join(path.join(options.to.toString(), options.buildPath), solutionName), path.join(options.from.toString(), project.getDebugDir(), solutionName), { clobber: true });
                 }
                 else if ((options.customTarget && options.customTarget.baseTarget === Platform_1.Platform.Windows) || options.target === Platform_1.Platform.Windows) {
-                    fs.copySync(path.join(options.to.toString(), 'Debug', solutionName + '.exe'), path.join(options.from.toString(), project.getDebugDir(), solutionName + '.exe'), { clobber: true });
+                    fs.copySync(path.join(options.to.toString(), 'Release', solutionName + '.exe'), path.join(options.from.toString(), project.getDebugDir(), solutionName + '.exe'), { clobber: true });
                 }
                 if (options.run) {
                     if ((options.customTarget && options.customTarget.baseTarget === Platform_1.Platform.OSX) || options.target === Platform_1.Platform.OSX) {

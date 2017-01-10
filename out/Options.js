@@ -1,6 +1,6 @@
 "use strict";
-const GraphicsApi_1 = require('./GraphicsApi');
-const VisualStudioVersion_1 = require('./VisualStudioVersion');
+const GraphicsApi_1 = require("./GraphicsApi");
+const VisualStudioVersion_1 = require("./VisualStudioVersion");
 exports.Options = {
     precompiledHeaders: false,
     intermediateDrive: '',

@@ -1,9 +1,9 @@
 "use strict";
-const os = require('os');
-const Platform_1 = require('./Platform');
-const GraphicsApi_1 = require('./GraphicsApi');
-const VisualStudioVersion_1 = require('./VisualStudioVersion');
-const VrApi_1 = require('./VrApi');
+const os = require("os");
+const Platform_1 = require("./Platform");
+const GraphicsApi_1 = require("./GraphicsApi");
+const VisualStudioVersion_1 = require("./VisualStudioVersion");
+const VrApi_1 = require("./VrApi");
 let defaultTarget;
 if (os.platform() === 'linux') {
     defaultTarget = Platform_1.Platform.Linux;

@@ -1,7 +1,7 @@
 "use strict";
-const Block_1 = require('./Block');
-const Configuration_1 = require('./Configuration');
-const Platform_1 = require('./Platform');
+const Block_1 = require("./Block");
+const Configuration_1 = require("./Configuration");
+const Platform_1 = require("./Platform");
 function toLine(options) {
     let line = '';
     for (let option of options) {
