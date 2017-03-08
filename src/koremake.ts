@@ -66,7 +66,7 @@ let options = [
 		short: 'v',
 		description: 'Version of Visual Studio to use',
 		value: true,
-		default: VisualStudioVersion.VS2015
+		default: VisualStudioVersion.VS2017
 	},
 	{
 		full: 'nokrafix',

@@ -6,7 +6,7 @@ exports.Options = {
     precompiledHeaders: false,
     intermediateDrive: '',
     graphicsApi: GraphicsApi_1.GraphicsApi.Direct3D9,
-    visualStudioVersion: VisualStudioVersion_1.VisualStudioVersion.VS2013,
+    visualStudioVersion: VisualStudioVersion_1.VisualStudioVersion.VS2017,
     compile: false,
     run: false
 };
