@@ -47,7 +47,7 @@ function valueOf(str: string): string {
 }
 
 function getShaderLang() {
-	if (Options.graphicsApi === GraphicsApi.OpenGL || Options.graphicsApi === GraphicsApi.OpenGL2) return 'glsl';
+	if (Options.graphicsApi === GraphicsApi.OpenGL) return 'glsl';
 	if (Options.graphicsApi === GraphicsApi.Direct3D11 || Options.graphicsApi === GraphicsApi.Direct3D12) return 'd3d11';
 	if (Options.graphicsApi === GraphicsApi.Vulkan) return 'spirv';
 	return 'd3d9';

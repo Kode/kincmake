@@ -50,7 +50,7 @@ function valueOf(str) {
     throw 'Unknown configuration';
 }
 function getShaderLang() {
-    if (Options_1.Options.graphicsApi === GraphicsApi_1.GraphicsApi.OpenGL || Options_1.Options.graphicsApi === GraphicsApi_1.GraphicsApi.OpenGL2)
+    if (Options_1.Options.graphicsApi === GraphicsApi_1.GraphicsApi.OpenGL)
         return 'glsl';
     if (Options_1.Options.graphicsApi === GraphicsApi_1.GraphicsApi.Direct3D11 || Options_1.Options.graphicsApi === GraphicsApi_1.GraphicsApi.Direct3D12)
         return 'd3d11';
