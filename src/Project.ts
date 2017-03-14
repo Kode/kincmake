@@ -4,6 +4,7 @@ import * as log from './log';
 import {GraphicsApi} from './GraphicsApi';
 import {Options} from './Options';
 import {Platform} from './Platform';
+import {VrApi} from './VrApi';
 const uuid = require('uuid');
 
 function getDefines(platform: string, rotated: boolean) {
@@ -404,6 +405,8 @@ export class Project {
 					'platform',
 					'GraphicsApi',
 					'graphics',
+					'VrApi',
+					'vr',
 					'require',
 					'resolve',
 					'reject',
@@ -414,6 +417,8 @@ export class Project {
 					Project.platform,
 					GraphicsApi,
 					Options.graphicsApi,
+					VrApi,
+					Options.vrApi,
 					require,
 					resolver,
 					reject,
