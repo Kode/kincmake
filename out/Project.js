@@ -7,12 +7,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+Object.defineProperty(exports, "__esModule", { value: true });
 const fs = require("fs-extra");
 const path = require("path");
 const log = require("./log");
 const GraphicsApi_1 = require("./GraphicsApi");
 const Options_1 = require("./Options");
 const Platform_1 = require("./Platform");
+const VrApi_1 = require("./VrApi");
 const uuid = require('uuid');
 function getDefines(platform, rotated) {
     let defines = [];
@@ -360,7 +362,7 @@ class Project {
                 });
                 try {
                     let file = fs.readFileSync(path.resolve(scriptdir, 'korefile.js'), 'utf8');
-                    let project = new Function('Project', 'Platform', 'platform', 'GraphicsApi', 'graphics', 'require', 'resolve', 'reject', '__dirname', file)(Project, Platform_1.Platform, Project.platform, GraphicsApi_1.GraphicsApi, Options_1.Options.graphicsApi, require, resolver, reject, scriptdir);
+                    let project = new Function('Project', 'Platform', 'platform', 'GraphicsApi', 'graphics', 'VrApi', 'vr', 'require', 'resolve', 'reject', '__dirname', file)(Project, Platform_1.Platform, Project.platform, GraphicsApi_1.GraphicsApi, Options_1.Options.graphicsApi, VrApi_1.VrApi, Options_1.Options.vrApi, require, resolver, reject, scriptdir);
                 }
                 catch (error) {
                     log.error(error);

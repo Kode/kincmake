@@ -7,6 +7,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+Object.defineProperty(exports, "__esModule", { value: true });
 const child_process = require("child_process");
 const fs = require("fs-extra");
 const path = require("path");
@@ -359,9 +360,9 @@ function run(options, loglog) {
             options.kore = path.resolve(options.kore);
         }
         debug = options.debug;
-        // if (options.vr != undefined) {
-        //     Options.vrApi = options.vr;
-        // }
+        if (options.vr != undefined) {
+            Options_1.Options.vrApi = options.vr;
+        }
         options.buildPath = options.debug ? 'Debug' : 'Release';
         let project = null;
         try {

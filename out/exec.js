@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const os = require("os");
 function sys() {
     if (os.platform() === 'linux') {

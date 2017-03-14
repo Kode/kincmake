@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const cp = require("child_process");
 const fs = require("fs");
 const path = require("path");

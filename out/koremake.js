@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const os = require("os");
 const Platform_1 = require("./Platform");
 const GraphicsApi_1 = require("./GraphicsApi");

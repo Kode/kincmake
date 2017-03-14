@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const Exporter_1 = require("./Exporter");
 const GraphicsApi_1 = require("../GraphicsApi");
 const Icon = require("../Icon");
@@ -78,6 +79,8 @@ class VisualStudioExporter extends Exporter_1.Exporter {
         if (platform === Platform_1.Platform.Windows) {
             this.p('<LocalDebuggerWorkingDirectory>' + debugDir + '</LocalDebuggerWorkingDirectory>', 2);
             this.p('<DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>', 2);
+            // java.io.File baseDir = new File(project.getBasedir());
+            // p("<LocalDebuggerCommandArguments>\"SOURCEDIR=" + baseDir.getAbsolutePath() + "\" \"KTSOURCEDIR=" + baseDir.getAbsolutePath() + "\\Kt\"</LocalDebuggerCommandArguments>", 2);
         }
         else if (platform === Platform_1.Platform.PlayStation3) {
             this.p('<LocalDebuggerFileServingDirectory>' + debugDir + '</LocalDebuggerFileServingDirectory>', 2);
@@ -564,6 +567,9 @@ class VisualStudioExporter extends Exporter_1.Exporter {
         }
         this.p('<PropertyGroup Label="UserMacros" />', 1);
         if (platform === Platform_1.Platform.WindowsApp) {
+            // <PropertyGroup>
+            // <PackageCertificateKeyFile>Direct3DApplication1_TemporaryKey.pfx</PackageCertificateKeyFile>
+            // </PropertyGroup>
         }
         if (platform === Platform_1.Platform.Windows || platform === Platform_1.Platform.Xbox360) {
             for (let system of this.getSystems(platform)) {
@@ -690,6 +696,7 @@ class VisualStudioExporter extends Exporter_1.Exporter {
                     this.p('<RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>', 3);
                     this.p('<MultiProcessorCompilation>true</MultiProcessorCompilation>', 3);
                     this.p('<MinimalRebuild>false</MinimalRebuild>', 3);
+                    // if (Options.visualStudioVersion == VisualStudioVersion.VS2013) this.p("<SDLCheck>true</SDLCheck>", 3);
                 }
                 else if (platform === Platform_1.Platform.PlayStation3) {
                     this.p('<UserPreprocessorDefinitions>' + defines + '_DEBUG;__CELL_ASSERT__;%(UserPreprocessorDefinitions);</UserPreprocessorDefinitions>', 3);
@@ -749,6 +756,7 @@ class VisualStudioExporter extends Exporter_1.Exporter {
                     this.p('<RuntimeLibrary>MultiThreaded</RuntimeLibrary>', 3);
                     this.p('<MultiProcessorCompilation>true</MultiProcessorCompilation>', 3);
                     this.p('<MinimalRebuild>false</MinimalRebuild>', 3);
+                    // if (Options.visualStudioVersion === VisualStudioVersion.VS2013) this.p("<SDLCheck>true</SDLCheck>", 3);
                 }
                 else if (platform === Platform_1.Platform.PlayStation3) {
                     this.p('<UserPreprocessorDefinitions>' + defines + 'NDEBUG;%(UserPreprocessorDefinitions);</UserPreprocessorDefinitions>', 3);

@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const Exporter_1 = require("./Exporter");
 const Project_1 = require("../Project");
 const Icon = require("../Icon");
