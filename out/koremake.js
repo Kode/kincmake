@@ -65,7 +65,7 @@ let options = [
         short: 'v',
         description: 'Version of Visual Studio to use',
         value: true,
-        default: VisualStudioVersion_1.VisualStudioVersion.VS2015
+        default: VisualStudioVersion_1.VisualStudioVersion.VS2017
     },
     {
         full: 'nokrafix',
@@ -103,6 +103,23 @@ let options = [
         description: 'Location of Kore directory',
         value: true,
         default: ''
+    },
+    {
+        full: 'init',
+        description: 'Init a Kore project inside the current directory',
+        value: false
+    },
+    {
+        full: 'name',
+        description: 'Project name to use when initializing a project',
+        value: true,
+        default: 'Project'
+    },
+    {
+        full: 'projectfile',
+        value: true,
+        description: 'Name of your project file, defaults to "korefile.js"',
+        default: 'korefile.js'
     }
 ];
 let parsedOptions = {};
@@ -174,19 +191,21 @@ for (let i = 2; i < args.length; ++i) {
         parsedOptions.target = arg;
     }
 }
-if (parsedOptions.graphics === GraphicsApi_1.GraphicsApi.OpenGL) {
-    parsedOptions.graphics = GraphicsApi_1.GraphicsApi.OpenGL2;
-}
 if (parsedOptions.run) {
     parsedOptions.compile = true;
 }
-if (parsedOptions.update) {
+if (parsedOptions.init) {
+    console.log('Initializing Kore project.\n');
+    require('./init').run(parsedOptions.name, parsedOptions.from, parsedOptions.projectfile);
+}
+else if (parsedOptions.update) {
     console.log('Updating everything...');
     require('child_process').spawnSync('git', ['submodule', 'foreach', '--recursive', 'git', 'pull', 'origin', 'master'], { stdio: 'inherit', stderr: 'inherit' });
-    process.exit(0);
 }
-require('./main.js').run(parsedOptions, {
-    info: console.log,
-    error: console.log
-}, function () { });
+else {
+    require('./main.js').run(parsedOptions, {
+        info: console.log,
+        error: console.log
+    }, function () { });
+}
 //# sourceMappingURL=koremake.js.map

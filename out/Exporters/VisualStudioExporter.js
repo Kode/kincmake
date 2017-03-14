@@ -50,7 +50,7 @@ function valueOf(str) {
     throw 'Unknown configuration';
 }
 function getShaderLang() {
-    if (Options_1.Options.graphicsApi === GraphicsApi_1.GraphicsApi.OpenGL || Options_1.Options.graphicsApi === GraphicsApi_1.GraphicsApi.OpenGL2)
+    if (Options_1.Options.graphicsApi === GraphicsApi_1.GraphicsApi.OpenGL)
         return 'glsl';
     if (Options_1.Options.graphicsApi === GraphicsApi_1.GraphicsApi.Direct3D11 || Options_1.Options.graphicsApi === GraphicsApi_1.GraphicsApi.Direct3D12)
         return 'd3d11';
@@ -158,19 +158,25 @@ class VisualStudioExporter extends Exporter_1.Exporter {
         windowssystems.push('Win32');
         windowssystems.push('x64');
         this.writeFile(path.resolve(to, project.getName() + '.sln'));
-        if (platform === Platform_1.Platform.WindowsApp || Options_1.Options.visualStudioVersion === VisualStudioVersion_1.VisualStudioVersion.VS2015) {
+        if (Options_1.Options.visualStudioVersion === VisualStudioVersion_1.VisualStudioVersion.VS2017) {
             this.p('Microsoft Visual Studio Solution File, Format Version 12.00');
-            this.p('# Visual Studio 14');
-            this.p('VisualStudioVersion = 14.0.23107.0');
+            this.p('# Visual Studio 15');
+            this.p('VisualStudioVersion = 15.0.26228.4');
             this.p('MinimumVisualStudioVersion = 10.0.40219.1');
         }
-        else if (platform === Platform_1.Platform.Windows && Options_1.Options.visualStudioVersion === VisualStudioVersion_1.VisualStudioVersion.VS2013) {
+        else if (Options_1.Options.visualStudioVersion === VisualStudioVersion_1.VisualStudioVersion.VS2015) {
+            this.p('Microsoft Visual Studio Solution File, Format Version 12.00');
+            this.p('# Visual Studio 14');
+            this.p('VisualStudioVersion = 14.0.25420.1');
+            this.p('MinimumVisualStudioVersion = 10.0.40219.1');
+        }
+        else if (Options_1.Options.visualStudioVersion === VisualStudioVersion_1.VisualStudioVersion.VS2013) {
             this.p('Microsoft Visual Studio Solution File, Format Version 12.00');
             this.p('# Visual Studio 2013');
             this.p('VisualStudioVersion = 12.0.21005.1');
             this.p('MinimumVisualStudioVersion = 10.0.40219.1');
         }
-        else if (platform === Platform_1.Platform.Windows && Options_1.Options.visualStudioVersion === VisualStudioVersion_1.VisualStudioVersion.VS2012) {
+        else if (Options_1.Options.visualStudioVersion === VisualStudioVersion_1.VisualStudioVersion.VS2012) {
             this.p('Microsoft Visual Studio Solution File, Format Version 12.00');
             this.p('# Visual Studio 2012');
         }
@@ -417,7 +423,8 @@ class VisualStudioExporter extends Exporter_1.Exporter {
         let compile = new ClCompile_1.ClCompile(this.out, 2, Platform_1.Platform.Xbox360, valueOf(buildType), incstring.split(';'), defines.split(';'));
         compile.print();
         this.p('<Link>', 2);
-        this.p('<GenerateDebugInformation>true</GenerateDebugInformation>', 3);
+        if (Options_1.Options.visualStudioVersion !== VisualStudioVersion_1.VisualStudioVersion.VS2017)
+            this.p('<GenerateDebugInformation>true</GenerateDebugInformation>', 3);
         if (nocomdatfolding)
             this.p('<EnableCOMDATFolding>false</EnableCOMDATFolding>', 3);
         if (comdatfolding)
@@ -450,7 +457,10 @@ class VisualStudioExporter extends Exporter_1.Exporter {
             this.exportProject(from, to, proj, platform, cmd, nokrafix, noshaders);
         this.writeFile(path.resolve(to, project.getName() + '.vcxproj'));
         this.p('<?xml version="1.0" encoding="utf-8"?>');
-        if (Options_1.Options.visualStudioVersion === VisualStudioVersion_1.VisualStudioVersion.VS2015)
+        if (Options_1.Options.visualStudioVersion === VisualStudioVersion_1.VisualStudioVersion.VS2017) {
+            this.p('<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">');
+        }
+        else if (Options_1.Options.visualStudioVersion === VisualStudioVersion_1.VisualStudioVersion.VS2015)
             this.p('<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">');
         else if (Options_1.Options.visualStudioVersion === VisualStudioVersion_1.VisualStudioVersion.VS2013)
             this.p('<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">');
@@ -470,6 +480,10 @@ class VisualStudioExporter extends Exporter_1.Exporter {
         this.p('<ProjectGuid>{' + project.getUuid().toString().toUpperCase() + '}</ProjectGuid>', 2);
         // p("<Keyword>Win32Proj</Keyword>", 2);
         // p("<RootNamespace>" + project.Name + "</RootNamespace>", 2);
+        if (Options_1.Options.visualStudioVersion === VisualStudioVersion_1.VisualStudioVersion.VS2017) {
+            this.p('<VCProjectVersion>15.0</VCProjectVersion>');
+            this.p('<WindowsTargetPlatformVersion>10.0.14393.0</WindowsTargetPlatformVersion>');
+        }
         if (platform === Platform_1.Platform.WindowsApp) {
             this.p('<DefaultLanguage>en-US</DefaultLanguage>', 2);
             this.p('<MinimumVisualStudioVersion>14.0</MinimumVisualStudioVersion>', 2);
@@ -506,7 +520,10 @@ class VisualStudioExporter extends Exporter_1.Exporter {
             this.p('<PropertyGroup Condition="\'$(Configuration)\'==\'Debug\'" Label="Configuration">', 1);
             this.p('<ConfigurationType>Application</ConfigurationType>', 2);
             this.p('<UseDebugLibraries>true</UseDebugLibraries>', 2);
-            if (platform === Platform_1.Platform.Windows && Options_1.Options.visualStudioVersion === VisualStudioVersion_1.VisualStudioVersion.VS2015) {
+            if (platform === Platform_1.Platform.Windows && Options_1.Options.visualStudioVersion === VisualStudioVersion_1.VisualStudioVersion.VS2017) {
+                this.p('<PlatformToolset>v141</PlatformToolset>', 2);
+            }
+            else if (platform === Platform_1.Platform.Windows && Options_1.Options.visualStudioVersion === VisualStudioVersion_1.VisualStudioVersion.VS2015) {
                 this.p('<PlatformToolset>v140</PlatformToolset>', 2);
             }
             else if (platform === Platform_1.Platform.Windows && Options_1.Options.visualStudioVersion === VisualStudioVersion_1.VisualStudioVersion.VS2013) {
@@ -526,7 +543,10 @@ class VisualStudioExporter extends Exporter_1.Exporter {
             this.p('<PropertyGroup Condition="\'$(Configuration)\'==\'Release\'" Label="Configuration">', 1);
             this.p('<ConfigurationType>Application</ConfigurationType>', 2);
             this.p('<UseDebugLibraries>false</UseDebugLibraries>', 2);
-            if (platform === Platform_1.Platform.Windows && Options_1.Options.visualStudioVersion === VisualStudioVersion_1.VisualStudioVersion.VS2015) {
+            if (platform === Platform_1.Platform.Windows && Options_1.Options.visualStudioVersion === VisualStudioVersion_1.VisualStudioVersion.VS2017) {
+                this.p('<PlatformToolset>v141</PlatformToolset>', 2);
+            }
+            else if (platform === Platform_1.Platform.Windows && Options_1.Options.visualStudioVersion === VisualStudioVersion_1.VisualStudioVersion.VS2015) {
                 this.p('<PlatformToolset>v140</PlatformToolset>', 2);
             }
             else if (platform === Platform_1.Platform.Windows && Options_1.Options.visualStudioVersion === VisualStudioVersion_1.VisualStudioVersion.VS2013) {
@@ -710,7 +730,8 @@ class VisualStudioExporter extends Exporter_1.Exporter {
                         this.p('<SubSystem>Console</SubSystem>', 3);
                     else
                         this.p('<SubSystem>Windows</SubSystem>', 3);
-                    this.p('<GenerateDebugInformation>true</GenerateDebugInformation>', 3);
+                    if (Options_1.Options.visualStudioVersion !== VisualStudioVersion_1.VisualStudioVersion.VS2017)
+                        this.p('<GenerateDebugInformation>true</GenerateDebugInformation>', 3);
                     let libs = debuglibs;
                     for (let lib of project.getLibsFor('debug_' + system)) {
                         if (fs.existsSync(path.resolve(from, lib + '.lib')))
@@ -770,7 +791,8 @@ class VisualStudioExporter extends Exporter_1.Exporter {
                         this.p('<SubSystem>Console</SubSystem>', 3);
                     else
                         this.p('<SubSystem>Windows</SubSystem>', 3);
-                    this.p('<GenerateDebugInformation>true</GenerateDebugInformation>', 3);
+                    if (Options_1.Options.visualStudioVersion !== VisualStudioVersion_1.VisualStudioVersion.VS2017)
+                        this.p('<GenerateDebugInformation>true</GenerateDebugInformation>', 3);
                     this.p('<EnableCOMDATFolding>true</EnableCOMDATFolding>', 3);
                     this.p('<OptimizeReferences>true</OptimizeReferences>', 3);
                     let libs = releaselibs;

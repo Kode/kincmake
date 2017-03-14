@@ -7,7 +7,7 @@ export let Options = {
 	intermediateDrive: '',
 	graphicsApi: GraphicsApi.Direct3D9,
 	vrApi: VrApi.None,
-	visualStudioVersion: VisualStudioVersion.VS2013,
+	visualStudioVersion: VisualStudioVersion.VS2017,
 	compile: false,
 	run: false
 };

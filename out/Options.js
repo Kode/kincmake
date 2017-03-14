@@ -8,7 +8,7 @@ exports.Options = {
     intermediateDrive: '',
     graphicsApi: GraphicsApi_1.GraphicsApi.Direct3D9,
     vrApi: VrApi_1.VrApi.None,
-    visualStudioVersion: VisualStudioVersion_1.VisualStudioVersion.VS2013,
+    visualStudioVersion: VisualStudioVersion_1.VisualStudioVersion.VS2017,
     compile: false,
     run: false
 };
