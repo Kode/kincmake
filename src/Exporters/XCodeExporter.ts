@@ -543,12 +543,7 @@ export class XCodeExporter extends Exporter {
 		this.p('buildSettings = {', 3);
 		this.p('ALWAYS_SEARCH_USER_PATHS = NO;', 4);
 		this.p('CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";', 4);
-		if (platform === Platform.iOS || project.cpp11) {
-			this.p('CLANG_CXX_LIBRARY = "libc++";', 4);
-		}
-		else {
-			this.p('CLANG_CXX_LIBRARY = "libstdc++";', 4);
-		}
+		this.p('CLANG_CXX_LIBRARY = "compiler-default";', 4);
 		this.p('CLANG_ENABLE_MODULES = YES;', 4);
 		if (platform === Platform.iOS) {
 			this.p('CLANG_ENABLE_OBJC_ARC = YES;', 4);
@@ -565,6 +560,9 @@ export class XCodeExporter extends Exporter {
 		this.p('CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;', 4);
 		this.p('CLANG_WARN_UNREACHABLE_CODE = YES;', 4);
 		this.p('CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;', 4);
+		this.p('CLANG_WARN_INFINITE_RECURSION = YES;', 4);
+		this.p('CLANG_WARN_SUSPICIOUS_MOVE = YES;', 4);
+
 		if (platform === Platform.iOS) {
 			this.p('"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";', 4);
 		}
@@ -592,15 +590,14 @@ export class XCodeExporter extends Exporter {
 		this.p('GCC_WARN_UNUSED_FUNCTION = YES;', 4);
 		this.p('GCC_WARN_UNUSED_VARIABLE = YES;', 4);
 		if (platform === Platform.iOS) {
-			this.p('IPHONEOS_DEPLOYMENT_TARGET = 6.0;', 4);
+			this.p('IPHONEOS_DEPLOYMENT_TARGET = 7.0;', 4);
 		}
 		else {
 			if (Options.graphicsApi === GraphicsApi.Metal) {
 				this.p('MACOSX_DEPLOYMENT_TARGET = 10.11;', 4);
 			}
 			else {
-				if (project.cpp11) this.p('MACOSX_DEPLOYMENT_TARGET = 10.7;', 4);
-				else this.p('MACOSX_DEPLOYMENT_TARGET = 10.5;', 4);
+				this.p('MACOSX_DEPLOYMENT_TARGET = 10.9;', 4);
 			}
 		}
 		this.p('MTL_ENABLE_DEBUG_INFO = YES;', 4);
@@ -620,12 +617,7 @@ export class XCodeExporter extends Exporter {
 		this.p('buildSettings = {', 3);
 		this.p('ALWAYS_SEARCH_USER_PATHS = NO;', 4);
 		this.p('CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";', 4);
-		if (platform === Platform.iOS || project.cpp11) {
-			this.p('CLANG_CXX_LIBRARY = "libc++";', 4);
-		}
-		else {
-			this.p('CLANG_CXX_LIBRARY = "libstdc++";', 4);
-		}
+		this.p('CLANG_CXX_LIBRARY = "compiler-default";', 4);
 		this.p('CLANG_ENABLE_MODULES = YES;', 4);
 		if (platform === Platform.iOS) {
 			this.p('CLANG_ENABLE_OBJC_ARC = YES;', 4);
@@ -642,6 +634,9 @@ export class XCodeExporter extends Exporter {
 		this.p('CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;', 4);
 		this.p('CLANG_WARN_UNREACHABLE_CODE = YES;', 4);
 		this.p('CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;', 4);
+		this.p('CLANG_WARN_INFINITE_RECURSION = YES;', 4);
+		this.p('CLANG_WARN_SUSPICIOUS_MOVE = YES;', 4);
+
 		if (platform === Platform.iOS) {
 			this.p('"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";', 4);
 		}
@@ -669,15 +664,14 @@ export class XCodeExporter extends Exporter {
 		this.p('GCC_WARN_UNUSED_FUNCTION = YES;', 4);
 		this.p('GCC_WARN_UNUSED_VARIABLE = YES;', 4);
 		if (platform === Platform.iOS) {
-			this.p('IPHONEOS_DEPLOYMENT_TARGET = 6.0;', 4);
+			this.p('IPHONEOS_DEPLOYMENT_TARGET = 7.0;', 4);
 		}
 		else {
 			if (Options.graphicsApi === GraphicsApi.Metal) {
 				this.p('MACOSX_DEPLOYMENT_TARGET = 10.11;', 4);
 			}
 			else {
-				if (project.cpp11) this.p('MACOSX_DEPLOYMENT_TARGET = 10.7;', 4);
-				else this.p('MACOSX_DEPLOYMENT_TARGET = 10.5;', 4);
+				this.p('MACOSX_DEPLOYMENT_TARGET = 10.9;', 4);
 			}
 		}
 		this.p('MTL_ENABLE_DEBUG_INFO = NO;', 4);
