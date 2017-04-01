@@ -10,44 +10,11 @@ const uuid = require('uuid');
 function getDefines(platform: string, rotated: boolean) {
 	let defines: string[] = [];
 	switch (platform) {
-		case Platform.Windows:
-			defines.push('_CRT_SECURE_NO_WARNINGS');
-			defines.push('SYS_WINDOWS');
-			break;
-		case Platform.WindowsApp:
-			defines.push('_CRT_SECURE_NO_WARNINGS');
-			defines.push('SYS_WINDOWSAPP');
-			break;
-		case Platform.PlayStation3:
-			defines.push('SYS_PS3');
-			break;
 		case Platform.iOS:
 			if (rotated) defines.push('ROTATE90');
-			defines.push('SYS_IOS');
-			break;
-		case Platform.tvOS:
-			defines.push('SYS_TVOS');
-			break;
-		case Platform.OSX:
-			defines.push('SYS_OSX');
-			defines.push('SYS_64BIT');
 			break;
 		case Platform.Android:
 			if (rotated) defines.push('ROTATE90');
-			defines.push('SYS_ANDROID');
-			break;
-		case Platform.Xbox360:
-			defines.push('_CRT_SECURE_NO_WARNINGS');
-			defines.push('SYS_XBOX360');
-			break;
-		case Platform.HTML5:
-			defines.push('SYS_HTML5');
-			break;
-		case Platform.Linux:
-			defines.push('SYS_LINUX');
-			break;
-		case Platform.Tizen:
-			defines.push('SYS_TIZEN');
 			break;
 	}
 	return defines;
