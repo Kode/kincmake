@@ -68,11 +68,6 @@ let options = [
         default: VisualStudioVersion_1.VisualStudioVersion.VS2017
     },
     {
-        full: 'nokrafix',
-        description: 'Switch off the new shader compiler',
-        value: false
-    },
-    {
         full: 'compile',
         description: 'Compile executable',
         value: false

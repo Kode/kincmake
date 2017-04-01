@@ -296,7 +296,7 @@ async function exportKoremakeProject(from: string, to: string, platform: string,
 		throw 'No exporter found for platform ' + platform + '.';
 	}
 
-	exporter.exportSolution(project, from, to, platform, options.vrApi, options.nokrafix, options);
+	exporter.exportSolution(project, from, to, platform, options.vrApi, options);
 
 	return project;
 }
@@ -377,7 +377,7 @@ export async function run(options: any, loglog: any): Promise<string> {
 
 	debug = options.debug;
 	
-	if (options.vr != undefined) {
+	if (options.vr !== undefined) {
 		Options.vrApi = options.vr;
 	}
 	options.buildPath = options.debug ? 'Debug' : 'Release';

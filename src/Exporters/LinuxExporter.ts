@@ -11,13 +11,13 @@ export class LinuxExporter extends Exporter {
 		super();
 	}
 
-	exportSolution(project: Project, from: string, to: string, platform: string, vrApi: any, nokrafix: boolean, options: any) {
-		this.exportMakefile(project, from, to, platform, vrApi, nokrafix, options);
-		this.exportCodeBlocks(project, from, to, platform, vrApi, nokrafix, options);
-		this.exportCLion(project, from, to, platform, vrApi, nokrafix, options);
+	exportSolution(project: Project, from: string, to: string, platform: string, vrApi: any, options: any) {
+		this.exportMakefile(project, from, to, platform, vrApi, options);
+		this.exportCodeBlocks(project, from, to, platform, vrApi, options);
+		this.exportCLion(project, from, to, platform, vrApi, options);
 	}
 	
-	exportMakefile(project: Project, from: string, to: string, platform: string, vrApi: any, nokrafix: boolean, options: any) {
+	exportMakefile(project: Project, from: string, to: string, platform: string, vrApi: any, options: any) {
 		let objects: any = {};
 		let ofiles: any = {};
 		let outputPath = path.resolve(to, options.buildPath);
@@ -138,7 +138,7 @@ export class LinuxExporter extends Exporter {
 		this.closeFile();
 	}
 
-	exportCodeBlocks(project: Project, from: string, to: string, platform: string, vrApi: any, nokrafix: boolean, options: any) {
+	exportCodeBlocks(project: Project, from: string, to: string, platform: string, vrApi: any, options: any) {
 		this.writeFile(path.resolve(to, project.getName() + '.cbp'));
 		this.p('<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>');
 		this.p('<CodeBlocks_project_file>');
@@ -241,7 +241,7 @@ export class LinuxExporter extends Exporter {
 		this.closeFile();
 	}
 
-	exportCLion(project: Project, from: string, to: string, platform: string, vrApi: any, nokrafix: boolean, options: any) {
+	exportCLion(project: Project, from: string, to: string, platform: string, vrApi: any, options: any) {
 		let name = project.getName().replace(/ /g, '_');
 
 		const indir = path.join(__dirname, '..', '..', 'Data', 'linux');

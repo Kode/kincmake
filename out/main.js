@@ -287,7 +287,7 @@ function exportKoremakeProject(from, to, platform, options) {
         if (exporter === null) {
             throw 'No exporter found for platform ' + platform + '.';
         }
-        exporter.exportSolution(project, from, to, platform, options.vrApi, options.nokrafix, options);
+        exporter.exportSolution(project, from, to, platform, options.vrApi, options);
         return project;
     });
 }
@@ -359,7 +359,7 @@ function run(options, loglog) {
             options.kore = path.resolve(options.kore);
         }
         debug = options.debug;
-        if (options.vr != undefined) {
+        if (options.vr !== undefined) {
             Options_1.Options.vrApi = options.vr;
         }
         options.buildPath = options.debug ? 'Debug' : 'Release';

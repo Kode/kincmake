@@ -135,7 +135,7 @@ class VisualStudioExporter extends Exporter_1.Exporter {
         for (let proj of project.getSubProjects())
             this.writeProjectBuilds(proj, platform);
     }
-    exportSolution(project, from, to, platform, vrApi, nokrafix, options) {
+    exportSolution(project, from, to, platform, vrApi, options) {
         standardconfs = [];
         standardconfs.push('Debug');
         standardconfs.push('Release');
@@ -202,7 +202,7 @@ class VisualStudioExporter extends Exporter_1.Exporter {
         this.p('EndGlobalSection', 1);
         this.p('EndGlobal');
         this.closeFile();
-        this.exportProject(from, to, project, platform, project.isCmd(), nokrafix, options.noshaders);
+        this.exportProject(from, to, project, platform, project.isCmd(), options.noshaders);
         this.exportFilters(from, to, project, platform);
         this.exportUserFile(from, to, project, platform);
         if (platform === Platform_1.Platform.WindowsApp) {
@@ -452,9 +452,9 @@ class VisualStudioExporter extends Exporter_1.Exporter {
     //     p("<IsWinMDFile>true</IsWinMDFile>", 3);
     //     p("</Reference>", 2);
     // }
-    exportProject(from, to, project, platform, cmd, nokrafix, noshaders) {
+    exportProject(from, to, project, platform, cmd, noshaders) {
         for (let proj of project.getSubProjects())
-            this.exportProject(from, to, proj, platform, cmd, nokrafix, noshaders);
+            this.exportProject(from, to, proj, platform, cmd, noshaders);
         this.writeFile(path.resolve(to, project.getName() + '.vcxproj'));
         this.p('<?xml version="1.0" encoding="utf-8"?>');
         if (Options_1.Options.visualStudioVersion === VisualStudioVersion_1.VisualStudioVersion.VS2017) {
@@ -944,10 +944,7 @@ class VisualStudioExporter extends Exporter_1.Exporter {
                 if (Project_1.Project.koreDir && Project_1.Project.koreDir.toString() !== '' && !noshaders && file.file.endsWith('.glsl')) {
                     this.p('<CustomBuild Include="' + path.resolve(from, file.file) + '">', 2);
                     this.p('<FileType>Document</FileType>', 2);
-                    if (nokrafix)
-                        this.p('<Command>"' + path.resolve(from, Project_1.Project.koreDir).replace(/\//g, '\\') + '\\Tools\\kfx\\kfx.exe" ' + getShaderLang() + ' \"%(FullPath)" ..\\' + project.getDebugDir().replace(/\//g, '\\') + '\\%(Filename) ..\\build</Command>', 2);
-                    else
-                        this.p('<Command>"' + path.resolve(from, Project_1.Project.koreDir).replace(/\//g, '\\') + '\\Tools\\krafix\\krafix.exe" ' + getShaderLang() + ' "%(FullPath)" ..\\' + project.getDebugDir().replace(/\//g, '\\') + '\\%(Filename) ..\\build ' + platform + '</Command>', 2);
+                    this.p('<Command>"' + path.resolve(from, Project_1.Project.koreDir).replace(/\//g, '\\') + '\\Tools\\krafix\\krafix.exe" ' + getShaderLang() + ' "%(FullPath)" ..\\' + project.getDebugDir().replace(/\//g, '\\') + '\\%(Filename) ..\\build ' + platform + ' --quiet</Command>', 2);
                     this.p('<Outputs>' + path.resolve(from, project.getDebugDir()).replace(/\//g, '\\') + '\\%(Filename);%(Outputs)</Outputs>', 2);
                     this.p('<Message>Compiling %(FullPath)</Message>', 2);
                     this.p('</CustomBuild>', 2);

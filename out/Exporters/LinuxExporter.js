@@ -8,12 +8,12 @@ class LinuxExporter extends Exporter_1.Exporter {
     constructor() {
         super();
     }
-    exportSolution(project, from, to, platform, vrApi, nokrafix, options) {
-        this.exportMakefile(project, from, to, platform, vrApi, nokrafix, options);
-        this.exportCodeBlocks(project, from, to, platform, vrApi, nokrafix, options);
-        this.exportCLion(project, from, to, platform, vrApi, nokrafix, options);
+    exportSolution(project, from, to, platform, vrApi, options) {
+        this.exportMakefile(project, from, to, platform, vrApi, options);
+        this.exportCodeBlocks(project, from, to, platform, vrApi, options);
+        this.exportCLion(project, from, to, platform, vrApi, options);
     }
-    exportMakefile(project, from, to, platform, vrApi, nokrafix, options) {
+    exportMakefile(project, from, to, platform, vrApi, options) {
         let objects = {};
         let ofiles = {};
         let outputPath = path.resolve(to, options.buildPath);
@@ -121,7 +121,7 @@ class LinuxExporter extends Exporter_1.Exporter {
         // project.getIncludeDirs()
         this.closeFile();
     }
-    exportCodeBlocks(project, from, to, platform, vrApi, nokrafix, options) {
+    exportCodeBlocks(project, from, to, platform, vrApi, options) {
         this.writeFile(path.resolve(to, project.getName() + '.cbp'));
         this.p('<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>');
         this.p('<CodeBlocks_project_file>');
@@ -223,7 +223,7 @@ class LinuxExporter extends Exporter_1.Exporter {
         this.p('</CodeBlocks_project_file>');
         this.closeFile();
     }
-    exportCLion(project, from, to, platform, vrApi, nokrafix, options) {
+    exportCLion(project, from, to, platform, vrApi, options) {
         let name = project.getName().replace(/ /g, '_');
         const indir = path.join(__dirname, '..', '..', 'Data', 'linux');
         fs.ensureDirSync(path.resolve(to, project.getName(), '.idea'));
