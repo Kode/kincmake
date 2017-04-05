@@ -400,7 +400,7 @@ export async function run(options: any, loglog: any): Promise<string> {
 		if ((options.customTarget && options.customTarget.baseTarget === Platform.Linux) || options.target === Platform.Linux) {
 			make = child_process.spawn('make', [], { cwd: path.join(options.to, options.buildPath) });
 		}
-		else if ((options.customTarget && options.customTarget.baseTarget === Platform.OSX) || options.target === Platform.OSX) {
+		else if ((options.customTarget && (options.customTarget.baseTarget === Platform.OSX || options.customTarget.baseTarget === Platform.iOS)) || options.target === Platform.OSX || options.target === Platform.iOS) {
 			make = child_process.spawn('xcodebuild', ['-configuration', 'Release', '-project', solutionName + '.xcodeproj'], { cwd: options.to });
 		}
 		else if ((options.customTarget && options.customTarget.baseTarget === Platform.Windows) || options.target === Platform.Windows) {
@@ -421,6 +421,11 @@ export async function run(options: any, loglog: any): Promise<string> {
 			else {
 				log.error('Visual Studio not found.');
 			}
+		}
+		else if ((options.customTarget && options.customTarget.baseTarget === Platform.Android) || options.target === Platform.Android) {
+			let gradlew = 'gradlew';
+			if (process.platform === 'win32') gradlew += '.bat';
+			make = child_process.spawn(gradlew, ['assemble' + (options.debug ? 'Debug' : 'Release') + 'Arm7'], { cwd: path.join(options.to, solutionName) });
 		}
 
 		if (make !== null) {
