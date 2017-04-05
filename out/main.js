@@ -401,10 +401,10 @@ function run(options, loglog) {
                 }
             }
             else if ((options.customTarget && options.customTarget.baseTarget === Platform_1.Platform.Android) || options.target === Platform_1.Platform.Android) {
-                let gradlew = 'gradlew';
-                if (process.platform === 'win32')
-                    gradlew += '.bat';
-                make = child_process.spawn(gradlew, ['assemble' + (options.debug ? 'Debug' : 'Release') + 'Arm7'], { cwd: path.join(options.to, solutionName) });
+                let gradlew = (process.platform === 'win32') ? 'gradlew.bat' : 'bash';
+                let args = (process.platform === 'win32') ? [] : ['gradlew'];
+                args.push('assemble' + (options.debug ? 'Debug' : 'Release') + 'Arm7');
+                make = child_process.spawn(gradlew, args, { cwd: path.join(options.to, solutionName) });
             }
             if (make !== null) {
                 yield compileProject(make, project, solutionName, options);
