@@ -17,6 +17,7 @@ const Options_1 = require("./Options");
 const Project_1 = require("./Project");
 const Platform_1 = require("./Platform");
 const exec = require("./exec");
+const VisualStudioVersion_1 = require("./VisualStudioVersion");
 const AndroidExporter_1 = require("./Exporters/AndroidExporter");
 const LinuxExporter_1 = require("./Exporters/LinuxExporter");
 const EmscriptenExporter_1 = require("./Exporters/EmscriptenExporter");
@@ -307,10 +308,10 @@ function exportProject(from, to, platform, options) {
 function compileProject(make, project, solutionName, options) {
     return new Promise((resolve, reject) => {
         make.stdout.on('data', function (data) {
-            log.info(data.toString());
+            log.info(data.toString(), false);
         });
         make.stderr.on('data', function (data) {
-            log.error(data.toString());
+            log.error(data.toString(), false);
         });
         make.on('close', function (code) {
             if (code === 0) {
@@ -383,14 +384,34 @@ function run(options, loglog) {
             }
             else if ((options.customTarget && options.customTarget.baseTarget === Platform_1.Platform.Windows) || options.target === Platform_1.Platform.Windows) {
                 let vsvars = null;
-                if (process.env.VS140COMNTOOLS) {
-                    vsvars = process.env.VS140COMNTOOLS + '\\vsvars32.bat';
-                }
-                else if (process.env.VS120COMNTOOLS) {
-                    vsvars = process.env.VS120COMNTOOLS + '\\vsvars32.bat';
-                }
-                else if (process.env.VS110COMNTOOLS) {
-                    vsvars = process.env.VS110COMNTOOLS + '\\vsvars32.bat';
+                switch (options.visualstudio) {
+                    case VisualStudioVersion_1.VisualStudioVersion.VS2017:
+                        const vspath = child_process.execFileSync(path.join(__dirname, '..', 'Data', 'windows', 'vswhere.exe'), ['-latest', '-property', 'installationPath'], { encoding: 'utf8' });
+                        const varspath = path.join(vspath.trim(), 'VC', 'Auxiliary', 'Build', 'vcvars32.bat');
+                        if (fs.existsSync(varspath)) {
+                            vsvars = varspath;
+                        }
+                        break;
+                    case VisualStudioVersion_1.VisualStudioVersion.VS2015:
+                        if (process.env.VS140COMNTOOLS) {
+                            vsvars = process.env.VS140COMNTOOLS + '\\vsvars32.bat';
+                        }
+                        break;
+                    case VisualStudioVersion_1.VisualStudioVersion.VS2013:
+                        if (process.env.VS120COMNTOOLS) {
+                            vsvars = process.env.VS120COMNTOOLS + '\\vsvars32.bat';
+                        }
+                        break;
+                    case VisualStudioVersion_1.VisualStudioVersion.VS2012:
+                        if (process.env.VS110COMNTOOLS) {
+                            vsvars = process.env.VS110COMNTOOLS + '\\vsvars32.bat';
+                        }
+                        break;
+                    case VisualStudioVersion_1.VisualStudioVersion.VS2010:
+                        if (process.env.VS100COMNTOOLS) {
+                            vsvars = process.env.VS100COMNTOOLS + '\\vsvars32.bat';
+                        }
+                        break;
                 }
                 if (vsvars !== null) {
                     fs.writeFileSync(path.join(options.to, 'build.bat'), '@call "' + vsvars + '"\n' + '@MSBuild.exe "' + solutionName + '.vcxproj" /m /p:Configuration=Release,Platform=Win32');

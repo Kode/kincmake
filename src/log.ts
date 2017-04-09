@@ -1,9 +1,19 @@
-let myInfo = function (text: string) {
-	console.log(text);
+let myInfo = function (text: string, newline: boolean) {
+	if (newline) {
+		console.log(text);
+	}
+	else {
+		process.stdout.write(text);
+	}
 };
 
-let myError = function (text: string) {
-	console.log(text);
+let myError = function (text: string, newline: boolean) {
+	if (newline) {
+		console.error(text);
+	}
+	else {
+		process.stderr.write(text);
+	}
 };
 
 export function set(log: any) {
@@ -11,10 +21,10 @@ export function set(log: any) {
 	myError = log.error;
 }
 
-export function info(text: string) {
-	myInfo(text);
+export function info(text: string, newline: boolean = true) {
+	myInfo(text, newline);
 }
 
-export function error(text: string) {
-	myError(text);
+export function error(text: string, newline: boolean = true) {
+	myError(text, newline);
 }
