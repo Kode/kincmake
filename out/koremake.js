@@ -198,9 +198,25 @@ else if (parsedOptions.update) {
     require('child_process').spawnSync('git', ['submodule', 'foreach', '--recursive', 'git', 'pull', 'origin', 'master'], { stdio: 'inherit', stderr: 'inherit' });
 }
 else {
+    let logInfo = function (text, newline) {
+        if (newline) {
+            console.log(text);
+        }
+        else {
+            process.stdout.write(text);
+        }
+    };
+    let logError = function (text, newline) {
+        if (newline) {
+            console.error(text);
+        }
+        else {
+            process.stderr.write(text);
+        }
+    };
     require('./main.js').run(parsedOptions, {
-        info: console.log,
-        error: console.log
+        info: logInfo,
+        error: logError
     }, function () { });
 }
 //# sourceMappingURL=koremake.js.map
