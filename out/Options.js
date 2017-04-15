@@ -6,7 +6,7 @@ const VrApi_1 = require("./VrApi");
 exports.Options = {
     precompiledHeaders: false,
     intermediateDrive: '',
-    graphicsApi: GraphicsApi_1.GraphicsApi.Direct3D9,
+    graphicsApi: GraphicsApi_1.GraphicsApi.Direct3D11,
     vrApi: VrApi_1.VrApi.None,
     visualStudioVersion: VisualStudioVersion_1.VisualStudioVersion.VS2017,
     compile: false,

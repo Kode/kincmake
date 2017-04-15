@@ -59,7 +59,7 @@ let options = [
 		short: 'g',
 		description: 'Graphics api to use',
 		value: true,
-		default: GraphicsApi.Direct3D9
+		default: GraphicsApi.Direct3D11
 	},
 	{
 		full: 'visualstudio',
