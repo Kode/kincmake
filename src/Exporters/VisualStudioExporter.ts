@@ -827,7 +827,7 @@ export class VisualStudioExporter extends Exporter {
 			this.p('</ItemGroup>', 1);
 
 			this.p('<ItemGroup>', 1);
-			this.exportAssetPath(path.resolve(from, project.getDebugDir()));
+			this.exportAssetPath(from, path.resolve(from, project.getDebugDir()));
 			this.p('</ItemGroup>', 1);
 		}
 
@@ -969,14 +969,14 @@ export class VisualStudioExporter extends Exporter {
 		this.closeFile();
 	}
 
-	exportAssetPath(assetPath: string) {
+	exportAssetPath(from: string, assetPath: string) {
 		let paths = fs.readdirSync(assetPath);
 		for (let p of paths) {
 			if (fs.statSync(path.join(assetPath, p)).isDirectory()) {
-				this.exportAssetPath(path.join(assetPath, p));
+				this.exportAssetPath(from, path.join(assetPath, p));
 			}
 			else {
-				this.p('<None Include="../windowsapp/' + path.join(assetPath, p) + '">', 2);
+				this.p('<None Include="' + path.resolve(from, path.join(assetPath, p)).replace(/\//g, '\\') + '">', 2);
 				this.p('<DeploymentContent>true</DeploymentContent>', 3);
 				this.p('</None>', 2);
 			}
