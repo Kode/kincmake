@@ -209,7 +209,7 @@ class VisualStudioExporter extends Exporter_1.Exporter {
             this.exportManifest(to, project);
             const white = 0xffffffff;
             Icon.exportPng(path.resolve(to, 'Logo.scale-100.png'), 150, 150, white, from);
-            Icon.exportPng(path.resolve(to, 'SmallLogo.scale-100.png'), 30, 30, white, from);
+            Icon.exportPng(path.resolve(to, 'SmallLogo.scale-100.png'), 44, 44, white, from);
             Icon.exportPng(path.resolve(to, 'StoreLogo.scale-100.png'), 50, 50, white, from);
             Icon.exportPng(path.resolve(to, 'SplashScreen.scale-100.png'), 620, 300, white, from);
             Icon.exportPng(path.resolve(to, 'WideLogo.scale-100.png'), 310, 150, white, from);
@@ -238,7 +238,7 @@ class VisualStudioExporter extends Exporter_1.Exporter {
         this.p('</Resources>', 1);
         this.p('<Applications>', 1);
         this.p('<Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="' + project.getName() + '.App">', 2);
-        this.p('<uap:VisualElements DisplayName="' + project.getName() + '" Square150x150Logo="Assets\Logo.png" Square44x44Logo="Assets\SmallLogo.png" Description="' + project.getName() + '" BackgroundColor="#464646">', 3);
+        this.p('<uap:VisualElements DisplayName="' + project.getName() + '" Square150x150Logo="Logo.png" Square44x44Logo="SmallLogo.png" Description="' + project.getName() + '" BackgroundColor="#464646">', 3);
         this.p('<uap:SplashScreen Image="SplashScreen.png" />', 4);
         this.p('</uap:VisualElements>', 3);
         this.p('</Application>', 2);
