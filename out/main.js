@@ -382,7 +382,8 @@ function run(options, loglog) {
             else if ((options.customTarget && (options.customTarget.baseTarget === Platform_1.Platform.OSX || options.customTarget.baseTarget === Platform_1.Platform.iOS)) || options.target === Platform_1.Platform.OSX || options.target === Platform_1.Platform.iOS) {
                 make = child_process.spawn('xcodebuild', ['-configuration', 'Release', '-project', solutionName + '.xcodeproj'], { cwd: options.to });
             }
-            else if ((options.customTarget && options.customTarget.baseTarget === Platform_1.Platform.Windows) || options.target === Platform_1.Platform.Windows) {
+            else if ((options.customTarget && options.customTarget.baseTarget === Platform_1.Platform.Windows) || options.target === Platform_1.Platform.Windows
+                || (options.customTarget && options.customTarget.baseTarget === Platform_1.Platform.WindowsApp) || options.target === Platform_1.Platform.WindowsApp) {
                 let vsvars = null;
                 switch (options.visualstudio) {
                     case VisualStudioVersion_1.VisualStudioVersion.VS2017:
