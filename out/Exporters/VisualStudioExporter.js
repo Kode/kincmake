@@ -484,7 +484,7 @@ class VisualStudioExporter extends Exporter_1.Exporter {
         // p("<RootNamespace>" + project.Name + "</RootNamespace>", 2);
         if (Options_1.Options.visualStudioVersion === VisualStudioVersion_1.VisualStudioVersion.VS2017) {
             this.p('<VCProjectVersion>15.0</VCProjectVersion>');
-            this.p('<WindowsTargetPlatformVersion>10.0.14393.0</WindowsTargetPlatformVersion>');
+            this.p('<WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>');
         }
         if (platform === Platform_1.Platform.WindowsApp) {
             this.p('<DefaultLanguage>en-US</DefaultLanguage>', 2);
@@ -492,13 +492,13 @@ class VisualStudioExporter extends Exporter_1.Exporter {
             this.p('<AppContainerApplication>true</AppContainerApplication>', 2);
             this.p('<ApplicationType>Windows Store</ApplicationType>', 2);
             this.p('<ApplicationTypeRevision>8.2</ApplicationTypeRevision>', 2);
-            this.p('<WindowsTargetPlatformVersion>10.0.14393.0</WindowsTargetPlatformVersion>', 2);
-            this.p('<WindowsTargetPlatformMinVersion>10.0.14393.0</WindowsTargetPlatformMinVersion>', 2);
+            this.p('<WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>', 2);
+            this.p('<WindowsTargetPlatformMinVersion>10.0.15063.0</WindowsTargetPlatformMinVersion>', 2);
             this.p('<ApplicationTypeRevision>10.0</ApplicationTypeRevision>', 2);
             this.p('<EnableDotNetNativeCompatibleProfile>true</EnableDotNetNativeCompatibleProfile>', 2);
         }
         else if (Options_1.Options.graphicsApi === GraphicsApi_1.GraphicsApi.Direct3D12) {
-            this.p('<WindowsTargetPlatformVersion>10.0.14393.0</WindowsTargetPlatformVersion>', 2);
+            this.p('<WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>', 2);
         }
         this.p('</PropertyGroup>', 1);
         this.p('<Import Project="$(VCTargetsPath)\\Microsoft.Cpp.Default.props" />', 1);
