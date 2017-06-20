@@ -418,7 +418,7 @@ class VisualStudioExporter extends Exporter_1.Exporter {
         if (Options_1.Options.visualStudioVersion === VisualStudioVersion_1.VisualStudioVersion.VS2017) {
             this.p('<PlatformToolset>v141</PlatformToolset>', 2);
         }
-        else if (platform === Platform_1.Platform.Windows && Options_1.Options.visualStudioVersion === VisualStudioVersion_1.VisualStudioVersion.VS2015) {
+        else {
             this.p('<PlatformToolset>v140</PlatformToolset>', 2);
         }
         if (!debug)
