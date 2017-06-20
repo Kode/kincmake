@@ -415,7 +415,12 @@ class VisualStudioExporter extends Exporter_1.Exporter {
         this.p('<UseDebugLibraries>' + (debug ? 'true' : 'false') + '</UseDebugLibraries>', 2);
         if (!debug)
             this.p('<WholeProgramOptimization>true</WholeProgramOptimization>', 2);
-        this.p('<PlatformToolset>v140</PlatformToolset>', 2);
+        if (Options_1.Options.visualStudioVersion === VisualStudioVersion_1.VisualStudioVersion.VS2017) {
+            this.p('<PlatformToolset>v141</PlatformToolset>', 2);
+        }
+        else {
+            this.p('<PlatformToolset>v140</PlatformToolset>', 2);
+        }
         if (!debug)
             this.p('<UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>', 2);
         this.p('</PropertyGroup>', 1);
