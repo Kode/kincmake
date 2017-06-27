@@ -63,6 +63,7 @@ export class Project {
 	cmd: boolean;
 
 	constructor(name: string, basedir: string) {
+		if (basedir === undefined) throw 'Please pass __dirname to the Project';
 		this.name = name;
 		this.debugDir = '';
 		this.basedir = basedir;

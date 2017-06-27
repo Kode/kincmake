@@ -44,6 +44,8 @@ let scriptdir = '.';
 let koreDir = '.';
 class Project {
     constructor(name, basedir) {
+        if (basedir === undefined)
+            throw 'Please pass __dirname to the Project';
         this.name = name;
         this.debugDir = '';
         this.basedir = basedir;
