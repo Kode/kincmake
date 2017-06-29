@@ -79,10 +79,6 @@ export class VisualStudioExporter extends Exporter {
 			// java.io.File baseDir = new File(project.getBasedir());
 			// p("<LocalDebuggerCommandArguments>\"SOURCEDIR=" + baseDir.getAbsolutePath() + "\" \"KTSOURCEDIR=" + baseDir.getAbsolutePath() + "\\Kt\"</LocalDebuggerCommandArguments>", 2);
 		}
-		else if (platform === Platform.PlayStation3) {
-			this.p('<LocalDebuggerFileServingDirectory>' + debugDir + '</LocalDebuggerFileServingDirectory>', 2);
-			this.p('<DebuggerFlavor>PS3Debugger</DebuggerFlavor>', 2);
-		}
 		this.p('</PropertyGroup>', 1);
 		this.p('</Project>');
 
@@ -103,14 +99,11 @@ export class VisualStudioExporter extends Exporter {
 	}
 
 	getConfigs(platform: string) {
-		if (platform === Platform.Xbox360) return xboxconfs;
-		else return standardconfs;
+		return standardconfs;
 	}
 
 	getSystems(platform: string) {
 		if (platform === Platform.WindowsApp) return windows8systems;
-		if (platform === Platform.PlayStation3) return ps3systems;
-		else if (platform === Platform.Xbox360) return xboxsystems;
 		else return windowssystems;
 	}
 
@@ -435,32 +428,6 @@ export class VisualStudioExporter extends Exporter {
 		this.p('</PropertyGroup>', 1);
 	}
 
-	addItemDefinitionGroup(incstring: string, defines: string, buildType: string, warningLevel: number,
-							prefast: boolean, optimization: boolean, functionLevelLinking: boolean, stringPooling: boolean, favorSize: boolean, release: boolean,
-							profile: boolean, nocomdatfolding: boolean, ignoreXapilib: boolean, optimizeReferences: boolean, checksum: boolean, fastCap: boolean,
-							comdatfolding: boolean, ltcg: boolean, platform: string) {
-		this.p('<ItemDefinitionGroup Condition="\'$(Configuration)|$(Platform)\'==\'' + buildType + '|' + this.GetSys(platform) + '\'">', 1);
-
-		let compile = new ClCompile(this.out, 2, Platform.Xbox360, valueOf(buildType), incstring.split(';'), defines.split(';'));
-		compile.print();
-
-		this.p('<Link>', 2);
-		if (Options.visualStudioVersion !== VisualStudioVersion.VS2017) this.p('<GenerateDebugInformation>true</GenerateDebugInformation>', 3);
-		if (nocomdatfolding) this.p('<EnableCOMDATFolding>false</EnableCOMDATFolding>', 3);
-		if (comdatfolding) this.p('<EnableCOMDATFolding>true</EnableCOMDATFolding>', 3);
-		if (ignoreXapilib) this.p('<IgnoreSpecificDefaultLibraries>xapilib.lib</IgnoreSpecificDefaultLibraries>', 3);
-		if (optimizeReferences) this.p('<OptimizeReferences>true</OptimizeReferences>', 3);
-		this.p('<ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>', 3);
-		if (checksum) this.p('<SetChecksum>true</SetChecksum>', 3);
-		if (profile) this.p('<AdditionalDependencies>xapilibi.lib;d3d9i.lib;d3dx9.lib;xgraphics.lib;xboxkrnl.lib;xnet.lib;xaudio2.lib;xact3i.lib;x3daudioi.lib;xmcorei.lib;xbdm.lib;vcomp.lib</AdditionalDependencies>', 3);
-		else if (ltcg) this.p('<AdditionalDependencies>xapilib.lib;d3d9ltcg.lib;d3dx9.lib;xgraphics.lib;xboxkrnl.lib;xnet.lib;xaudio2.lib;xact3ltcg.lib;x3daudioltcg.lib;xmcoreltcg.lib;vcomp.lib</AdditionalDependencies>', 3);
-		else if (release) this.p('<AdditionalDependencies>xapilib.lib;d3d9.lib;d3dx9.lib;xgraphics.lib;xboxkrnl.lib;xnet.lib;xaudio2.lib;xact3.lib;x3daudio.lib;xmcore.lib;vcomp.lib</AdditionalDependencies>', 3);
-		else this.p('<AdditionalDependencies>xapilibd.lib;d3d9d.lib;d3dx9d.lib;xgraphicsd.lib;xboxkrnl.lib;xnetd.lib;xaudiod2.lib;xactd3.lib;x3daudiod.lib;xmcored.lib;xbdm.lib;vcompd.lib</AdditionalDependencies>', 3);
-		this.p('</Link>', 2);
-
-		this.p('</ItemDefinitionGroup>', 1);
-	}
-
 // private void addWinMD(String name) {
 //     p("<Reference Include=\"" + name + ".winmd\">", 2);
 //     p("<IsWinMDFile>true</IsWinMDFile>", 3);
@@ -516,15 +483,7 @@ export class VisualStudioExporter extends Exporter {
 		}
 		this.p('</PropertyGroup>', 1);
 		this.p('<Import Project="$(VCTargetsPath)\\Microsoft.Cpp.Default.props" />', 1);
-		if (platform === Platform.Xbox360) {
-			this.addPropertyGroup('CodeAnalysis', false, platform);
-			this.addPropertyGroup('Debug', false, platform);
-			this.addPropertyGroup('Profile', false, platform);
-			this.addPropertyGroup('Profile_FastCap', false, platform);
-			this.addPropertyGroup('Release', false, platform);
-			this.addPropertyGroup('Release_LTCG', true, platform);
-		}
-		else if (platform === Platform.WindowsApp) {
+		if (platform === Platform.WindowsApp) {
 			this.addWin8PropertyGroup(true, 'Win32');
 			this.addWin8PropertyGroup(true, 'ARM');
 			this.addWin8PropertyGroup(true, 'x64');
@@ -551,10 +510,6 @@ export class VisualStudioExporter extends Exporter {
 			if (platform === Platform.Windows) {
 				this.p('<CharacterSet>Unicode</CharacterSet>', 2);
 			}
-			else if (platform === Platform.PlayStation3) {
-				this.p('<PlatformToolset>SNC</PlatformToolset>', 2);
-				this.p('<ExceptionsAndRtti>WithExceptsWithRtti</ExceptionsAndRtti>', 2);
-			}
 			this.p('</PropertyGroup>', 1);
 			this.p('<PropertyGroup Condition="\'$(Configuration)\'==\'Release\'" Label="Configuration">', 1);
 			this.p('<ConfigurationType>Application</ConfigurationType>', 2);
@@ -574,10 +529,6 @@ export class VisualStudioExporter extends Exporter {
 			if (platform === Platform.Windows) {
 				this.p('<WholeProgramOptimization>true</WholeProgramOptimization>', 2);
 				this.p('<CharacterSet>Unicode</CharacterSet>', 2);
-			}
-			else if (platform === Platform.PlayStation3) {
-				this.p('<PlatformToolset>SNC</PlatformToolset>', 2);
-				this.p('<ExceptionsAndRtti>WithExceptsWithRtti</ExceptionsAndRtti>', 2);
 			}
 			this.p('</PropertyGroup>', 1);
 		}
@@ -612,24 +563,6 @@ export class VisualStudioExporter extends Exporter {
 			this.p('<PropertyGroup Label="UserMacros" />', 1);
 		}
 
-		if (platform === Platform.Windows || platform === Platform.Xbox360) {
-			for (let system of this.getSystems(platform)) {
-				for (let config of this.getConfigs(platform)) {
-					this.p('<PropertyGroup Condition="\'$(Configuration)|$(Platform)\'==\'' + config + '|' + system + '\'">', 1);
-					if (system === 'Win32') {
-						if (Options.intermediateDrive === '') this.p('<IntDir>$(Configuration)\\' + project.getName() + '\\</IntDir>', 2);
-						else this.p('<IntDir>' + Options.intermediateDrive + ':\\$(projectname)\\$(Configuration)\\' + project.getName() + '\\</IntDir>', 2);
-					}
-					else this.p('<IntDir>$(Platform)\\$(Configuration)\\' + project.getName() + '\\</IntDir>', 2);
-					this.p('<LinkIncremental>' + ((config === 'Debug' || config === 'CodeAnalysis') ? 'true' : 'false') + '</LinkIncremental>', 2);
-					this.p('</PropertyGroup>', 1);
-				}
-			}
-		}
-		else if (platform === Platform.PlayStation3) {
-			this.p('<PropertyGroup />', 1);
-		}
-
 		let defines = '';
 		for (let define of project.getDefines()) defines += define + ';';
 
@@ -658,15 +591,7 @@ export class VisualStudioExporter extends Exporter {
 			else releaselibs += lib + '.lib;';
 		}
 
-		if (platform === Platform.Xbox360) {
-			this.addItemDefinitionGroup(incstring, defines, 'Debug', 3, false, false, false, false, false, false, false, false, false, false, false, false, false, false, platform);
-			this.addItemDefinitionGroup(incstring, defines, 'CodeAnalysis', 4, true, false, false, false, false, false, false, false, false, false, false, false, false, false, platform);
-			this.addItemDefinitionGroup(incstring, defines, 'Profile', 3, false, true, true, true, true, true, true, true, true, true, true, false, false, false, platform);
-			this.addItemDefinitionGroup(incstring, defines, 'Profile_FastCap', 3, false, true, true, true, true, true, true, true, false, true, true, true, false, false, platform);
-			this.addItemDefinitionGroup(incstring, defines, 'Release', 3, false, true, true, true, true, true, false, false, false, true, true, false, true, false, platform);
-			this.addItemDefinitionGroup(incstring, defines, 'Release_LTCG', 3, false, true, true, true, true, true, false, false, false, true, true, false, true, true, platform);
-		}
-		else if (platform === Platform.WindowsApp) {
+		if (platform === Platform.WindowsApp) {
 			/*this.p("<ItemDefinitionGroup>", 1);
 			 this.p("<Link>", 2);
 			 this.p("<AdditionalDependencies>MMDevAPI.lib;MFuuid.lib;MFReadWrite.lib;MFplat.lib;d2d1.lib;d3d11.lib;dxgi.lib;ole32.lib;windowscodecs.lib;dwrite.lib;%(AdditionalDependencies)</AdditionalDependencies>", 3);
@@ -734,11 +659,6 @@ export class VisualStudioExporter extends Exporter {
 					this.p('<MinimalRebuild>false</MinimalRebuild>', 3);
 					// if (Options.visualStudioVersion == VisualStudioVersion.VS2013) this.p("<SDLCheck>true</SDLCheck>", 3);
 				}
-				else if (platform === Platform.PlayStation3) {
-					this.p('<UserPreprocessorDefinitions>' + defines + '_DEBUG;__CELL_ASSERT__;%(UserPreprocessorDefinitions);</UserPreprocessorDefinitions>', 3);
-					this.p('<GenerateDebugInformation>true</GenerateDebugInformation>', 3);
-					this.p('<PreprocessorDefinitions>%(UserPreprocessorDefinitions);$(BuiltInDefines);__INTELLISENSE__;%(PreprocessorDefinitions);</PreprocessorDefinitions>', 3);
-				}
 				this.p('</ClCompile>', 2);
 				if (platform === Platform.Windows) {
 					this.p('<Link>', 2);
@@ -761,11 +681,6 @@ export class VisualStudioExporter extends Exporter {
 					this.p('<AdditionalDependencies>' + libs + 'kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>', 3);
 					this.p('</Link>', 2);
 				}
-				else if (platform === Platform.PlayStation3) {
-					this.p('<Link>', 2);
-					this.p('<AdditionalDependencies>libgcm_cmd.a;libgcm_sys_stub.a;libsysmodule_stub.a;libsysutil_stub.a;%(AdditionalDependencies)</AdditionalDependencies>', 3);
-					this.p('</Link>', 2);
-				}
 				this.p('</ItemDefinitionGroup>', 1);
 				this.p('<ItemDefinitionGroup Condition="\'$(Configuration)|$(Platform)\'==\'Release|' + system + '\'">', 1);
 				this.p('<ClCompile>', 2);
@@ -782,11 +697,6 @@ export class VisualStudioExporter extends Exporter {
 					this.p('<MultiProcessorCompilation>true</MultiProcessorCompilation>', 3);
 					this.p('<MinimalRebuild>false</MinimalRebuild>', 3);
 					// if (Options.visualStudioVersion === VisualStudioVersion.VS2013) this.p("<SDLCheck>true</SDLCheck>", 3);
-				}
-				else if (platform === Platform.PlayStation3) {
-					this.p('<UserPreprocessorDefinitions>' + defines + 'NDEBUG;%(UserPreprocessorDefinitions);</UserPreprocessorDefinitions>', 3);
-					this.p('<OptimizationLevel>Level2</OptimizationLevel>', 3);
-					this.p('<PreprocessorDefinitions>%(UserPreprocessorDefinitions);$(BuiltInDefines);__INTELLISENSE__;%(PreprocessorDefinitions);</PreprocessorDefinitions>');
 				}
 
 				this.p('</ClCompile>', 2);
@@ -811,11 +721,6 @@ export class VisualStudioExporter extends Exporter {
 						else libs += lib + '.lib;';
 					}
 					this.p('<AdditionalDependencies>' + libs + 'kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>', 3);
-					this.p('</Link>', 2);
-				}
-				else if (platform === Platform.PlayStation3) {
-					this.p('<Link>', 2);
-					this.p('<AdditionalDependencies>libgcm_cmd.a;libgcm_sys_stub.a;libsysmodule_stub.a;libsysutil_stub.a;%(AdditionalDependencies)</AdditionalDependencies>', 3);
 					this.p('</Link>', 2);
 				}
 				this.p('</ItemDefinitionGroup>', 1);
@@ -913,27 +818,6 @@ export class VisualStudioExporter extends Exporter {
 		}
 		this.p('</ItemGroup>', 1);
 
-		if (platform === Platform.PlayStation3) {
-			this.p('<ItemGroup>', 1);
-			for (let file of project.getFiles()) {
-				if (file.file.endsWith('.vp.cg')) {
-					this.p('<CustomBuild Include="' + path.resolve(from, file.file) + '">', 2);
-					this.p('<FileType>Document</FileType>', 2);
-					this.p('<Command>$(SCE_PS3_ROOT)\\host-win32\\Cg\\bin\\sce-cgc -quiet -profile sce_vp_rsx -o "%(Filename).vpo" "%(FullPath)"\n$(SCE_PS3_ROOT)\\host-win32\\ppu\\bin\\ppu-lv2-objcopy -I binary -O elf64-powerpc-celloslv2 -B powerpc "%(Filename).vpo" "%(Filename).ppu.o"</Command>', 2);
-					this.p('<Outputs>%(Filename).vpo;%(Filename).ppu.o;%(Outputs)</Outputs>', 2);
-					this.p('</CustomBuild>', 2);
-				}
-				else if (file.file.endsWith('.fp.cg')) {
-					this.p('<CustomBuild Include="' + path.resolve(from, file.file) + '">', 2);
-					this.p('<FileType>Document</FileType>', 2);
-					this.p('<Command>$(SCE_PS3_ROOT)\\host-win32\\Cg\\bin\\sce-cgc -quiet -profile sce_fp_rsx -o "%(Filename).fpo" "%(FullPath)"\n$(SCE_PS3_ROOT)\\host-win32\\ppu\\bin\\ppu-lv2-objcopy -I binary -O elf64-powerpc-celloslv2 -B powerpc "%(Filename).fpo" "%(Filename).ppu.o"</Command>', 2);
-					this.p('<Outputs>%(Filename).fpo;%(Filename).ppu.o;%(Outputs)</Outputs>', 2);
-					this.p('</CustomBuild>', 2);
-				}
-			}
-			this.p('</ItemGroup>', 1);
-		}
-
 		if (platform === Platform.Windows) {
 			this.p('<ItemGroup>', 1);
 			for (let file of project.getFiles()) {
@@ -978,9 +862,6 @@ export class VisualStudioExporter extends Exporter {
 			this.p('</ItemGroup>', 1);
 		}
 
-		if (platform === Platform.PlayStation3) {
-			this.p('<Import Condition="\'$(ConfigurationType)\' == \'Makefile\' and Exists(\'$(VCTargetsPath)\\Platforms\\$(Platform)\\SCE.Makefile.$(Platform).targets\')" Project="$(VCTargetsPath)\\Platforms\\$(Platform)\\SCE.Makefile.$(Platform).targets" />', 1);
-		}
 		this.p('<Import Project="$(VCTargetsPath)\\Microsoft.Cpp.targets" />', 1);
 		this.p('<ImportGroup Label="ExtensionTargets">', 2);
 		this.p('</ImportGroup>', 1);

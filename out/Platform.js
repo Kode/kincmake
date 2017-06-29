@@ -11,6 +11,9 @@ exports.Platform = {
     HTML5: 'html5',
     Tizen: 'tizen',
     Pi: 'pi',
-    tvOS: 'tvos'
+    tvOS: 'tvos',
+    PS4: 'PS4',
+    XboxOne: 'XboxOne',
+    Switch: 'Switch'
 };
 //# sourceMappingURL=Platform.js.map
