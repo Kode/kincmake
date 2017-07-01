@@ -420,18 +420,48 @@ export class VisualStudioExporter extends Exporter {
 //     p("</Reference>", 2);
 // }
 
+	toolsVersion(): string {
+		switch (Options.visualStudioVersion) {
+			case VisualStudioVersion.VS2017:
+				return '15.0';
+			case VisualStudioVersion.VS2015:
+				return '14.0';
+			case VisualStudioVersion.VS2013:
+				return '12.0';
+			default:
+				return '4.0';
+		}
+	}
+
+	globals(platform: string, indent: number) {
+		const windowsTargetVersion = Options.visualStudioVersion === VisualStudioVersion.VS2017 ? '10.0.15063.0' : '10.0.14393.0';
+		if (Options.visualStudioVersion === VisualStudioVersion.VS2017) {
+			this.p('<VCProjectVersion>15.0</VCProjectVersion>', indent);
+			this.p('<WindowsTargetPlatformVersion>' + windowsTargetVersion + '</WindowsTargetPlatformVersion>', indent);
+		}
+		if (platform === Platform.WindowsApp) {
+			this.p('<DefaultLanguage>en-US</DefaultLanguage>', indent);
+			this.p('<MinimumVisualStudioVersion>14.0</MinimumVisualStudioVersion>', indent);
+			this.p('<AppContainerApplication>true</AppContainerApplication>', indent);
+			this.p('<ApplicationType>Windows Store</ApplicationType>', indent);
+			this.p('<ApplicationTypeRevision>8.2</ApplicationTypeRevision>', indent);
+			this.p('<WindowsTargetPlatformVersion>' + windowsTargetVersion + '</WindowsTargetPlatformVersion>', indent);
+			this.p('<WindowsTargetPlatformMinVersion>' + windowsTargetVersion + '</WindowsTargetPlatformMinVersion>', indent);
+			this.p('<ApplicationTypeRevision>10.0</ApplicationTypeRevision>', indent);
+			this.p('<EnableDotNetNativeCompatibleProfile>true</EnableDotNetNativeCompatibleProfile>', indent);
+		}
+		else if (Options.graphicsApi === GraphicsApi.Direct3D12) {
+			this.p('<WindowsTargetPlatformVersion>' + windowsTargetVersion + '</WindowsTargetPlatformVersion>', indent);
+		}
+	}
+
 	exportProject(from: string, to: string, project: Project, platform: string, cmd: boolean, noshaders: boolean) {
 		for (let proj of project.getSubProjects()) this.exportProject(from, to, proj, platform, cmd, noshaders);
 
 		this.writeFile(path.resolve(to, project.getName() + '.vcxproj'));
 
 		this.p('<?xml version="1.0" encoding="utf-8"?>');
-		if (Options.visualStudioVersion === VisualStudioVersion.VS2017) {
-			this.p('<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">');
-		}
-		else if (Options.visualStudioVersion === VisualStudioVersion.VS2015) this.p('<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">');
-		else if (Options.visualStudioVersion === VisualStudioVersion.VS2013) this.p('<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">');
-		else this.p('<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">');
+		this.p('<Project DefaultTargets="Build" ToolsVersion="' + this.toolsVersion() + '" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">');
 		this.p('<ItemGroup Label="ProjectConfigurations">', 1);
 		for (let system of this.getSystems(platform)) {
 			for (let config of this.getConfigs(platform)) {
@@ -446,27 +476,7 @@ export class VisualStudioExporter extends Exporter {
 		this.p('<ProjectGuid>{' + project.getUuid().toString().toUpperCase() + '}</ProjectGuid>', 2);
 		// p("<Keyword>Win32Proj</Keyword>", 2);
 		// p("<RootNamespace>" + project.Name + "</RootNamespace>", 2);
-
-		const windowsTargetVersion = Options.visualStudioVersion === VisualStudioVersion.VS2017 ? '10.0.15063.0' : '10.0.14393.0';
-
-		if (Options.visualStudioVersion === VisualStudioVersion.VS2017) {
-			this.p('<VCProjectVersion>15.0</VCProjectVersion>');
-			this.p('<WindowsTargetPlatformVersion>' + windowsTargetVersion + '</WindowsTargetPlatformVersion>');
-		}
-		if (platform === Platform.WindowsApp) {
-			this.p('<DefaultLanguage>en-US</DefaultLanguage>', 2);
-			this.p('<MinimumVisualStudioVersion>14.0</MinimumVisualStudioVersion>', 2);
-			this.p('<AppContainerApplication>true</AppContainerApplication>', 2);
-			this.p('<ApplicationType>Windows Store</ApplicationType>', 2);
-			this.p('<ApplicationTypeRevision>8.2</ApplicationTypeRevision>', 2);
-			this.p('<WindowsTargetPlatformVersion>' + windowsTargetVersion + '</WindowsTargetPlatformVersion>', 2);
-			this.p('<WindowsTargetPlatformMinVersion>' + windowsTargetVersion + '</WindowsTargetPlatformMinVersion>', 2);
-			this.p('<ApplicationTypeRevision>10.0</ApplicationTypeRevision>', 2);
-			this.p('<EnableDotNetNativeCompatibleProfile>true</EnableDotNetNativeCompatibleProfile>', 2);
-		}
-		else if (Options.graphicsApi === GraphicsApi.Direct3D12) {
-			this.p('<WindowsTargetPlatformVersion>' + windowsTargetVersion + '</WindowsTargetPlatformVersion>', 2);
-		}
+		this.globals(platform, 2);
 		this.p('</PropertyGroup>', 1);
 		this.p('<Import Project="$(VCTargetsPath)\\Microsoft.Cpp.Default.props" />', 1);
 		if (platform === Platform.WindowsApp) {
