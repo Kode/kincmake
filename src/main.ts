@@ -17,10 +17,13 @@ import {TizenExporter} from './Exporters/TizenExporter';
 import {VisualStudioExporter} from './Exporters/VisualStudioExporter';
 import {XCodeExporter} from './Exporters/XCodeExporter';
 
+let _global: any = global;
+_global.__base = __dirname + '/';
+
 let debug = false;
 
 function fromPlatform(platform: string): string {
-	switch (platform) {
+	switch (platform.toLowerCase()) {
 		case Platform.Windows:
 			return 'Windows';
 		case Platform.WindowsApp:
@@ -264,10 +267,10 @@ async function exportKoremakeProject(from: string, to: string, platform: string,
 		if (fs.existsSync(libsdir) && fs.statSync(libsdir).isDirectory()) {
 			let libdirs = fs.readdirSync(libsdir);
 			for (let libdir of libdirs) {
-				if (fs.statSync(path.join(from.toString(), 'Backends', libdir)).isDirectory()) {
+				if (fs.statSync(path.join(from.toString(), 'Backends', libdir)).isDirectory() && libdir.toLowerCase() === platform.toLowerCase()) {
 					let libfiles = fs.readdirSync(path.join(from.toString(), 'Backends', libdir));
 					for (let libfile of libfiles) {
-						if (libfile.startsWith('Exporter') && libfile.endsWith('.js')) {
+						if (libfile.endsWith('Exporter.js')) {
 							let Exporter = require(path.relative(__dirname, path.join(from.toString(), 'Backends', libdir, libfile)));
 							exporter = new Exporter();
 							break;

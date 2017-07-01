@@ -13,10 +13,7 @@ import * as path from 'path';
 const uuid = require('uuid');
 
 let standardconfs: string[] = []; // = new String[]{"Debug", "Release"};
-let xboxconfs: string[] = []; // = new String[]{"CodeAnalysis", "Debug", "Profile_FastCap", "Profile", "Release_LTCG", "Release"};
 let windows8systems: string[] = []; // = new String[]{"ARM", "Win32", "x64"};
-let xboxsystems: string[] = []; // = new String[]{"Xbox 360"};
-let ps3systems: string[] = []; // = new String[]{"PS3"};
 let windowssystems: string[] = []; // = new String[]{"Win32", "x64"};
 
 function getDir(file: File) {
@@ -128,21 +125,10 @@ export class VisualStudioExporter extends Exporter {
 		standardconfs = [];
 		standardconfs.push('Debug');
 		standardconfs.push('Release');
-		xboxconfs = [];
-		xboxconfs.push('CodeAnalysis');
-		xboxconfs.push('Debug');
-		xboxconfs.push('Profile_FastCap');
-		xboxconfs.push('Profile');
-		xboxconfs.push('Release_LTCG');
-		xboxconfs.push('Release');
 		windows8systems = [];
 		windows8systems.push('ARM');
 		windows8systems.push('Win32');
 		windows8systems.push('x64');
-		xboxsystems = [];
-		xboxsystems.push('Xbox 360');
-		ps3systems = [];
-		ps3systems.push('PS3');
 		windowssystems = [];
 		windowssystems.push('Win32');
 		windowssystems.push('x64');
