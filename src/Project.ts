@@ -44,6 +44,7 @@ export interface File {
 export class Project {
 	static platform: string;
 	static koreDir: string;
+	static root: string;
 	name: string;
 	debugDir: string;
 	basedir: string;
@@ -94,7 +95,11 @@ export class Project {
 
 			for (let d of sub.defines) if (!contains(this.defines, d)) this.defines.push(d);
 			for (let file of sub.files) {
-				this.files.push({file: path.join(subbasedir, file.file).replace(/\\/g, '/'), options: file.options, projectDir: subbasedir, projectName: sub.name });
+				let absolute = file.file;
+				if (!path.isAbsolute(absolute)) {
+					absolute = path.join(subbasedir, file.file);
+				}
+				this.files.push({file: absolute.replace(/\\/g, '/'), options: file.options, projectDir: subbasedir, projectName: sub.name });
 			}
 			for (let i of sub.includeDirs) if (!contains(this.includeDirs, path.resolve(subbasedir, i))) this.includeDirs.push(path.resolve(subbasedir, i));
 			for (let j of sub.javadirs) if (!contains(this.javadirs, path.resolve(subbasedir, j))) this.javadirs.push(path.resolve(subbasedir, j));
@@ -368,6 +373,7 @@ export class Project {
 			try {
 				let file = fs.readFileSync(path.resolve(scriptdir, 'korefile.js'), 'utf8');
 				let project = new Function(
+					'log',
 					'Project',
 					'Platform',
 					'platform',
@@ -380,7 +386,9 @@ export class Project {
 					'reject',
 					'__dirname',
 					file)
-				(Project,
+				(
+					log,
+					Project,
 					Platform,
 					Project.platform,
 					GraphicsApi,
@@ -401,6 +409,7 @@ export class Project {
 
 	static async create(directory: string, platform: string) {
 		Project.platform = platform;
+		Project.root = path.resolve(directory);
 		let project = await Project.createProject('.', directory);
 		let defines = getDefines(platform, project.isRotated());
 		for (let define of defines) {
