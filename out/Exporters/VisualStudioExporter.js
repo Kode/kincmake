@@ -194,6 +194,11 @@ class VisualStudioExporter extends Exporter_1.Exporter {
             this.exportResourceScript(to);
             Icon.exportIco(path.resolve(to, 'icon.ico'), from);
         }
+        else {
+            this.additionalFiles(fs, Icon, from, to);
+        }
+    }
+    additionalFiles(fs, Icon, from, to) {
     }
     exportManifest(to, project) {
         this.writeFile(path.resolve(to, 'Package.appxmanifest'));
@@ -399,6 +404,16 @@ class VisualStudioExporter extends Exporter_1.Exporter {
             this.p('<UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>', 2);
         this.p('</PropertyGroup>', 1);
     }
+    configuration(config, system, indent) {
+    }
+    propertySheet(config, system, indent) {
+    }
+    addOns(config, system, indent) {
+    }
+    itemDefinition(config, system, includes, defines, indent) {
+    }
+    additionalItemGroups(indent) {
+    }
     // private void addWinMD(String name) {
     //     p("<Reference Include=\"" + name + ".winmd\">", 2);
     //     p("<IsWinMDFile>true</IsWinMDFile>", 3);
@@ -468,7 +483,7 @@ class VisualStudioExporter extends Exporter_1.Exporter {
             this.addWin8PropertyGroup(false, 'ARM');
             this.addWin8PropertyGroup(false, 'x64');
         }
-        else {
+        else if (platform === Platform_1.Platform.Windows) {
             this.p('<PropertyGroup Condition="\'$(Configuration)\'==\'Debug\'" Label="Configuration">', 1);
             this.p('<ConfigurationType>Application</ConfigurationType>', 2);
             this.p('<UseDebugLibraries>true</UseDebugLibraries>', 2);
@@ -509,9 +524,25 @@ class VisualStudioExporter extends Exporter_1.Exporter {
             }
             this.p('</PropertyGroup>', 1);
         }
+        else {
+            for (let config of this.getConfigs(platform)) {
+                for (let system of this.getSystems(platform)) {
+                    this.configuration(config, system, 2);
+                }
+            }
+        }
         this.p('<Import Project="$(VCTargetsPath)\\Microsoft.Cpp.props" />', 1);
         this.p('<ImportGroup Label="ExtensionSettings">', 1);
         this.p('</ImportGroup>', 1);
+        if (platform === Platform_1.Platform.WindowsApp) {
+            this.p('<PropertyGroup Label="UserMacros">', 1);
+            this.p('<PackageCertificateThumbprint>70D2DCD9F41CDDD92BA2862FF58A54240AFD2A23</PackageCertificateThumbprint>', 2);
+            this.p('<PackageCertificateKeyFile>TemporaryKey.pfx</PackageCertificateKeyFile>', 2);
+            this.p('</PropertyGroup>', 1);
+        }
+        else {
+            this.p('<PropertyGroup Label="UserMacros" />', 1);
+        }
         if (platform === Platform_1.Platform.WindowsApp) {
             const configurations = ['Debug', 'Release'];
             for (let configuration of configurations) {
@@ -522,21 +553,24 @@ class VisualStudioExporter extends Exporter_1.Exporter {
                 }
             }
         }
-        else {
+        else if (platform === Platform_1.Platform.Windows) {
             for (let system of this.getSystems(platform)) {
                 this.p('<ImportGroup Label="PropertySheets" Condition="\'$(Platform)\'==\'' + system + '\'">', 1);
                 this.p('<Import Project="$(UserRootDir)\\Microsoft.Cpp.$(Platform).user.props" Condition="exists(\'$(UserRootDir)\\Microsoft.Cpp.$(Platform).user.props\')" Label="LocalAppDataPlatform" />', 2);
                 this.p('</ImportGroup>', 1);
             }
         }
-        if (platform === Platform_1.Platform.WindowsApp) {
-            this.p('<PropertyGroup Label="UserMacros">', 1);
-            this.p('<PackageCertificateThumbprint>70D2DCD9F41CDDD92BA2862FF58A54240AFD2A23</PackageCertificateThumbprint>', 2);
-            this.p('<PackageCertificateKeyFile>TemporaryKey.pfx</PackageCertificateKeyFile>', 2);
-            this.p('</PropertyGroup>', 1);
-        }
         else {
-            this.p('<PropertyGroup Label="UserMacros" />', 1);
+            for (let config of this.getConfigs(platform)) {
+                for (let system of this.getSystems(platform)) {
+                    this.propertySheet(config, system, 2);
+                }
+            }
+        }
+        for (let config of this.getConfigs(platform)) {
+            for (let system of this.getSystems(platform)) {
+                this.addOns(config, system, 2);
+            }
         }
         let defines = '';
         for (let define of project.getDefines())
@@ -618,7 +652,7 @@ class VisualStudioExporter extends Exporter_1.Exporter {
                 this.p('</ItemDefinitionGroup>', 1);
             }
         }
-        else {
+        else if (platform === Platform_1.Platform.Windows) {
             for (let system of this.getSystems(platform)) {
                 this.p('<ItemDefinitionGroup Condition="\'$(Configuration)|$(Platform)\'==\'Debug|' + system + '\'">', 1);
                 this.p('<ClCompile>', 2);
@@ -722,6 +756,13 @@ class VisualStudioExporter extends Exporter_1.Exporter {
                     this.p('</Link>', 2);
                 }
                 this.p('</ItemDefinitionGroup>', 1);
+            }
+        }
+        else {
+            for (let config of this.getConfigs(platform)) {
+                for (let system of this.getSystems(platform)) {
+                    this.itemDefinition(config, system, incstring, defines, 2);
+                }
             }
         }
         this.p('<ItemGroup>', 1);
@@ -852,8 +893,9 @@ class VisualStudioExporter extends Exporter_1.Exporter {
             this.p('<ResourceCompile Include="resources.rc" />', 2);
             this.p('</ItemGroup>', 1);
         }
+        this.additionalItemGroups(1);
         this.p('<Import Project="$(VCTargetsPath)\\Microsoft.Cpp.targets" />', 1);
-        this.p('<ImportGroup Label="ExtensionTargets">', 2);
+        this.p('<ImportGroup Label="ExtensionTargets">', 1);
         this.p('</ImportGroup>', 1);
         this.p('</Project>');
         this.closeFile();
