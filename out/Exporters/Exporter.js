@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const fs = require("fs-extra");
+const path = require("path");
 class Exporter {
     constructor() {
     }
@@ -16,6 +17,13 @@ class Exporter {
             tabs += '\t';
         let data = new Buffer(tabs + line + '\n');
         fs.writeSync(this.out, data, 0, data.length, null);
+    }
+    nicePath(from, to, filepath) {
+        let absolute = filepath;
+        if (!path.isAbsolute(absolute)) {
+            absolute = path.resolve(from, filepath);
+        }
+        return path.relative(to, absolute);
     }
 }
 exports.Exporter = Exporter;

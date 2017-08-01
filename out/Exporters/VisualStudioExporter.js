@@ -913,13 +913,6 @@ class VisualStudioExporter extends Exporter_1.Exporter {
             }
         }
     }
-    nicePath(from, to, filepath) {
-        let absolute = filepath;
-        if (!path.isAbsolute(absolute)) {
-            absolute = path.resolve(from, filepath);
-        }
-        return path.relative(to, absolute);
-    }
 }
 exports.VisualStudioExporter = VisualStudioExporter;
 //# sourceMappingURL=VisualStudioExporter.js.map

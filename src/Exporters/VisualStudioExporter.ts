@@ -935,12 +935,4 @@ export class VisualStudioExporter extends Exporter {
 			}
 		}
 	}
-
-	nicePath(from: string, to: string, filepath: string): string {
-		let absolute = filepath;
-		if (!path.isAbsolute(absolute)) {
-			absolute = path.resolve(from, filepath);
-		}
-		return path.relative(to, absolute);
-	}
 }

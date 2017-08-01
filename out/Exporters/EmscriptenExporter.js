@@ -79,8 +79,8 @@ class EmscriptenExporter extends Exporter_1.Exporter {
         includes = '';
         includesArray = [];
         for (let inc in project.getIncludeDirs()) {
-            includes += '-I../' + path.resolve(from, project.getIncludeDirs()[inc]) + ' ';
-            includesArray.push('-I../' + path.resolve(from, project.getIncludeDirs()[inc]));
+            includes += '-I' + this.nicePath(from, to, path.join(from, project.getIncludeDirs()[inc])) + ' ';
+            includesArray.push('-I' + this.nicePath(from, to, path.join(from, project.getIncludeDirs()[inc])));
         }
         this.writeFile(path.resolve(to, 'makefile'));
         this.p();
@@ -90,7 +90,7 @@ class EmscriptenExporter extends Exporter_1.Exporter {
             if (!filename.endsWith('.cpp') && !filename.endsWith('.c'))
                 continue;
             let lastpoint = filename.lastIndexOf('.');
-            let oname = filename.substr(0, lastpoint) + '.o';
+            let oname = this.nicePath(from, to, filename.substr(0, lastpoint) + '.o');
             oname = oname.replace(/..\//, '');
             oline += ' ' + oname;
         }
@@ -114,10 +114,10 @@ class EmscriptenExporter extends Exporter_1.Exporter {
                     fs.ensureDirSync(builddir);
             }
             let lastpoint = filename.lastIndexOf('.');
-            let oname = filename.substr(0, lastpoint) + '.o';
+            let oname = this.nicePath(from, to, filename.substr(0, lastpoint) + '.o');
             oname = oname.replace(/..\//, '');
-            this.p(oname + ': ../' + filename);
-            this.p('emcc -c ../' + filename + ' ' + includes + ' ' + defines + ' -o ' + oname, 1);
+            this.p(oname + ': ' + this.nicePath(from, to, filename));
+            this.p('emcc -c ' + this.nicePath(from, to, filename) + ' ' + includes + ' ' + defines + ' -o ' + oname, 1);
         }
         this.closeFile();
         /*
