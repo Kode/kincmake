@@ -95,7 +95,7 @@ class EmscriptenExporter extends Exporter_1.Exporter {
             oline += ' ' + oname;
         }
         this.p('kore.html:' + oline);
-        this.p('emcc ' + oline + ' -o kore.html --preload-file ' + debugDirName, 1);
+        this.p('emcc -O2 -s TOTAL_MEMORY=134217728 ' + oline + ' -o kore.html --preload-file ' + debugDirName, 1);
         this.p();
         for (let fileobject of project.getFiles()) {
             let filename = fileobject.file;
@@ -117,7 +117,7 @@ class EmscriptenExporter extends Exporter_1.Exporter {
             let oname = this.nicePath(from, to, filename.substr(0, lastpoint) + '.o');
             oname = oname.replace(/..\//, '');
             this.p(oname + ': ' + this.nicePath(from, to, filename));
-            this.p('emcc -c ' + this.nicePath(from, to, filename) + ' ' + includes + ' ' + defines + ' -o ' + oname, 1);
+            this.p('emcc -O2 -c ' + this.nicePath(from, to, filename) + ' ' + includes + ' ' + defines + ' -o ' + oname, 1);
         }
         this.closeFile();
         /*
