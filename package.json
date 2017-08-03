@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ktxsoftware/koremake.git"
+    "url": "git+https://github.com/Kode/koremake.git"
   },
   "keywords": [
     "kore"
@@ -16,9 +16,9 @@
   "author": "Robert Konrad",
   "license": "Zlib",
   "bugs": {
-    "url": "https://github.com/ktxsoftware/koremake/issues"
+    "url": "https://github.com/Kode/koremake/issues"
   },
-  "homepage": "https://github.com/ktxsoftware/koremake#readme",
+  "homepage": "https://github.com/Kode/koremake#readme",
   "dependencies": {
     "@types/chokidar": "^1.7.1",
     "@types/fs-extra": "^4.0.0",
