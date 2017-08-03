@@ -80,7 +80,7 @@ export class EmscriptenExporter extends Exporter {
 		if (debugDirName.endsWith('/')) debugDirName = debugDirName.substr(0, debugDirName.length - 1);
 		if (debugDirName.lastIndexOf('/') >= 0) debugDirName = debugDirName.substr(debugDirName.lastIndexOf('/') + 1);
 		
-		fs.copySync(path.resolve(from, debugDirName), path.resolve(to, debugDirName), { clobber: true });
+		fs.copySync(path.resolve(from, debugDirName), path.resolve(to, debugDirName), { overwrite: true });
 		
 		defines = '';
 		definesArray = [];
