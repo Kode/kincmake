@@ -9,7 +9,7 @@ export class TizenExporter extends Exporter {
 	}
 
 	exportSolution(project: Project, from: string, to: string, platform: string) {
-		if (project.getDebugDir() !== '') fs.copySync(path.resolve(from, project.getDebugDir()), path.resolve(to, 'data'), { clobber: true });
+		if (project.getDebugDir() !== '') fs.copySync(path.resolve(from, project.getDebugDir()), path.resolve(to, 'data'), { overwrite: true });
 
 		let dotcproject = fs.readFileSync(path.resolve(__dirname, 'Data', 'tizen', '.cproject'), 'utf8');
 		dotcproject = dotcproject.replace(/{ProjectName}/g, project.getName());
@@ -36,7 +36,7 @@ export class TizenExporter extends Exporter {
 		for (let file of project.getFiles()) {
 			let target = path.resolve(to, 'CopiedSources', file);
 			fs.ensureDirSync(path.join(target.substr(0, target.lastIndexOf('/'))));
-			fs.copySync(path.resolve(from, file), target, { clobber: true });
+			fs.copySync(path.resolve(from, file), target, { overwrite: true });
 		}
 	}
 }

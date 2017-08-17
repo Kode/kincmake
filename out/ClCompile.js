@@ -1,7 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const Block_1 = require("./Block");
-const Configuration_1 = require("./Configuration");
 const Platform_1 = require("./Platform");
 function toLine(options) {
     let line = '';
@@ -41,74 +40,6 @@ class ClCompile extends Block_1.Block {
                 this.defines.push('UNICODE');
                 this.defines.push('%(PreprocessorDefinitions)');
                 break;
-            case Platform_1.Platform.Xbox360:
-                this.defines.push('_XBOX');
-                switch (configuration) {
-                    case Configuration_1.Configuration.Debug:
-                        this.defines.push('_DEBUG');
-                        this.warningLevel = 3;
-                        this.prefast = false;
-                        this.optimization = false;
-                        this.functionLevelLinking = false;
-                        this.stringPooling = false;
-                        this.favorSize = false;
-                        this.fastCap = false;
-                        break;
-                    case Configuration_1.Configuration.CodeAnalysis:
-                        this.defines.push('_DEBUG');
-                        this.warningLevel = 4;
-                        this.prefast = true;
-                        this.optimization = false;
-                        this.functionLevelLinking = false;
-                        this.stringPooling = false;
-                        this.favorSize = false;
-                        this.fastCap = false;
-                        break;
-                    case Configuration_1.Configuration.Profile:
-                        this.defines.push('NDEBUG');
-                        this.defines.push('PROFILE');
-                        this.warningLevel = 3;
-                        this.prefast = false;
-                        this.optimization = true;
-                        this.functionLevelLinking = true;
-                        this.stringPooling = true;
-                        this.favorSize = true;
-                        this.fastCap = false;
-                        break;
-                    case Configuration_1.Configuration.Profile_FastCap:
-                        this.defines.push('NDEBUG');
-                        this.defines.push('FASTCAP');
-                        this.warningLevel = 3;
-                        this.prefast = false;
-                        this.optimization = true;
-                        this.functionLevelLinking = true;
-                        this.stringPooling = true;
-                        this.favorSize = true;
-                        this.fastCap = true;
-                        break;
-                    case Configuration_1.Configuration.Release:
-                        this.defines.push('NDEBUG');
-                        this.warningLevel = 3;
-                        this.prefast = false;
-                        this.optimization = true;
-                        this.functionLevelLinking = true;
-                        this.stringPooling = true;
-                        this.favorSize = true;
-                        this.fastCap = false;
-                        break;
-                    case Configuration_1.Configuration.Release_LTCG:
-                        this.defines.push('NDEBUG');
-                        this.defines.push('LTCG');
-                        this.warningLevel = 3;
-                        this.prefast = false;
-                        this.optimization = true;
-                        this.functionLevelLinking = true;
-                        this.stringPooling = true;
-                        this.favorSize = true;
-                        this.fastCap = false;
-                        break;
-                }
-                break;
             default:
                 break;
         }
@@ -134,33 +65,6 @@ class ClCompile extends Block_1.Block {
             this.tag('ObjectFileName', this.objectFileName);
             this.tag('DisableSpecificWarnings', '4453');
             this.tag('SDLCheck', 'true');
-        }
-        else if (this.platform === Platform_1.Platform.PlayStation3) {
-            this.tag('UserPreprocessorDefinitions', this.userPreprocessorDefinitions);
-            this.tag('GenerateDebugInformation', this.generateDebugInformation ? 'true' : 'false');
-            this.tag('PreprocessorDefinitions', defineLine);
-            this.tag('ObjectFileName', this.objectFileName);
-        }
-        else if (this.platform === Platform_1.Platform.Xbox360) {
-            this.tag('PrecompiledHeader', 'Use');
-            this.tag('WarningLevel', 'Level' + this.warningLevel);
-            this.tag('DebugInformationFormat', 'ProgramDatabase');
-            this.tag('Optimization', this.optimization ? 'Full' : 'Disabled');
-            if (this.functionLevelLinking)
-                this.tag('FunctionLevelLinking', 'true');
-            this.tag('ExceptionHandling', 'false');
-            if (this.stringPooling)
-                this.tag('StringPooling', 'true');
-            this.tag('MinimalRebuild', 'true');
-            if (this.prefast)
-                this.tag('PREfast', 'AnalyzeOnly');
-            if (this.favorSize)
-                this.tag('FavorSizeOrSpeed', 'Size');
-            this.tag('BufferSecurityCheck', 'false');
-            this.tag('PrecompiledHeaderOutputFile', '$(OutDir)$(ProjectName).pch');
-            this.tag('RuntimeLibrary', this.runtimeLibrary);
-            this.tag('PreprocessorDefinitions', defineLine);
-            this.tag('CallAttributedProfiling', this.fastCap ? 'Fastcap' : 'Callcap');
         }
         this.tagEnd('ClCompile');
     }

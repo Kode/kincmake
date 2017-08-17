@@ -80,7 +80,7 @@ export class EmscriptenExporter extends Exporter {
 		if (debugDirName.endsWith('/')) debugDirName = debugDirName.substr(0, debugDirName.length - 1);
 		if (debugDirName.lastIndexOf('/') >= 0) debugDirName = debugDirName.substr(debugDirName.lastIndexOf('/') + 1);
 		
-		fs.copySync(path.resolve(from, debugDirName), path.resolve(to, debugDirName), { clobber: true });
+		fs.copySync(path.resolve(from, debugDirName), path.resolve(to, debugDirName), { overwrite: true });
 		
 		defines = '';
 		definesArray = [];
@@ -94,8 +94,8 @@ export class EmscriptenExporter extends Exporter {
 		includes = '';
 		includesArray = [];
 		for (let inc in project.getIncludeDirs()) {
-			includes += '-I../' + path.resolve(from, project.getIncludeDirs()[inc]) + ' ';
-			includesArray.push('-I../' + path.resolve(from, project.getIncludeDirs()[inc]));
+			includes += '-I' + this.nicePath(from, to, path.join(from, project.getIncludeDirs()[inc])) + ' ';
+			includesArray.push('-I' + this.nicePath(from, to, path.join(from, project.getIncludeDirs()[inc])));
 		}
 
 		this.writeFile(path.resolve(to, 'makefile'));
@@ -106,13 +106,13 @@ export class EmscriptenExporter extends Exporter {
 			let filename = fileobject.file;
 			if (!filename.endsWith('.cpp') && !filename.endsWith('.c')) continue;
 			let lastpoint = filename.lastIndexOf('.');
-			let oname = filename.substr(0, lastpoint) + '.o';
+			let oname = this.nicePath(from, to, filename.substr(0, lastpoint) + '.o');
 			oname = oname.replace(/..\//, '');
 			oline += ' ' + oname;
 		}
 		
 		this.p('kore.html:' + oline);
-		this.p('emcc ' + oline + ' -o kore.html --preload-file ' + debugDirName, 1);
+		this.p('emcc -O2 -s TOTAL_MEMORY=134217728 ' + oline + ' -o kore.html --preload-file ' + debugDirName, 1);
 		this.p();
 
 		for (let fileobject of project.getFiles()) {
@@ -129,10 +129,10 @@ export class EmscriptenExporter extends Exporter {
 				if (!fs.existsSync(builddir)) fs.ensureDirSync(builddir);
 			}
 			let lastpoint = filename.lastIndexOf('.');
-			let oname = filename.substr(0, lastpoint) + '.o';
+			let oname = this.nicePath(from, to, filename.substr(0, lastpoint) + '.o');
 			oname = oname.replace(/..\//, '');
-			this.p(oname + ': ../' + filename);
-			this.p('emcc -c ../' + filename + ' ' + includes + ' ' + defines + ' -o ' + oname, 1);
+			this.p(oname + ': ' + this.nicePath(from, to, filename));
+			this.p('emcc -O2 -c ' + this.nicePath(from, to, filename) + ' ' + includes + ' ' + defines + ' -o ' + oname, 1);
 		}
 
 		this.closeFile();

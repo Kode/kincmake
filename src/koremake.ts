@@ -155,9 +155,11 @@ for (let i = 2; i < args.length; ++i) {
 				printHelp();
 				process.exit(0);
 			}
+			let found = false;
 			for (let o in options) {
 				let option: any = options[o];
 				if (arg.substr(2) === option.full) {
+					found = true;
 					if (option.value) {
 						++i;
 						parsedOptions[option.full] = args[i];
@@ -167,15 +169,19 @@ for (let i = 2; i < args.length; ++i) {
 					}
 				}
 			}
+			if (!found) throw 'Option ' + arg + ' not found.';
 		}
 		else {
 			if (arg[1] === 'h') {
 				printHelp();
 				process.exit(0);
 			}
+			if (arg.length !== 2) throw 'Wrong syntax for option ' + arg + ' (maybe try -' + arg + ' instead).';
+			let found = false;
 			for (let o in options) {
 				let option: any = options[o];
 				if (option.short && arg[1] === option.short) {
+					found = true;
 					if (option.value) {
 						++i;
 						parsedOptions[option.full] = args[i];
@@ -185,6 +191,7 @@ for (let i = 2; i < args.length; ++i) {
 					}
 				}
 			}
+			if (!found) throw 'Option ' + arg + ' not found.';
 		}
 	}
 	else {

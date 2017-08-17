@@ -9,7 +9,9 @@ export interface PlatformType {
 	Tizen: string;
 	Pi: string;
 	tvOS: string;
-	[key: string]: string;
+	PS4: string;
+	XboxOne: string;
+	Switch: string;
 };
 
 export let Platform: PlatformType = {
@@ -22,5 +24,8 @@ export let Platform: PlatformType = {
 	HTML5: 'html5',
 	Tizen: 'tizen',
 	Pi: 'pi',
-	tvOS: 'tvos'
+	tvOS: 'tvos',
+	PS4: 'ps4',
+	XboxOne: 'xboxone',
+	Switch: 'switch'
 };

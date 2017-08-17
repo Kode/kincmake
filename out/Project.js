@@ -44,6 +44,8 @@ let scriptdir = '.';
 let koreDir = '.';
 class Project {
     constructor(name, basedir) {
+        if (basedir === undefined)
+            throw 'Please pass __dirname to the Project';
         this.name = name;
         this.debugDir = '';
         this.basedir = basedir;
@@ -75,7 +77,11 @@ class Project {
                 if (!contains(this.defines, d))
                     this.defines.push(d);
             for (let file of sub.files) {
-                this.files.push({ file: path.join(subbasedir, file.file).replace(/\\/g, '/'), options: file.options, projectDir: subbasedir, projectName: sub.name });
+                let absolute = file.file;
+                if (!path.isAbsolute(absolute)) {
+                    absolute = path.join(subbasedir, file.file);
+                }
+                this.files.push({ file: absolute.replace(/\\/g, '/'), options: file.options, projectDir: subbasedir, projectName: sub.name });
             }
             for (let i of sub.includeDirs)
                 if (!contains(this.includeDirs, path.resolve(subbasedir, i)))
@@ -329,7 +335,7 @@ class Project {
                 });
                 try {
                     let file = fs.readFileSync(path.resolve(scriptdir, 'korefile.js'), 'utf8');
-                    let project = new Function('Project', 'Platform', 'platform', 'GraphicsApi', 'graphics', 'VrApi', 'vr', 'require', 'resolve', 'reject', '__dirname', file)(Project, Platform_1.Platform, Project.platform, GraphicsApi_1.GraphicsApi, Options_1.Options.graphicsApi, VrApi_1.VrApi, Options_1.Options.vrApi, require, resolver, reject, scriptdir);
+                    let project = new Function('log', 'Project', 'Platform', 'platform', 'GraphicsApi', 'graphics', 'VrApi', 'vr', 'require', 'resolve', 'reject', '__dirname', file)(log, Project, Platform_1.Platform, Project.platform, GraphicsApi_1.GraphicsApi, Options_1.Options.graphicsApi, VrApi_1.VrApi, Options_1.Options.vrApi, require, resolver, reject, scriptdir);
                 }
                 catch (error) {
                     log.error(error);
@@ -341,6 +347,7 @@ class Project {
     static create(directory, platform) {
         return __awaiter(this, void 0, void 0, function* () {
             Project.platform = platform;
+            Project.root = path.resolve(directory);
             let project = yield Project.createProject('.', directory);
             let defines = getDefines(platform, project.isRotated());
             for (let define of defines) {

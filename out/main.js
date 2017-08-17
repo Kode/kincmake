@@ -24,23 +24,21 @@ const EmscriptenExporter_1 = require("./Exporters/EmscriptenExporter");
 const TizenExporter_1 = require("./Exporters/TizenExporter");
 const VisualStudioExporter_1 = require("./Exporters/VisualStudioExporter");
 const XCodeExporter_1 = require("./Exporters/XCodeExporter");
+let _global = global;
+_global.__base = __dirname + '/';
 let debug = false;
 function fromPlatform(platform) {
-    switch (platform) {
+    switch (platform.toLowerCase()) {
         case Platform_1.Platform.Windows:
             return 'Windows';
         case Platform_1.Platform.WindowsApp:
             return 'Windows App';
-        case Platform_1.Platform.PlayStation3:
-            return 'PlayStation 3';
         case Platform_1.Platform.iOS:
             return 'iOS';
         case Platform_1.Platform.OSX:
             return 'OS X';
         case Platform_1.Platform.Android:
             return 'Android';
-        case Platform_1.Platform.Xbox360:
-            return 'Xbox 360';
         case Platform_1.Platform.Linux:
             return 'Linux';
         case Platform_1.Platform.HTML5:
@@ -51,8 +49,14 @@ function fromPlatform(platform) {
             return 'Pi';
         case Platform_1.Platform.tvOS:
             return 'tvOS';
+        case Platform_1.Platform.PS4:
+            return 'PS4';
+        case Platform_1.Platform.XboxOne:
+            return 'Xbox One';
+        case Platform_1.Platform.Switch:
+            return 'Switch';
         default:
-            return 'unknown';
+            throw 'Unknown platform ' + platform + '.';
     }
 }
 function shaderLang(platform) {
@@ -74,8 +78,6 @@ function shaderLang(platform) {
             }
         case Platform_1.Platform.WindowsApp:
             return 'd3d11';
-        case Platform_1.Platform.PlayStation3:
-            return 'd3d9';
         case Platform_1.Platform.iOS:
         case Platform_1.Platform.tvOS:
             switch (Options_1.Options.graphicsApi) {
@@ -98,8 +100,6 @@ function shaderLang(platform) {
                 default:
                     return 'essl';
             }
-        case Platform_1.Platform.Xbox360:
-            return 'd3d9';
         case Platform_1.Platform.Linux:
             switch (Options_1.Options.graphicsApi) {
                 case GraphicsApi_1.GraphicsApi.Vulkan:
@@ -255,36 +255,26 @@ function exportKoremakeProject(from, to, platform, options) {
             exporter = new LinuxExporter_1.LinuxExporter();
         else if (platform === Platform_1.Platform.Tizen)
             exporter = new TizenExporter_1.TizenExporter();
-        else {
-            let found = false;
-            for (let p in Platform_1.Platform) {
-                if (platform === Platform_1.Platform[p]) {
-                    found = true;
-                    break;
-                }
-            }
-            if (found) {
-                exporter = new VisualStudioExporter_1.VisualStudioExporter();
-            }
-            else {
-                let libsdir = path.join(from.toString(), 'Backends');
-                if (fs.existsSync(libsdir) && fs.statSync(libsdir).isDirectory()) {
-                    let libdirs = fs.readdirSync(libsdir);
-                    for (let libdir of libdirs) {
-                        if (fs.statSync(path.join(from.toString(), 'Backends', libdir)).isDirectory()) {
-                            let libfiles = fs.readdirSync(path.join(from.toString(), 'Backends', libdir));
-                            for (let libfile of libfiles) {
-                                if (libfile.startsWith('Exporter') && libfile.endsWith('.js')) {
-                                    let Exporter = require(path.relative(__dirname, path.join(from.toString(), 'Backends', libdir, libfile)));
-                                    exporter = new Exporter();
-                                    break;
-                                }
+        else if (platform === Platform_1.Platform.PS4 || platform === Platform_1.Platform.XboxOne || platform === Platform_1.Platform.Switch) {
+            let libsdir = path.join(from.toString(), 'Backends');
+            if (fs.existsSync(libsdir) && fs.statSync(libsdir).isDirectory()) {
+                let libdirs = fs.readdirSync(libsdir);
+                for (let libdir of libdirs) {
+                    if (fs.statSync(path.join(from.toString(), 'Backends', libdir)).isDirectory() && libdir.toLowerCase() === platform.toLowerCase()) {
+                        let libfiles = fs.readdirSync(path.join(from.toString(), 'Backends', libdir));
+                        for (let libfile of libfiles) {
+                            if (libfile.endsWith('Exporter.js')) {
+                                let Exporter = require(path.relative(__dirname, path.join(from.toString(), 'Backends', libdir, libfile)));
+                                exporter = new Exporter();
+                                break;
                             }
                         }
                     }
                 }
             }
         }
+        else
+            exporter = new VisualStudioExporter_1.VisualStudioExporter();
         if (exporter === null) {
             throw 'No exporter found for platform ' + platform + '.';
         }
@@ -316,10 +306,10 @@ function compileProject(make, project, solutionName, options) {
         make.on('close', function (code) {
             if (code === 0) {
                 if ((options.customTarget && options.customTarget.baseTarget === Platform_1.Platform.Linux) || options.target === Platform_1.Platform.Linux) {
-                    fs.copySync(path.join(path.join(options.to.toString(), options.buildPath), solutionName), path.join(options.from.toString(), project.getDebugDir(), solutionName), { clobber: true });
+                    fs.copySync(path.join(path.join(options.to.toString(), options.buildPath), solutionName), path.join(options.from.toString(), project.getDebugDir(), solutionName), { overwrite: true });
                 }
                 else if ((options.customTarget && options.customTarget.baseTarget === Platform_1.Platform.Windows) || options.target === Platform_1.Platform.Windows) {
-                    fs.copySync(path.join(options.to.toString(), 'Release', solutionName + '.exe'), path.join(options.from.toString(), project.getDebugDir(), solutionName + '.exe'), { clobber: true });
+                    fs.copySync(path.join(options.to.toString(), 'Release', solutionName + '.exe'), path.join(options.from.toString(), project.getDebugDir(), solutionName + '.exe'), { overwrite: true });
                 }
                 if (options.run) {
                     if ((options.customTarget && options.customTarget.baseTarget === Platform_1.Platform.OSX) || options.target === Platform_1.Platform.OSX) {

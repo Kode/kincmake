@@ -17,24 +17,23 @@ import {TizenExporter} from './Exporters/TizenExporter';
 import {VisualStudioExporter} from './Exporters/VisualStudioExporter';
 import {XCodeExporter} from './Exporters/XCodeExporter';
 
+let _global: any = global;
+_global.__base = __dirname + '/';
+
 let debug = false;
 
 function fromPlatform(platform: string): string {
-	switch (platform) {
+	switch (platform.toLowerCase()) {
 		case Platform.Windows:
 			return 'Windows';
 		case Platform.WindowsApp:
 			return 'Windows App';
-		case Platform.PlayStation3:
-			return 'PlayStation 3';
 		case Platform.iOS:
 			return 'iOS';
 		case Platform.OSX:
 			return 'OS X';
 		case Platform.Android:
 			return 'Android';
-		case Platform.Xbox360:
-			return 'Xbox 360';
 		case Platform.Linux:
 			return 'Linux';
 		case Platform.HTML5:
@@ -45,8 +44,14 @@ function fromPlatform(platform: string): string {
 			return 'Pi';
 		case Platform.tvOS:
 			return 'tvOS';
+		case Platform.PS4:
+			return 'PS4';
+		case Platform.XboxOne:
+			return 'Xbox One';
+		case Platform.Switch:
+			return 'Switch';
 		default:
-			return 'unknown';
+			throw 'Unknown platform ' + platform + '.';
 	}
 }
 
@@ -69,8 +74,6 @@ function shaderLang(platform: string): string {
 			}
 		case Platform.WindowsApp:
 			return 'd3d11';
-		case Platform.PlayStation3:
-			return 'd3d9';
 		case Platform.iOS:
 		case Platform.tvOS:
 			switch (Options.graphicsApi) {
@@ -93,8 +96,6 @@ function shaderLang(platform: string): string {
 				default:
 					return 'essl';
 			}
-		case Platform.Xbox360:
-			return 'd3d9';
 		case Platform.Linux:
 			switch (Options.graphicsApi) {
 				case GraphicsApi.Vulkan:
@@ -261,36 +262,25 @@ async function exportKoremakeProject(from: string, to: string, platform: string,
 	else if (platform === Platform.HTML5) exporter = new EmscriptenExporter();
 	else if (platform === Platform.Linux || platform === Platform.Pi) exporter = new LinuxExporter();
 	else if (platform === Platform.Tizen) exporter = new TizenExporter();
-	else {
-		let found = false;
-		for (let p in Platform) {
-			if (platform === Platform[p]) {
-				found = true;
-				break;
-			}
-		}
-		if (found) {
-			exporter = new VisualStudioExporter();
-		}
-		else {
-			let libsdir = path.join(from.toString(), 'Backends');
-			if (fs.existsSync(libsdir) && fs.statSync(libsdir).isDirectory()) {
-				let libdirs = fs.readdirSync(libsdir);
-				for (let libdir of libdirs) {
-					if (fs.statSync(path.join(from.toString(), 'Backends', libdir)).isDirectory()) {
-						let libfiles = fs.readdirSync(path.join(from.toString(), 'Backends', libdir));
-						for (let libfile of libfiles) {
-							if (libfile.startsWith('Exporter') && libfile.endsWith('.js')) {
-								let Exporter = require(path.relative(__dirname, path.join(from.toString(), 'Backends', libdir, libfile)));
-								exporter = new Exporter();
-								break;
-							}
+	else if (platform === Platform.PS4 || platform === Platform.XboxOne || platform === Platform.Switch) {
+		let libsdir = path.join(from.toString(), 'Backends');
+		if (fs.existsSync(libsdir) && fs.statSync(libsdir).isDirectory()) {
+			let libdirs = fs.readdirSync(libsdir);
+			for (let libdir of libdirs) {
+				if (fs.statSync(path.join(from.toString(), 'Backends', libdir)).isDirectory() && libdir.toLowerCase() === platform.toLowerCase()) {
+					let libfiles = fs.readdirSync(path.join(from.toString(), 'Backends', libdir));
+					for (let libfile of libfiles) {
+						if (libfile.endsWith('Exporter.js')) {
+							let Exporter = require(path.relative(__dirname, path.join(from.toString(), 'Backends', libdir, libfile)));
+							exporter = new Exporter();
+							break;
 						}
 					}
 				}
 			}
 		}
 	}
+	else exporter = new VisualStudioExporter();
 
 	if (exporter === null) {
 		throw 'No exporter found for platform ' + platform + '.';
@@ -327,10 +317,10 @@ function compileProject(make: child_process.ChildProcess, project: Project, solu
 		make.on('close', function (code: number) {
 			if (code === 0) {
 				if ((options.customTarget && options.customTarget.baseTarget === Platform.Linux) || options.target === Platform.Linux) {
-					fs.copySync(path.join(path.join(options.to.toString(), options.buildPath), solutionName), path.join(options.from.toString(), project.getDebugDir(), solutionName), { clobber: true });
+					fs.copySync(path.join(path.join(options.to.toString(), options.buildPath), solutionName), path.join(options.from.toString(), project.getDebugDir(), solutionName), { overwrite: true });
 				}
 				else if ((options.customTarget && options.customTarget.baseTarget === Platform.Windows) || options.target === Platform.Windows) {
-					fs.copySync(path.join(options.to.toString(), 'Release', solutionName + '.exe'), path.join(options.from.toString(), project.getDebugDir(), solutionName + '.exe'), { clobber: true });
+					fs.copySync(path.join(options.to.toString(), 'Release', solutionName + '.exe'), path.join(options.from.toString(), project.getDebugDir(), solutionName + '.exe'), { overwrite: true });
 				}
 				if (options.run) {
 					if ((options.customTarget && options.customTarget.baseTarget === Platform.OSX) || options.target === Platform.OSX) {
