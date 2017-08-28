@@ -236,6 +236,9 @@ export class VisualStudioExporter extends Exporter {
 		this.p('</Applications>', 1);
 		this.p('<Capabilities>', 1);
 		this.p('<Capability Name="internetClient" />', 2);
+		this.p('<DeviceCapability  Name="microphone" />', 2);
+		this.p('<DeviceCapability  Name="webcam" />', 2);
+		
 		this.p('</Capabilities>', 1);
 		this.p('</Package>');
 
