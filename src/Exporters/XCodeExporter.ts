@@ -358,7 +358,9 @@ export class XCodeExporter extends Exporter {
 				filetype = 'sourcecode.metal';
 				fileencoding = 'fileEncoding = 4; ';
 			}
-			this.p(file.getFileId() + ' /* ' + file.toString() + ' */ = {isa = PBXFileReference; ' + fileencoding + 'lastKnownFileType = ' + filetype + '; name = "' + file.getLastName() + '"; path = "' + path.resolve(from, file.toString()) + '"; sourceTree = "<group>"; };', 2);
+			if (!file.getName().endsWith('.DS_Store')) {
+				this.p(file.getFileId() + ' /* ' + file.toString() + ' */ = {isa = PBXFileReference; ' + fileencoding + 'lastKnownFileType = ' + filetype + '; name = "' + file.getLastName() + '"; path = "' + path.resolve(from, file.toString()) + '"; sourceTree = "<group>"; };', 2);
+			}
 		}
 		this.p(iconFileId + ' /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };', 2);
 		this.p('/* End PBXFileReference section */');
@@ -421,7 +423,7 @@ export class XCodeExporter extends Exporter {
 				}
 			}
 			for (let file of files) {
-				if (file.getDir() === dir) this.p(file.getFileId() + ' /* ' + file.toString() + ' */,', 4);
+				if (file.getDir() === dir && !file.getName().endsWith('.DS_Store')) this.p(file.getFileId() + ' /* ' + file.toString() + ' */,', 4);
 			}
 			this.p(');', 3);
 			if (dir.getName().indexOf('/') < 0) {
