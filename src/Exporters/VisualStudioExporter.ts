@@ -177,6 +177,7 @@ export class VisualStudioExporter extends Exporter {
 		this.p('GlobalSection(SolutionProperties) = preSolution', 1);
 		this.p('HideSolutionNode = FALSE', 2);
 		this.p('EndGlobalSection', 1);
+		this.postSolution();
 		this.p('EndGlobal');
 		this.closeFile();
 
@@ -203,6 +204,10 @@ export class VisualStudioExporter extends Exporter {
 		else {
 			this.additionalFiles(fs, Icon, from, to);
 		}
+	}
+
+	postSolution() {
+
 	}
 
 	additionalFiles(fs: any, Icon: any, from: string, to: string) {
@@ -482,6 +487,10 @@ export class VisualStudioExporter extends Exporter {
 		}
 	}
 
+	customItemGroups(indent: number) {
+
+	}
+
 	exportProject(from: string, to: string, project: Project, platform: string, cmd: boolean, noshaders: boolean) {
 		for (let proj of project.getSubProjects()) this.exportProject(from, to, proj, platform, cmd, noshaders);
 
@@ -499,6 +508,7 @@ export class VisualStudioExporter extends Exporter {
 			}
 		}
 		this.p('</ItemGroup>', 1);
+		this.customItemGroups(1);
 		this.p('<PropertyGroup Label="Globals">', 1);
 		this.p('<ProjectGuid>{' + project.getUuid().toString().toUpperCase() + '}</ProjectGuid>', 2);
 		// p("<Keyword>Win32Proj</Keyword>", 2);
@@ -558,7 +568,7 @@ export class VisualStudioExporter extends Exporter {
 		else {
 			for (let config of this.getConfigs(platform)) {
 				for (let system of this.getSystems(platform)) {
-					this.configuration(config, system, 2);
+					this.configuration(config, system, 1);
 				}
 			}
 		}
@@ -596,14 +606,14 @@ export class VisualStudioExporter extends Exporter {
 		else {
 			for (let config of this.getConfigs(platform)) {
 				for (let system of this.getSystems(platform)) {
-					this.propertySheet(config, system, 2);
+					this.propertySheet(config, system, 1);
 				}
 			}
 		}
 
 		for (let config of this.getConfigs(platform)) {
 			for (let system of this.getSystems(platform)) {
-				this.addOns(config, system, 2);
+				this.addOns(config, system, 1);
 			}
 		}
 

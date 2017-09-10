@@ -174,6 +174,7 @@ class VisualStudioExporter extends Exporter_1.Exporter {
         this.p('GlobalSection(SolutionProperties) = preSolution', 1);
         this.p('HideSolutionNode = FALSE', 2);
         this.p('EndGlobalSection', 1);
+        this.postSolution();
         this.p('EndGlobal');
         this.closeFile();
         this.exportProject(from, to, project, platform, project.isCmd(), options.noshaders);
@@ -197,6 +198,8 @@ class VisualStudioExporter extends Exporter_1.Exporter {
         else {
             this.additionalFiles(fs, Icon, from, to);
         }
+    }
+    postSolution() {
     }
     additionalFiles(fs, Icon, from, to) {
     }
@@ -452,6 +455,8 @@ class VisualStudioExporter extends Exporter_1.Exporter {
             this.p('<WindowsTargetPlatformVersion>' + windowsTargetVersion + '</WindowsTargetPlatformVersion>', indent);
         }
     }
+    customItemGroups(indent) {
+    }
     exportProject(from, to, project, platform, cmd, noshaders) {
         for (let proj of project.getSubProjects())
             this.exportProject(from, to, proj, platform, cmd, noshaders);
@@ -468,6 +473,7 @@ class VisualStudioExporter extends Exporter_1.Exporter {
             }
         }
         this.p('</ItemGroup>', 1);
+        this.customItemGroups(1);
         this.p('<PropertyGroup Label="Globals">', 1);
         this.p('<ProjectGuid>{' + project.getUuid().toString().toUpperCase() + '}</ProjectGuid>', 2);
         // p("<Keyword>Win32Proj</Keyword>", 2);
@@ -527,7 +533,7 @@ class VisualStudioExporter extends Exporter_1.Exporter {
         else {
             for (let config of this.getConfigs(platform)) {
                 for (let system of this.getSystems(platform)) {
-                    this.configuration(config, system, 2);
+                    this.configuration(config, system, 1);
                 }
             }
         }
@@ -563,13 +569,13 @@ class VisualStudioExporter extends Exporter_1.Exporter {
         else {
             for (let config of this.getConfigs(platform)) {
                 for (let system of this.getSystems(platform)) {
-                    this.propertySheet(config, system, 2);
+                    this.propertySheet(config, system, 1);
                 }
             }
         }
         for (let config of this.getConfigs(platform)) {
             for (let system of this.getSystems(platform)) {
-                this.addOns(config, system, 2);
+                this.addOns(config, system, 1);
             }
         }
         let defines = '';
