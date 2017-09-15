@@ -53,6 +53,13 @@ function getShaderLang() {
 export class VisualStudioExporter extends Exporter {
 	constructor() {
 		super();
+		if (this.overrideVisualStudioVersion() !== null) {
+			Options.visualStudioVersion = this.overrideVisualStudioVersion();
+		}
+	}
+
+	overrideVisualStudioVersion(): string {
+		return null;
 	}
 
 	exportUserFile(from: string, to: string, project: Project, platform: string) {
@@ -177,6 +184,7 @@ export class VisualStudioExporter extends Exporter {
 		this.p('GlobalSection(SolutionProperties) = preSolution', 1);
 		this.p('HideSolutionNode = FALSE', 2);
 		this.p('EndGlobalSection', 1);
+		this.postSolution();
 		this.p('EndGlobal');
 		this.closeFile();
 
@@ -203,6 +211,10 @@ export class VisualStudioExporter extends Exporter {
 		else {
 			this.additionalFiles(fs, Icon, from, to);
 		}
+	}
+
+	postSolution() {
+
 	}
 
 	additionalFiles(fs: any, Icon: any, from: string, to: string) {
@@ -485,6 +497,26 @@ export class VisualStudioExporter extends Exporter {
 		}
 	}
 
+	customItemGroups(indent: number) {
+
+	}
+
+	additionalPropertyGroups(indent: number) {
+
+	}
+
+	extensionSettings(indent: number) {
+
+	}
+
+	additionalImportGroups(indent: number) {
+
+	}
+
+	extensionTargets(indent: number) {
+		
+	}
+
 	exportProject(from: string, to: string, project: Project, platform: string, cmd: boolean, noshaders: boolean) {
 		for (let proj of project.getSubProjects()) this.exportProject(from, to, proj, platform, cmd, noshaders);
 
@@ -502,6 +534,7 @@ export class VisualStudioExporter extends Exporter {
 			}
 		}
 		this.p('</ItemGroup>', 1);
+		this.customItemGroups(1);
 		this.p('<PropertyGroup Label="Globals">', 1);
 		this.p('<ProjectGuid>{' + project.getUuid().toString().toUpperCase() + '}</ProjectGuid>', 2);
 		// p("<Keyword>Win32Proj</Keyword>", 2);
@@ -561,13 +594,16 @@ export class VisualStudioExporter extends Exporter {
 		else {
 			for (let config of this.getConfigs(platform)) {
 				for (let system of this.getSystems(platform)) {
-					this.configuration(config, system, 2);
+					this.configuration(config, system, 1);
 				}
 			}
 		}
 		this.p('<Import Project="$(VCTargetsPath)\\Microsoft.Cpp.props" />', 1);
+		this.additionalPropertyGroups(1);
 		this.p('<ImportGroup Label="ExtensionSettings">', 1);
+		this.extensionSettings(2);
 		this.p('</ImportGroup>', 1);
+		this.additionalImportGroups(1);
 
 		if (platform === Platform.WindowsApp) {
 			this.p('<PropertyGroup Label="UserMacros">', 1);
@@ -599,14 +635,14 @@ export class VisualStudioExporter extends Exporter {
 		else {
 			for (let config of this.getConfigs(platform)) {
 				for (let system of this.getSystems(platform)) {
-					this.propertySheet(config, system, 2);
+					this.propertySheet(config, system, 1);
 				}
 			}
 		}
 
 		for (let config of this.getConfigs(platform)) {
 			for (let system of this.getSystems(platform)) {
-				this.addOns(config, system, 2);
+				this.addOns(config, system, 1);
 			}
 		}
 
@@ -920,6 +956,7 @@ export class VisualStudioExporter extends Exporter {
 
 		this.p('<Import Project="$(VCTargetsPath)\\Microsoft.Cpp.targets" />', 1);
 		this.p('<ImportGroup Label="ExtensionTargets">', 1);
+		this.extensionTargets(2);
 		this.p('</ImportGroup>', 1);
 		this.p('</Project>');
 		this.closeFile();

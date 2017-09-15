@@ -57,6 +57,12 @@ function getShaderLang() {
 class VisualStudioExporter extends Exporter_1.Exporter {
     constructor() {
         super();
+        if (this.overrideVisualStudioVersion() !== null) {
+            Options_1.Options.visualStudioVersion = this.overrideVisualStudioVersion();
+        }
+    }
+    overrideVisualStudioVersion() {
+        return null;
     }
     exportUserFile(from, to, project, platform) {
         if (project.getDebugDir() === '')
@@ -174,6 +180,7 @@ class VisualStudioExporter extends Exporter_1.Exporter {
         this.p('GlobalSection(SolutionProperties) = preSolution', 1);
         this.p('HideSolutionNode = FALSE', 2);
         this.p('EndGlobalSection', 1);
+        this.postSolution();
         this.p('EndGlobal');
         this.closeFile();
         this.exportProject(from, to, project, platform, project.isCmd(), options.noshaders);
@@ -197,6 +204,8 @@ class VisualStudioExporter extends Exporter_1.Exporter {
         else {
             this.additionalFiles(fs, Icon, from, to);
         }
+    }
+    postSolution() {
     }
     additionalFiles(fs, Icon, from, to) {
     }
@@ -452,6 +461,16 @@ class VisualStudioExporter extends Exporter_1.Exporter {
             this.p('<WindowsTargetPlatformVersion>' + windowsTargetVersion + '</WindowsTargetPlatformVersion>', indent);
         }
     }
+    customItemGroups(indent) {
+    }
+    additionalPropertyGroups(indent) {
+    }
+    extensionSettings(indent) {
+    }
+    additionalImportGroups(indent) {
+    }
+    extensionTargets(indent) {
+    }
     exportProject(from, to, project, platform, cmd, noshaders) {
         for (let proj of project.getSubProjects())
             this.exportProject(from, to, proj, platform, cmd, noshaders);
@@ -468,6 +487,7 @@ class VisualStudioExporter extends Exporter_1.Exporter {
             }
         }
         this.p('</ItemGroup>', 1);
+        this.customItemGroups(1);
         this.p('<PropertyGroup Label="Globals">', 1);
         this.p('<ProjectGuid>{' + project.getUuid().toString().toUpperCase() + '}</ProjectGuid>', 2);
         // p("<Keyword>Win32Proj</Keyword>", 2);
@@ -527,13 +547,16 @@ class VisualStudioExporter extends Exporter_1.Exporter {
         else {
             for (let config of this.getConfigs(platform)) {
                 for (let system of this.getSystems(platform)) {
-                    this.configuration(config, system, 2);
+                    this.configuration(config, system, 1);
                 }
             }
         }
         this.p('<Import Project="$(VCTargetsPath)\\Microsoft.Cpp.props" />', 1);
+        this.additionalPropertyGroups(1);
         this.p('<ImportGroup Label="ExtensionSettings">', 1);
+        this.extensionSettings(2);
         this.p('</ImportGroup>', 1);
+        this.additionalImportGroups(1);
         if (platform === Platform_1.Platform.WindowsApp) {
             this.p('<PropertyGroup Label="UserMacros">', 1);
             this.p('<PackageCertificateThumbprint>70D2DCD9F41CDDD92BA2862FF58A54240AFD2A23</PackageCertificateThumbprint>', 2);
@@ -563,13 +586,13 @@ class VisualStudioExporter extends Exporter_1.Exporter {
         else {
             for (let config of this.getConfigs(platform)) {
                 for (let system of this.getSystems(platform)) {
-                    this.propertySheet(config, system, 2);
+                    this.propertySheet(config, system, 1);
                 }
             }
         }
         for (let config of this.getConfigs(platform)) {
             for (let system of this.getSystems(platform)) {
-                this.addOns(config, system, 2);
+                this.addOns(config, system, 1);
             }
         }
         let defines = '';
@@ -896,6 +919,7 @@ class VisualStudioExporter extends Exporter_1.Exporter {
         this.additionalItemGroups(1);
         this.p('<Import Project="$(VCTargetsPath)\\Microsoft.Cpp.targets" />', 1);
         this.p('<ImportGroup Label="ExtensionTargets">', 1);
+        this.extensionTargets(2);
         this.p('</ImportGroup>', 1);
         this.p('</Project>');
         this.closeFile();
