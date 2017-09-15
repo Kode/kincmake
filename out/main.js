@@ -50,7 +50,7 @@ function fromPlatform(platform) {
         case Platform_1.Platform.tvOS:
             return 'tvOS';
         case Platform_1.Platform.PS4:
-            return 'PS4';
+            return 'PlayStation4';
         case Platform_1.Platform.XboxOne:
             return 'Xbox One';
         case Platform_1.Platform.Switch:
@@ -260,7 +260,8 @@ function exportKoremakeProject(from, to, platform, options) {
             if (fs.existsSync(libsdir) && fs.statSync(libsdir).isDirectory()) {
                 let libdirs = fs.readdirSync(libsdir);
                 for (let libdir of libdirs) {
-                    if (fs.statSync(path.join(from.toString(), 'Backends', libdir)).isDirectory() && libdir.toLowerCase() === platform.toLowerCase()) {
+                    if (fs.statSync(path.join(from.toString(), 'Backends', libdir)).isDirectory()
+                        && (libdir.toLowerCase() === platform.toLowerCase() || libdir.toLowerCase() === fromPlatform(platform).toLowerCase())) {
                         let libfiles = fs.readdirSync(path.join(from.toString(), 'Backends', libdir));
                         for (let libfile of libfiles) {
                             if (libfile.endsWith('Exporter.js')) {
