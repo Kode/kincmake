@@ -8,6 +8,7 @@ const Project_1 = require("../Project");
 const Options_1 = require("../Options");
 const VisualStudioVersion_1 = require("../VisualStudioVersion");
 const Configuration_1 = require("../Configuration");
+const VrApi_1 = require("../VrApi");
 const fs = require("fs-extra");
 const path = require("path");
 const uuid = require('uuid');
@@ -235,8 +236,10 @@ class VisualStudioExporter extends Exporter_1.Exporter {
         this.p('</Applications>', 1);
         this.p('<Capabilities>', 1);
         this.p('<Capability Name="internetClient" />', 2);
-        this.p('<DeviceCapability  Name="microphone" />', 2);
-        this.p('<DeviceCapability  Name="webcam" />', 2);
+        if (Options_1.Options.vrApi === VrApi_1.VrApi.HoloLens) {
+            this.p('<DeviceCapability  Name="microphone" />', 3);
+            this.p('<DeviceCapability  Name="webcam" />', 3);
+        }
         this.p('</Capabilities>', 1);
         this.p('</Package>');
         this.closeFile();

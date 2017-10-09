@@ -7,6 +7,7 @@ import {Options} from '../Options';
 import {VisualStudioVersion} from '../VisualStudioVersion';
 import {ClCompile} from '../ClCompile';
 import {Configuration} from '../Configuration';
+import {VrApi} from '../VrApi';
 import * as log from '../log';
 import * as fs from 'fs-extra';
 import * as path from 'path';
@@ -248,8 +249,10 @@ export class VisualStudioExporter extends Exporter {
 		this.p('</Applications>', 1);
 		this.p('<Capabilities>', 1);
 		this.p('<Capability Name="internetClient" />', 2);
-		this.p('<DeviceCapability  Name="microphone" />', 2);
-		this.p('<DeviceCapability  Name="webcam" />', 2);
+		if (Options.vrApi === VrApi.HoloLens) {
+			this.p('<DeviceCapability  Name="microphone" />', 3);
+			this.p('<DeviceCapability  Name="webcam" />', 3);
+		}
 		this.p('</Capabilities>', 1);
 		this.p('</Package>');
 

@@ -5,7 +5,7 @@ exports.VrApi = {
     Cardboard: 'cardboard',
     Oculus: 'oculus',
     SteamVR: 'steamvr',
-    Hololens: 'hololens',
+    HoloLens: 'hololens',
     None: 'none'
 };
 //# sourceMappingURL=VrApi.js.map
