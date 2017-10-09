@@ -3,5 +3,6 @@ export let VrApi = {
 	Cardboard: 'cardboard',
 	Oculus: 'oculus',
 	SteamVR: 'steamvr',
+	Hololens: 'hololens',
 	None: 'none'
 };
