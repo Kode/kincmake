@@ -53,6 +53,13 @@ function getShaderLang() {
 export class VisualStudioExporter extends Exporter {
 	constructor() {
 		super();
+		if (this.overrideVisualStudioVersion() !== null) {
+			Options.visualStudioVersion = this.overrideVisualStudioVersion();
+		}
+	}
+
+	overrideVisualStudioVersion(): string {
+		return null;
 	}
 
 	exportUserFile(from: string, to: string, project: Project, platform: string) {
@@ -76,10 +83,17 @@ export class VisualStudioExporter extends Exporter {
 			// java.io.File baseDir = new File(project.getBasedir());
 			// p("<LocalDebuggerCommandArguments>\"SOURCEDIR=" + baseDir.getAbsolutePath() + "\" \"KTSOURCEDIR=" + baseDir.getAbsolutePath() + "\\Kt\"</LocalDebuggerCommandArguments>", 2);
 		}
+		else {
+			this.userPropertyGroup(debugDir, 2);
+		}
 		this.p('</PropertyGroup>', 1);
 		this.p('</Project>');
 
 		this.closeFile();
+	}
+
+	userPropertyGroup(debugDir: string, indent: number) {
+
 	}
 
 	writeProjectDeclarations(project: Project, solutionUuid: string) {
@@ -491,6 +505,22 @@ export class VisualStudioExporter extends Exporter {
 
 	}
 
+	additionalPropertyGroups(indent: number) {
+
+	}
+
+	extensionSettings(indent: number) {
+
+	}
+
+	additionalImportGroups(indent: number) {
+
+	}
+
+	extensionTargets(indent: number) {
+		
+	}
+
 	exportProject(from: string, to: string, project: Project, platform: string, cmd: boolean, noshaders: boolean) {
 		for (let proj of project.getSubProjects()) this.exportProject(from, to, proj, platform, cmd, noshaders);
 
@@ -573,8 +603,11 @@ export class VisualStudioExporter extends Exporter {
 			}
 		}
 		this.p('<Import Project="$(VCTargetsPath)\\Microsoft.Cpp.props" />', 1);
+		this.additionalPropertyGroups(1);
 		this.p('<ImportGroup Label="ExtensionSettings">', 1);
+		this.extensionSettings(2);
 		this.p('</ImportGroup>', 1);
+		this.additionalImportGroups(1);
 
 		if (platform === Platform.WindowsApp) {
 			this.p('<PropertyGroup Label="UserMacros">', 1);
@@ -927,6 +960,7 @@ export class VisualStudioExporter extends Exporter {
 
 		this.p('<Import Project="$(VCTargetsPath)\\Microsoft.Cpp.targets" />', 1);
 		this.p('<ImportGroup Label="ExtensionTargets">', 1);
+		this.extensionTargets(2);
 		this.p('</ImportGroup>', 1);
 		this.p('</Project>');
 		this.closeFile();

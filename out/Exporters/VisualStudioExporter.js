@@ -57,6 +57,12 @@ function getShaderLang() {
 class VisualStudioExporter extends Exporter_1.Exporter {
     constructor() {
         super();
+        if (this.overrideVisualStudioVersion() !== null) {
+            Options_1.Options.visualStudioVersion = this.overrideVisualStudioVersion();
+        }
+    }
+    overrideVisualStudioVersion() {
+        return null;
     }
     exportUserFile(from, to, project, platform) {
         if (project.getDebugDir() === '')
@@ -78,9 +84,14 @@ class VisualStudioExporter extends Exporter_1.Exporter {
             // java.io.File baseDir = new File(project.getBasedir());
             // p("<LocalDebuggerCommandArguments>\"SOURCEDIR=" + baseDir.getAbsolutePath() + "\" \"KTSOURCEDIR=" + baseDir.getAbsolutePath() + "\\Kt\"</LocalDebuggerCommandArguments>", 2);
         }
+        else {
+            this.userPropertyGroup(debugDir, 2);
+        }
         this.p('</PropertyGroup>', 1);
         this.p('</Project>');
         this.closeFile();
+    }
+    userPropertyGroup(debugDir, indent) {
     }
     writeProjectDeclarations(project, solutionUuid) {
         this.p('Project("{' + solutionUuid.toUpperCase() + '}") = "' + project.getName() + '", "' + project.getName() + '.vcxproj", "{' + project.getUuid().toString().toUpperCase() + '}"');
@@ -457,6 +468,14 @@ class VisualStudioExporter extends Exporter_1.Exporter {
     }
     customItemGroups(indent) {
     }
+    additionalPropertyGroups(indent) {
+    }
+    extensionSettings(indent) {
+    }
+    additionalImportGroups(indent) {
+    }
+    extensionTargets(indent) {
+    }
     exportProject(from, to, project, platform, cmd, noshaders) {
         for (let proj of project.getSubProjects())
             this.exportProject(from, to, proj, platform, cmd, noshaders);
@@ -538,8 +557,11 @@ class VisualStudioExporter extends Exporter_1.Exporter {
             }
         }
         this.p('<Import Project="$(VCTargetsPath)\\Microsoft.Cpp.props" />', 1);
+        this.additionalPropertyGroups(1);
         this.p('<ImportGroup Label="ExtensionSettings">', 1);
+        this.extensionSettings(2);
         this.p('</ImportGroup>', 1);
+        this.additionalImportGroups(1);
         if (platform === Platform_1.Platform.WindowsApp) {
             this.p('<PropertyGroup Label="UserMacros">', 1);
             this.p('<PackageCertificateThumbprint>70D2DCD9F41CDDD92BA2862FF58A54240AFD2A23</PackageCertificateThumbprint>', 2);
@@ -902,6 +924,7 @@ class VisualStudioExporter extends Exporter_1.Exporter {
         this.additionalItemGroups(1);
         this.p('<Import Project="$(VCTargetsPath)\\Microsoft.Cpp.targets" />', 1);
         this.p('<ImportGroup Label="ExtensionTargets">', 1);
+        this.extensionTargets(2);
         this.p('</ImportGroup>', 1);
         this.p('</Project>');
         this.closeFile();
