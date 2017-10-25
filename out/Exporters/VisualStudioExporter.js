@@ -133,6 +133,7 @@ class VisualStudioExporter extends Exporter_1.Exporter {
             this.writeProjectBuilds(proj, platform);
     }
     exportSolution(project, from, to, platform, vrApi, options) {
+        this.exportCLion(project, from, to, platform, vrApi, options);
         standardconfs = [];
         standardconfs.push('Debug');
         standardconfs.push('Release');
