@@ -72,6 +72,12 @@ class Project {
         for (let sub of this.subProjects)
             sub.flatten();
         for (let sub of this.subProjects) {
+            if (sub.cpp11) {
+                this.cpp11 = true;
+            }
+            if (sub.cmd) {
+                this.cmd = true;
+            }
             let subbasedir = sub.basedir;
             for (let d of sub.defines)
                 if (!contains(this.defines, d))
