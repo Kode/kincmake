@@ -487,7 +487,7 @@ export class VisualStudioExporter extends Exporter {
 	}
 
 	globals(platform: string, indent: number) {
-		const windowsTargetVersion = Options.visualStudioVersion === VisualStudioVersion.VS2017 ? '10.0.15063.0' : '10.0.14393.0';
+		const windowsTargetVersion = Options.visualStudioVersion === VisualStudioVersion.VS2017 ? '10.0.16299.0' : '10.0.14393.0';
 		if (Options.visualStudioVersion === VisualStudioVersion.VS2017) {
 			this.p('<VCProjectVersion>15.0</VCProjectVersion>', indent);
 			this.p('<WindowsTargetPlatformVersion>' + windowsTargetVersion + '</WindowsTargetPlatformVersion>', indent);

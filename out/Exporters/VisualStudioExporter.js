@@ -452,7 +452,7 @@ class VisualStudioExporter extends Exporter_1.Exporter {
         }
     }
     globals(platform, indent) {
-        const windowsTargetVersion = Options_1.Options.visualStudioVersion === VisualStudioVersion_1.VisualStudioVersion.VS2017 ? '10.0.15063.0' : '10.0.14393.0';
+        const windowsTargetVersion = Options_1.Options.visualStudioVersion === VisualStudioVersion_1.VisualStudioVersion.VS2017 ? '10.0.16299.0' : '10.0.14393.0';
         if (Options_1.Options.visualStudioVersion === VisualStudioVersion_1.VisualStudioVersion.VS2017) {
             this.p('<VCProjectVersion>15.0</VCProjectVersion>', indent);
             this.p('<WindowsTargetPlatformVersion>' + windowsTargetVersion + '</WindowsTargetPlatformVersion>', indent);
