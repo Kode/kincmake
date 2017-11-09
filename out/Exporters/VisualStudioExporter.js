@@ -851,7 +851,7 @@ class VisualStudioExporter extends Exporter_1.Exporter {
                         this.p('<PrecompiledHeaderFile>' + headerfile + '</PrecompiledHeaderFile>', 3);
                         this.p('</ClCompile>', 2);
                     }
-                    else if (platform === Platform_1.Platform.WindowsApp && !file.endsWith('.winrt.cpp')) {
+                    else if ((platform === Platform_1.Platform.WindowsApp || platform === Platform_1.Platform.XboxOne) && !file.endsWith('.winrt.cpp')) {
                         this.p('<ClCompile Include="' + this.nicePath(from, to, file) + '">', 2);
                         this.p('<CompileAsWinRT>false</CompileAsWinRT>', 3);
                         this.p('</ClCompile>', 2);
