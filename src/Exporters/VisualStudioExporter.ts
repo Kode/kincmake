@@ -219,7 +219,7 @@ export class VisualStudioExporter extends Exporter {
 			Icon.exportIco(path.resolve(to, 'icon.ico'), from);
 		}
 		else {
-			this.additionalFiles(fs, Icon, from, to);
+			this.additionalFiles(fs, Icon, from, to, project);
 		}
 	}
 
@@ -227,7 +227,7 @@ export class VisualStudioExporter extends Exporter {
 
 	}
 
-	additionalFiles(fs: any, Icon: any, from: string, to: string) {
+	additionalFiles(fs: any, Icon: any, from: string, to: string, project: Project) {
 
 	}
 

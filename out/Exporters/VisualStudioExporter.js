@@ -209,12 +209,12 @@ class VisualStudioExporter extends Exporter_1.Exporter {
             Icon.exportIco(path.resolve(to, 'icon.ico'), from);
         }
         else {
-            this.additionalFiles(fs, Icon, from, to);
+            this.additionalFiles(fs, Icon, from, to, project);
         }
     }
     postSolution() {
     }
-    additionalFiles(fs, Icon, from, to) {
+    additionalFiles(fs, Icon, from, to, project) {
     }
     exportManifest(to, project) {
         this.writeFile(path.resolve(to, 'Package.appxmanifest'));
