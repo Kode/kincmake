@@ -264,7 +264,7 @@ class VisualStudioExporter extends Exporter_1.Exporter {
             if (fs.statSync(path.join(assetPath, p)).isDirectory())
                 this.exportAssetPathFilter(path.join(assetPath, p), dirs, assets);
             else
-                assets.push(path.join(assetPath, p));
+                assets.push(path.join(assetPath, p).replace(/\//g, '\\'));
         }
     }
     exportFilters(from, to, project, platform) {
@@ -290,7 +290,7 @@ class VisualStudioExporter extends Exporter_1.Exporter {
             }
         }
         let assets = [];
-        if (platform === Platform_1.Platform.WindowsApp)
+        if (platform === Platform_1.Platform.WindowsApp || platform === Platform_1.Platform.XboxOne)
             this.exportAssetPathFilter(path.resolve(from, project.getDebugDir()), dirs, assets);
         this.p('<ItemGroup>', 1);
         for (let dir of dirs) {
@@ -371,16 +371,16 @@ class VisualStudioExporter extends Exporter_1.Exporter {
             }
         }
         this.p('</ItemGroup>', 1);
-        if (platform === Platform_1.Platform.WindowsApp) {
+        if (platform === Platform_1.Platform.WindowsApp || platform === Platform_1.Platform.XboxOne) {
             lastdir = '';
             this.p('<ItemGroup>', 1);
             for (let file of assets) {
-                if (file.indexOf('/') >= 0) {
-                    let dir = file.substr(0, file.lastIndexOf('/'));
+                if (file.indexOf('\\') >= 0) {
+                    let dir = file.substr(0, file.lastIndexOf('\\'));
                     if (dir !== lastdir)
                         lastdir = dir;
                     this.p('<None Include="' + this.nicePath(from, to, file) + '">', 2);
-                    this.p('<Filter>' + dir.replace(/\//g, '\\') + '</Filter>', 3);
+                    this.p('<Filter>' + dir + '</Filter>', 3);
                     this.p('</None>', 2);
                 }
             }
@@ -818,6 +818,8 @@ class VisualStudioExporter extends Exporter_1.Exporter {
             this.p('<ItemGroup>', 1);
             this.p('<None Include="TemporaryKey.pfx" />', 2);
             this.p('</ItemGroup>', 1);
+        }
+        if (platform === Platform_1.Platform.WindowsApp || platform === Platform_1.Platform.XboxOne) {
             this.p('<ItemGroup>', 1);
             this.exportAssetPath(from, path.resolve(from, project.getDebugDir()));
             this.p('</ItemGroup>', 1);
@@ -875,7 +877,7 @@ class VisualStudioExporter extends Exporter_1.Exporter {
                     }
                     this.p('<ClCompile Include="' + this.nicePath(from, to, file) + '">', 2);
                     this.p('<ObjectFileName>$(IntDir)\\' + name + '.obj</ObjectFileName>', 3);
-                    if (platform === Platform_1.Platform.WindowsApp && !file.endsWith('.winrt.cpp')) {
+                    if ((platform === Platform_1.Platform.WindowsApp || platform === Platform_1.Platform.XboxOne) && !file.endsWith('.winrt.cpp')) {
                         this.p('<CompileAsWinRT>false</CompileAsWinRT>', 3);
                     }
                     this.p('</ClCompile>', 2);

@@ -280,7 +280,7 @@ export class VisualStudioExporter extends Exporter {
 		let paths = fs.readdirSync(assetPath);
 		for (let p of paths) {
 			if (fs.statSync(path.join(assetPath, p)).isDirectory()) this.exportAssetPathFilter(path.join(assetPath, p), dirs, assets);
-			else assets.push(path.join(assetPath, p));
+			else assets.push(path.join(assetPath, p).replace(/\//g, '\\'));
 		}
 	}
 
@@ -308,7 +308,7 @@ export class VisualStudioExporter extends Exporter {
 			}
 		}
 		let assets: string[] = [];
-		if (platform === Platform.WindowsApp) this.exportAssetPathFilter(path.resolve(from, project.getDebugDir()), dirs, assets);
+		if (platform === Platform.WindowsApp || platform === Platform.XboxOne) this.exportAssetPathFilter(path.resolve(from, project.getDebugDir()), dirs, assets);
 
 		this.p('<ItemGroup>', 1);
 		for (let dir of dirs) {
@@ -392,15 +392,15 @@ export class VisualStudioExporter extends Exporter {
 		}
 		this.p('</ItemGroup>', 1);
 
-		if (platform === Platform.WindowsApp) {
+		if (platform === Platform.WindowsApp || platform === Platform.XboxOne) {
 			lastdir = '';
 			this.p('<ItemGroup>', 1);
 			for (let file of assets) {
-				if (file.indexOf('/') >= 0) {
-					let dir = file.substr(0, file.lastIndexOf('/'));
+				if (file.indexOf('\\') >= 0) {
+					let dir = file.substr(0, file.lastIndexOf('\\'));
 					if (dir !== lastdir) lastdir = dir;
 					this.p('<None Include="' + this.nicePath(from, to, file) + '">', 2);
-					this.p('<Filter>' + dir.replace(/\//g, '\\') + '</Filter>', 3);
+					this.p('<Filter>' + dir + '</Filter>', 3);
 					this.p('</None>', 2);
 				}
 			}
@@ -850,7 +850,9 @@ export class VisualStudioExporter extends Exporter {
 			this.p('<ItemGroup>', 1);
 			this.p('<None Include="TemporaryKey.pfx" />', 2);
 			this.p('</ItemGroup>', 1);
+		}
 
+		if (platform === Platform.WindowsApp || platform === Platform.XboxOne) {
 			this.p('<ItemGroup>', 1);
 			this.exportAssetPath(from, path.resolve(from, project.getDebugDir()));
 			this.p('</ItemGroup>', 1);
@@ -909,7 +911,7 @@ export class VisualStudioExporter extends Exporter {
 					}
 					this.p('<ClCompile Include="' + this.nicePath(from, to, file) + '">', 2);
 					this.p('<ObjectFileName>$(IntDir)\\' + name + '.obj</ObjectFileName>', 3);
-					if (platform === Platform.WindowsApp && !file.endsWith('.winrt.cpp')) {
+					if ((platform === Platform.WindowsApp || platform === Platform.XboxOne) && !file.endsWith('.winrt.cpp')) {
 						this.p('<CompileAsWinRT>false</CompileAsWinRT>', 3);
 					}
 					this.p('</ClCompile>', 2);
