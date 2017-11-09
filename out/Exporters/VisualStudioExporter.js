@@ -124,7 +124,7 @@ class VisualStudioExporter extends Exporter_1.Exporter {
             for (let system of this.getSystems(platform)) {
                 this.p('{' + project.getUuid().toString().toUpperCase() + '}.' + config + '|' + system + '.ActiveCfg = ' + config + '|' + system, 2);
                 this.p('{' + project.getUuid().toString().toUpperCase() + '}.' + config + '|' + system + '.Build.0 = ' + config + '|' + system, 2);
-                if (platform === Platform_1.Platform.WindowsApp) {
+                if (platform === Platform_1.Platform.WindowsApp || platform === Platform_1.Platform.XboxOne) {
                     this.p('{' + project.getUuid().toString().toUpperCase() + '}.' + config + '|' + system + '.Deploy.0 = ' + config + '|' + system, 2);
                 }
             }

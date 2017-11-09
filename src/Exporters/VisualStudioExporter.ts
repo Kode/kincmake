@@ -128,7 +128,7 @@ export class VisualStudioExporter extends Exporter {
 			for (let system of this.getSystems(platform)) {
 				this.p('{' + project.getUuid().toString().toUpperCase() + '}.' + config + '|' + system + '.ActiveCfg = ' + config + '|' + system, 2);
 				this.p('{' + project.getUuid().toString().toUpperCase() + '}.' + config + '|' + system + '.Build.0 = ' + config + '|' + system, 2);
-				if (platform === Platform.WindowsApp) {
+				if (platform === Platform.WindowsApp || platform === Platform.XboxOne) {
 					this.p('{' + project.getUuid().toString().toUpperCase() + '}.' + config + '|' + system + '.Deploy.0 = ' + config + '|' + system, 2);
 				}
 			}
