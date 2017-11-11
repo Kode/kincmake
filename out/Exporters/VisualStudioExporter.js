@@ -15,14 +15,17 @@ const uuid = require('uuid');
 let standardconfs = []; // = new String[]{"Debug", "Release"};
 let windows8systems = []; // = new String[]{"ARM", "Win32", "x64"};
 let windowssystems = []; // = new String[]{"Win32", "x64"};
-function getDir(file) {
-    if (file.file.indexOf('/') >= 0) {
-        let dir = file.file.substr(0, file.file.lastIndexOf('/'));
-        return path.join(file.projectName, path.relative(file.projectDir, dir)).replace(/\\/g, '/');
+function getDirFromString(file, base) {
+    if (file.indexOf('/') >= 0) {
+        let dir = file.substr(0, file.lastIndexOf('/'));
+        return path.join(base, path.relative(base, dir)).replace(/\\/g, '/');
     }
     else {
-        return file.projectName;
+        return base;
     }
+}
+function getDir(file) {
+    return getDirFromString(file.file, file.projectName);
 }
 function contains(array, element) {
     for (let arrayelement of array) {
@@ -256,7 +259,7 @@ class VisualStudioExporter extends Exporter_1.Exporter {
         this.closeFile();
     }
     exportAssetPathFilter(assetPath, dirs, assets) {
-        let dir = assetPath;
+        let dir = getDirFromString(assetPath, 'Deployment');
         if (!contains(dirs, dir))
             dirs.push(dir);
         let paths = fs.readdirSync(assetPath);
@@ -376,7 +379,7 @@ class VisualStudioExporter extends Exporter_1.Exporter {
             this.p('<ItemGroup>', 1);
             for (let file of assets) {
                 if (file.indexOf('\\') >= 0) {
-                    let dir = file.substr(0, file.lastIndexOf('\\'));
+                    let dir = getDirFromString(file, 'Deployment');
                     if (dir !== lastdir)
                         lastdir = dir;
                     this.p('<None Include="' + this.nicePath(from, to, file) + '">', 2);
@@ -821,7 +824,7 @@ class VisualStudioExporter extends Exporter_1.Exporter {
         }
         if (platform === Platform_1.Platform.WindowsApp || platform === Platform_1.Platform.XboxOne) {
             this.p('<ItemGroup>', 1);
-            this.exportAssetPath(from, path.resolve(from, project.getDebugDir()));
+            this.exportAssetPath(from, to, path.resolve(from, project.getDebugDir()));
             this.p('</ItemGroup>', 1);
         }
         this.p('<ItemGroup>', 1);
@@ -937,14 +940,14 @@ class VisualStudioExporter extends Exporter_1.Exporter {
         this.p('</Project>');
         this.closeFile();
     }
-    exportAssetPath(from, assetPath) {
+    exportAssetPath(from, to, assetPath) {
         let paths = fs.readdirSync(assetPath);
         for (let p of paths) {
             if (fs.statSync(path.join(assetPath, p)).isDirectory()) {
-                this.exportAssetPath(from, path.join(assetPath, p));
+                this.exportAssetPath(from, to, path.join(assetPath, p));
             }
             else {
-                this.p('<None Include="' + path.resolve(from, path.join(assetPath, p)).replace(/\//g, '\\') + '">', 2);
+                this.p('<None Include="' + this.nicePath(from, to, path.join(assetPath, p)) + '">', 2);
                 this.p('<DeploymentContent>true</DeploymentContent>', 3);
                 this.p('</None>', 2);
             }
