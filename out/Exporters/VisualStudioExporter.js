@@ -857,7 +857,7 @@ class VisualStudioExporter extends Exporter_1.Exporter {
                             break;
                         }
                     }
-                    if (headerfile !== null) {
+                    if (headerfile !== null && platform === Platform_1.Platform.Windows) {
                         this.p('<ClCompile Include="' + path.resolve(from, file) + '">', 2);
                         this.p('<PrecompiledHeader>Create</PrecompiledHeader>', 3);
                         this.p('<PrecompiledHeaderFile>' + headerfile + '</PrecompiledHeaderFile>', 3);
@@ -869,7 +869,7 @@ class VisualStudioExporter extends Exporter_1.Exporter {
                         this.p('</ClCompile>', 2);
                     }
                     else {
-                        if (fileobject.options && fileobject.options.pch) {
+                        if (fileobject.options && fileobject.options.pch && platform === Platform_1.Platform.Windows) {
                             this.p('<ClCompile Include="' + this.nicePath(from, to, file) + '">', 2);
                             this.p('<PrecompiledHeader>Use</PrecompiledHeader>', 3);
                             this.p('<PrecompiledHeaderFile>' + fileobject.options.pch + '</PrecompiledHeaderFile>', 3);
