@@ -309,7 +309,7 @@ class Project {
         return this.debugDir;
     }
     setDebugDir(debugDir) {
-        this.debugDir = debugDir;
+        this.debugDir = path.resolve(this.basedir, debugDir);
     }
     static createProject(filename, scriptdir) {
         return __awaiter(this, void 0, void 0, function* () {

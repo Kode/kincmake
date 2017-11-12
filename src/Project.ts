@@ -341,7 +341,7 @@ export class Project {
 	}
 
 	setDebugDir(debugDir: string) {
-		this.debugDir = debugDir;
+		this.debugDir = path.resolve(this.basedir, debugDir);
 	}
 
 	static async createProject(filename: string, scriptdir: string): Promise<Project> {
