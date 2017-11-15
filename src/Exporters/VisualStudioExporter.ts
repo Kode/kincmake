@@ -936,23 +936,12 @@ export class VisualStudioExporter extends Exporter {
 		if (platform === Platform.Windows) {
 			this.p('<ItemGroup>', 1);
 			for (let file of project.getFiles()) {
-				if (file.file.endsWith('.cg')) {
-					this.p('<CustomBuild Include="' + this.nicePath(from, to, file.file) + '">', 2);
-					this.p('<FileType>Document</FileType>', 2);
-					this.p('<Command>..\\Kt\\Tools\\ShaderCompiler.exe ' + getShaderLang() + ' \"%(FullPath)" ' + path.resolve(from, project.getDebugDir()).replace(/\//g, '\\') + '\\Shaders\\%(Filename)</Command>', 2);
-					this.p('<Outputs>' + path.resolve(from, project.getDebugDir()).replace(/\//g, '\\') + '\\Shaders\\%(Filename)' + getShaderLang() + ';%(Outputs)</Outputs>', 2);
-					this.p('</CustomBuild>', 2);
-				}
-			}
-			this.p('</ItemGroup>', 1);
-			this.p('<ItemGroup>', 1);
-			for (let file of project.getFiles()) {
 				if (Project.koreDir && Project.koreDir.toString() !== '' && !noshaders && file.file.endsWith('.glsl')) {
 					this.p('<CustomBuild Include="' + this.nicePath(from, to, file.file) + '">', 2);
 					this.p('<FileType>Document</FileType>', 2);
-					this.p('<Command>"' + path.resolve(from, Project.koreDir).replace(/\//g, '\\') + '\\Tools\\krafix\\krafix.exe" ' + getShaderLang() + ' "%(FullPath)" ..\\' + project.getDebugDir().replace(/\//g, '\\') + '\\%(Filename) ..\\build ' + platform + ' --quiet</Command>', 2);
-					this.p('<Outputs>' + path.resolve(from, project.getDebugDir()).replace(/\//g, '\\') + '\\%(Filename);%(Outputs)</Outputs>', 2);
-					this.p('<Message>Compiling %(FullPath)</Message>', 2);
+					this.p('<Command>"' + path.relative(to, path.join(from, Project.koreDir, 'Tools', 'krafix', 'krafix.exe')) + '" ' + getShaderLang() + ' "%(FullPath)" ' + path.relative(to, path.join(from, project.getDebugDir(), '%(Filename)')).replace(/\//g, '\\') + ' .\\ ' + platform + ' --quiet</Command>', 2);
+					this.p('<Outputs>' + path.relative(to, path.join(from, project.getDebugDir(), '%(Filename)')).replace(/\//g, '\\') + ';%(Outputs)</Outputs>', 2);
+					this.p('<Message>%(Filename)%(Extension)</Message>', 2);
 					this.p('</CustomBuild>', 2);
 				}
 			}
