@@ -4,6 +4,7 @@ import * as os from 'os';
 import * as path from 'path';
 import * as log from './log';
 import {GraphicsApi} from './GraphicsApi';
+import {AudioApi} from './AudioApi';
 import {Options} from './Options';
 import {Project} from './Project';
 import {Platform} from './Platform';
@@ -350,6 +351,14 @@ export async function run(options: any, loglog: any): Promise<string> {
 	
 	if (options.graphics !== undefined) {
 		Options.graphicsApi = options.graphics;
+	}
+
+	if (options.audio !== undefined) {
+		Options.audioApi = options.audio;
+	}
+
+	if (options.vr !== undefined) {
+		Options.vrApi = options.vr;
 	}
 	
 	if (options.visualstudio !== undefined) {

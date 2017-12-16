@@ -338,6 +338,12 @@ function run(options, loglog) {
         if (options.graphics !== undefined) {
             Options_1.Options.graphicsApi = options.graphics;
         }
+        if (options.audio !== undefined) {
+            Options_1.Options.audioApi = options.audio;
+        }
+        if (options.vr !== undefined) {
+            Options_1.Options.vrApi = options.vr;
+        }
         if (options.visualstudio !== undefined) {
             Options_1.Options.visualStudioVersion = options.visualstudio;
         }

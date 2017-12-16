@@ -1,11 +1,13 @@
 import {GraphicsApi} from './GraphicsApi';
-import {VisualStudioVersion} from './VisualStudioVersion';
+import {AudioApi} from './AudioApi';
 import {VrApi} from './VrApi';
+import {VisualStudioVersion} from './VisualStudioVersion';
 
 export let Options = {
 	precompiledHeaders: false,
 	intermediateDrive: '',
-	graphicsApi: GraphicsApi.Direct3D11,
+	graphicsApi: GraphicsApi.Default,
+	audioApi: AudioApi.Default,
 	vrApi: VrApi.None,
 	visualStudioVersion: VisualStudioVersion.VS2017,
 	compile: false,

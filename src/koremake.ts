@@ -2,8 +2,9 @@ import * as os from 'os';
 import {Options} from './Options';
 import {Platform} from './Platform';
 import {GraphicsApi} from './GraphicsApi';
-import {VisualStudioVersion} from './VisualStudioVersion';
+import {AudioApi} from './AudioApi';
 import {VrApi} from './VrApi';
+import {VisualStudioVersion} from './VisualStudioVersion';
 
 let defaultTarget: string;
 if (os.platform() === 'linux') {
@@ -59,7 +60,14 @@ let options = [
 		short: 'g',
 		description: 'Graphics api to use',
 		value: true,
-		default: GraphicsApi.Direct3D11
+		default: GraphicsApi.Default
+	},
+	{
+		full: 'audio',
+		short: 'a',
+		description: 'Audio api to use',
+		value: true,
+		default: AudioApi.Default
 	},
 	{
 		full: 'visualstudio',

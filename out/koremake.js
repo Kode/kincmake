@@ -3,8 +3,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const os = require("os");
 const Platform_1 = require("./Platform");
 const GraphicsApi_1 = require("./GraphicsApi");
-const VisualStudioVersion_1 = require("./VisualStudioVersion");
+const AudioApi_1 = require("./AudioApi");
 const VrApi_1 = require("./VrApi");
+const VisualStudioVersion_1 = require("./VisualStudioVersion");
 let defaultTarget;
 if (os.platform() === 'linux') {
     defaultTarget = Platform_1.Platform.Linux;
@@ -58,7 +59,14 @@ let options = [
         short: 'g',
         description: 'Graphics api to use',
         value: true,
-        default: GraphicsApi_1.GraphicsApi.Direct3D11
+        default: GraphicsApi_1.GraphicsApi.Default
+    },
+    {
+        full: 'audio',
+        short: 'a',
+        description: 'Audio api to use',
+        value: true,
+        default: AudioApi_1.AudioApi.Default
     },
     {
         full: 'visualstudio',

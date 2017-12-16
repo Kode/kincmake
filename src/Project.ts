@@ -2,9 +2,10 @@ import * as fs from 'fs-extra';
 import * as path from 'path';
 import * as log from './log';
 import {GraphicsApi} from './GraphicsApi';
+import {AudioApi} from './AudioApi';
+import {VrApi} from './VrApi';
 import {Options} from './Options';
 import {Platform} from './Platform';
-import {VrApi} from './VrApi';
 const uuid = require('uuid');
 
 function getDefines(platform: string, rotated: boolean) {
@@ -385,6 +386,8 @@ export class Project {
 					'platform',
 					'GraphicsApi',
 					'graphics',
+					'AudioApi',
+					'audio',
 					'VrApi',
 					'vr',
 					'require',
@@ -399,6 +402,8 @@ export class Project {
 					Project.platform,
 					GraphicsApi,
 					Options.graphicsApi,
+					AudioApi,
+					Options.audioApi,
 					VrApi,
 					Options.vrApi,
 					require,

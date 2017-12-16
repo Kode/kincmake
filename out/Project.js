@@ -12,9 +12,10 @@ const fs = require("fs-extra");
 const path = require("path");
 const log = require("./log");
 const GraphicsApi_1 = require("./GraphicsApi");
+const AudioApi_1 = require("./AudioApi");
+const VrApi_1 = require("./VrApi");
 const Options_1 = require("./Options");
 const Platform_1 = require("./Platform");
-const VrApi_1 = require("./VrApi");
 const uuid = require('uuid');
 function getDefines(platform, rotated) {
     let defines = [];
@@ -341,7 +342,7 @@ class Project {
                 });
                 try {
                     let file = fs.readFileSync(path.resolve(scriptdir, 'korefile.js'), 'utf8');
-                    let project = new Function('log', 'Project', 'Platform', 'platform', 'GraphicsApi', 'graphics', 'VrApi', 'vr', 'require', 'resolve', 'reject', '__dirname', file)(log, Project, Platform_1.Platform, Project.platform, GraphicsApi_1.GraphicsApi, Options_1.Options.graphicsApi, VrApi_1.VrApi, Options_1.Options.vrApi, require, resolver, reject, scriptdir);
+                    let project = new Function('log', 'Project', 'Platform', 'platform', 'GraphicsApi', 'graphics', 'AudioApi', 'audio', 'VrApi', 'vr', 'require', 'resolve', 'reject', '__dirname', file)(log, Project, Platform_1.Platform, Project.platform, GraphicsApi_1.GraphicsApi, Options_1.Options.graphicsApi, AudioApi_1.AudioApi, Options_1.Options.audioApi, VrApi_1.VrApi, Options_1.Options.vrApi, require, resolver, reject, scriptdir);
                 }
                 catch (error) {
                     log.error(error);
