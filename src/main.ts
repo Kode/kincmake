@@ -65,13 +65,14 @@ function shaderLang(platform: string): string {
 				case GraphicsApi.Direct3D9:
 					return 'd3d9';
 				case GraphicsApi.Direct3D11:
+				case GraphicsApi.Default:
 					return 'd3d11';
 				case GraphicsApi.Direct3D12:
 					return 'd3d11';
 				case GraphicsApi.Vulkan:
 					return 'spirv';
 				default:
-					return 'd3d9';
+					throw new Error('Unsupported shader language.');
 			}
 		case Platform.WindowsApp:
 			return 'd3d11';
@@ -80,29 +81,41 @@ function shaderLang(platform: string): string {
 			switch (Options.graphicsApi) {
 				case GraphicsApi.Metal:
 					return 'metal';
-				default:
+				case GraphicsApi.OpenGL:
+				case GraphicsApi.Default:
 					return 'essl';
+				default:
+					throw new Error('Unsupported shader language.');
 			}
 		case Platform.OSX:
 			switch (Options.graphicsApi) {
 				case GraphicsApi.Metal:
 					return 'metal';
-				default:
+				case GraphicsApi.OpenGL:
+				case GraphicsApi.Default:
 					return 'glsl';
+				default:
+					throw new Error('Unsupported shader language.');
 			}
 		case Platform.Android:
 			switch (Options.graphicsApi) {
 				case GraphicsApi.Vulkan:
 					return 'spirv';
-				default:
+				case GraphicsApi.OpenGL:
+				case GraphicsApi.Default:
 					return 'essl';
+				default:
+					throw new Error('Unsupported shader language.');
 			}
 		case Platform.Linux:
 			switch (Options.graphicsApi) {
 				case GraphicsApi.Vulkan:
 					return 'spirv';
-				default:
+				case GraphicsApi.OpenGL:
+				case GraphicsApi.Default:
 					return 'glsl';
+				default:
+					throw new Error('Unsupported shader language.');
 			}
 		case Platform.HTML5:
 			return 'essl';

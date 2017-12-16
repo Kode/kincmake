@@ -68,13 +68,14 @@ function shaderLang(platform) {
                 case GraphicsApi_1.GraphicsApi.Direct3D9:
                     return 'd3d9';
                 case GraphicsApi_1.GraphicsApi.Direct3D11:
+                case GraphicsApi_1.GraphicsApi.Default:
                     return 'd3d11';
                 case GraphicsApi_1.GraphicsApi.Direct3D12:
                     return 'd3d11';
                 case GraphicsApi_1.GraphicsApi.Vulkan:
                     return 'spirv';
                 default:
-                    return 'd3d9';
+                    throw new Error('Unsupported shader language.');
             }
         case Platform_1.Platform.WindowsApp:
             return 'd3d11';
@@ -83,29 +84,41 @@ function shaderLang(platform) {
             switch (Options_1.Options.graphicsApi) {
                 case GraphicsApi_1.GraphicsApi.Metal:
                     return 'metal';
-                default:
+                case GraphicsApi_1.GraphicsApi.OpenGL:
+                case GraphicsApi_1.GraphicsApi.Default:
                     return 'essl';
+                default:
+                    throw new Error('Unsupported shader language.');
             }
         case Platform_1.Platform.OSX:
             switch (Options_1.Options.graphicsApi) {
                 case GraphicsApi_1.GraphicsApi.Metal:
                     return 'metal';
-                default:
+                case GraphicsApi_1.GraphicsApi.OpenGL:
+                case GraphicsApi_1.GraphicsApi.Default:
                     return 'glsl';
+                default:
+                    throw new Error('Unsupported shader language.');
             }
         case Platform_1.Platform.Android:
             switch (Options_1.Options.graphicsApi) {
                 case GraphicsApi_1.GraphicsApi.Vulkan:
                     return 'spirv';
-                default:
+                case GraphicsApi_1.GraphicsApi.OpenGL:
+                case GraphicsApi_1.GraphicsApi.Default:
                     return 'essl';
+                default:
+                    throw new Error('Unsupported shader language.');
             }
         case Platform_1.Platform.Linux:
             switch (Options_1.Options.graphicsApi) {
                 case GraphicsApi_1.GraphicsApi.Vulkan:
                     return 'spirv';
-                default:
+                case GraphicsApi_1.GraphicsApi.OpenGL:
+                case GraphicsApi_1.GraphicsApi.Default:
                     return 'glsl';
+                default:
+                    throw new Error('Unsupported shader language.');
             }
         case Platform_1.Platform.HTML5:
             return 'essl';
