@@ -56,11 +56,11 @@ function valueOf(str) {
 function getShaderLang() {
     if (Options_1.Options.graphicsApi === GraphicsApi_1.GraphicsApi.OpenGL)
         return 'glsl';
-    if (Options_1.Options.graphicsApi === GraphicsApi_1.GraphicsApi.Direct3D11 || Options_1.Options.graphicsApi === GraphicsApi_1.GraphicsApi.Direct3D12)
+    if (Options_1.Options.graphicsApi === GraphicsApi_1.GraphicsApi.Direct3D11 || Options_1.Options.graphicsApi === GraphicsApi_1.GraphicsApi.Direct3D12 || Options_1.Options.graphicsApi === GraphicsApi_1.GraphicsApi.Default)
         return 'd3d11';
     if (Options_1.Options.graphicsApi === GraphicsApi_1.GraphicsApi.Vulkan)
         return 'spirv';
-    return 'd3d9';
+    throw new Error('Unexpected graphics API');
 }
 class VisualStudioExporter extends Exporter_1.Exporter {
     constructor() {
