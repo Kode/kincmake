@@ -72,6 +72,17 @@ export class VisualStudioExporter extends Exporter {
 		return null;
 	}
 
+	getDebugDir(from: string, project: Project): string {
+		let debugDir = project.getDebugDir();
+		if (path.isAbsolute(debugDir)) {
+			debugDir = debugDir.replace(/\//g, '\\');
+		}
+		else {
+			debugDir = path.resolve(from, debugDir).replace(/\//g, '\\');
+		}
+		return debugDir;
+	}
+
 	exportUserFile(from: string, to: string, project: Project, platform: string) {
 		if (project.getDebugDir() === '') return;
 
@@ -80,21 +91,14 @@ export class VisualStudioExporter extends Exporter {
 		this.p('<?xml version="1.0" encoding="utf-8"?>');
 		this.p('<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">');
 		this.p('<PropertyGroup>', 1);
-		let debugDir = project.getDebugDir();
-		if (path.isAbsolute(debugDir)) {
-			debugDir = debugDir.replace(/\//g, '\\');
-		}
-		else {
-			debugDir = path.resolve(from, debugDir).replace(/\//g, '\\');
-		}
 		if (platform === Platform.Windows) {
-			this.p('<LocalDebuggerWorkingDirectory>' + debugDir + '</LocalDebuggerWorkingDirectory>', 2);
+			this.p('<LocalDebuggerWorkingDirectory>' + this.getDebugDir(from, project) + '</LocalDebuggerWorkingDirectory>', 2);
 			this.p('<DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>', 2);
 			// java.io.File baseDir = new File(project.getBasedir());
 			// p("<LocalDebuggerCommandArguments>\"SOURCEDIR=" + baseDir.getAbsolutePath() + "\" \"KTSOURCEDIR=" + baseDir.getAbsolutePath() + "\\Kt\"</LocalDebuggerCommandArguments>", 2);
 		}
 		else {
-			this.userPropertyGroup(debugDir, 2);
+			this.userPropertyGroup(this.getDebugDir(from, project), 2);
 		}
 		this.p('</PropertyGroup>', 1);
 		this.p('</Project>');
@@ -471,6 +475,10 @@ export class VisualStudioExporter extends Exporter {
 
 	}
 
+	addOns2(config: string, system: string, debugDir: string, indent: number) {
+
+	}
+
 	itemDefinition(config: string, system: string, includes: string, defines: string, indent: number) {
 
 	}
@@ -666,6 +674,12 @@ export class VisualStudioExporter extends Exporter {
 		for (let config of this.getConfigs(platform)) {
 			for (let system of this.getSystems(platform)) {
 				this.addOns(config, system, 1);
+			}
+		}
+
+		for (let config of this.getConfigs(platform)) {
+			for (let system of this.getSystems(platform)) {
+				this.addOns2(config, system, this.getDebugDir(from, project), 1);
 			}
 		}
 

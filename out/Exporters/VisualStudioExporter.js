@@ -72,13 +72,7 @@ class VisualStudioExporter extends Exporter_1.Exporter {
     overrideVisualStudioVersion() {
         return null;
     }
-    exportUserFile(from, to, project, platform) {
-        if (project.getDebugDir() === '')
-            return;
-        this.writeFile(path.resolve(to, project.getName() + '.vcxproj.user'));
-        this.p('<?xml version="1.0" encoding="utf-8"?>');
-        this.p('<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">');
-        this.p('<PropertyGroup>', 1);
+    getDebugDir(from, project) {
         let debugDir = project.getDebugDir();
         if (path.isAbsolute(debugDir)) {
             debugDir = debugDir.replace(/\//g, '\\');
@@ -86,14 +80,23 @@ class VisualStudioExporter extends Exporter_1.Exporter {
         else {
             debugDir = path.resolve(from, debugDir).replace(/\//g, '\\');
         }
+        return debugDir;
+    }
+    exportUserFile(from, to, project, platform) {
+        if (project.getDebugDir() === '')
+            return;
+        this.writeFile(path.resolve(to, project.getName() + '.vcxproj.user'));
+        this.p('<?xml version="1.0" encoding="utf-8"?>');
+        this.p('<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">');
+        this.p('<PropertyGroup>', 1);
         if (platform === Platform_1.Platform.Windows) {
-            this.p('<LocalDebuggerWorkingDirectory>' + debugDir + '</LocalDebuggerWorkingDirectory>', 2);
+            this.p('<LocalDebuggerWorkingDirectory>' + this.getDebugDir(from, project) + '</LocalDebuggerWorkingDirectory>', 2);
             this.p('<DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>', 2);
             // java.io.File baseDir = new File(project.getBasedir());
             // p("<LocalDebuggerCommandArguments>\"SOURCEDIR=" + baseDir.getAbsolutePath() + "\" \"KTSOURCEDIR=" + baseDir.getAbsolutePath() + "\\Kt\"</LocalDebuggerCommandArguments>", 2);
         }
         else {
-            this.userPropertyGroup(debugDir, 2);
+            this.userPropertyGroup(this.getDebugDir(from, project), 2);
         }
         this.p('</PropertyGroup>', 1);
         this.p('</Project>');
@@ -440,6 +443,8 @@ class VisualStudioExporter extends Exporter_1.Exporter {
     }
     addOns(config, system, indent) {
     }
+    addOns2(config, system, debugDir, indent) {
+    }
     itemDefinition(config, system, includes, defines, indent) {
     }
     additionalItemGroups(indent) {
@@ -614,6 +619,11 @@ class VisualStudioExporter extends Exporter_1.Exporter {
         for (let config of this.getConfigs(platform)) {
             for (let system of this.getSystems(platform)) {
                 this.addOns(config, system, 1);
+            }
+        }
+        for (let config of this.getConfigs(platform)) {
+            for (let system of this.getSystems(platform)) {
+                this.addOns2(config, system, this.getDebugDir(from, project), 1);
             }
         }
         let defines = '';
