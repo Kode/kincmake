@@ -425,7 +425,7 @@ function run(options, loglog) {
                         break;
                 }
                 if (vsvars !== null) {
-                    fs.writeFileSync(path.join(options.to, 'build.bat'), '@call "' + vsvars + '"\n' + '@MSBuild.exe "' + solutionName + '.vcxproj" /m /p:Configuration=' + (options.debug ? 'Debug' : 'Release') + ',Platform=Win32');
+                    fs.writeFileSync(path.join(options.to, 'build.bat'), 'call "' + vsvars + '"\n' + 'MSBuild.exe "' + solutionName + '.vcxproj" /m /p:Configuration=' + (options.debug ? 'Debug' : 'Release') + ',Platform=Win32');
                     make = child_process.spawn('build.bat', [], { cwd: options.to });
                 }
                 else {
