@@ -171,6 +171,15 @@ export class Project {
 		if (current === undefined) {
 			for (let sub of this.subProjects) sub.searchFiles(undefined);
 			this.searchFiles(this.basedir);
+			for (let includeobject of this.includes) {
+				if (includeobject.file.startsWith('../')) {
+					let start = '../';
+					while (includeobject.file.startsWith(start)) {
+						start += '../';
+					}
+					this.searchFiles(path.resolve(this.basedir, start));
+				}
+			}
 			// std::set<std::string> starts;
 			// for (std::string include : includes) {
 			//     if (!isAbsolute(include)) continue;
