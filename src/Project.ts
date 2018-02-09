@@ -388,7 +388,8 @@ export class Project {
 			
 			try {
 				let file = fs.readFileSync(path.resolve(scriptdir, 'korefile.js'), 'utf8');
-				let project = new Function(
+				let AsyncFunction = Object.getPrototypeOf(async () => {}).constructor;
+				let project = new AsyncFunction(
 					'log',
 					'Project',
 					'Platform',

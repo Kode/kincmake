@@ -1,12 +1,4 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const fs = require("fs-extra");
 const path = require("path");
@@ -321,56 +313,53 @@ class Project {
     setDebugDir(debugDir) {
         this.debugDir = path.resolve(this.basedir, debugDir);
     }
-    static createProject(filename, scriptdir) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return new Promise((resolve, reject) => {
-                let originalscriptdir = scriptdir;
-                scriptdir = path.resolve(scriptdir, filename);
-                let resolved = false;
-                let resolver = (project) => __awaiter(this, void 0, void 0, function* () {
-                    resolved = true;
-                    // TODO: This accidentally finds Kha/Backends/KoreHL
-                    /*if (fs.existsSync(path.join(scriptdir, 'Backends'))) {
-                        var libdirs = fs.readdirSync(path.join(scriptdir, 'Backends'));
-                        for (var ld in libdirs) {
-                            var libdir = path.join(scriptdir, 'Backends', libdirs[ld]);
-                            if (fs.statSync(libdir).isDirectory()) {
-                                var korefile = path.join(libdir, 'korefile.js');
-                                if (fs.existsSync(korefile)) {
-                                    project.addSubProject(await Project.createProject(libdir, scriptdir));
-                                }
+    static async createProject(filename, scriptdir) {
+        return new Promise((resolve, reject) => {
+            let originalscriptdir = scriptdir;
+            scriptdir = path.resolve(scriptdir, filename);
+            let resolved = false;
+            let resolver = async (project) => {
+                resolved = true;
+                // TODO: This accidentally finds Kha/Backends/KoreHL
+                /*if (fs.existsSync(path.join(scriptdir, 'Backends'))) {
+                    var libdirs = fs.readdirSync(path.join(scriptdir, 'Backends'));
+                    for (var ld in libdirs) {
+                        var libdir = path.join(scriptdir, 'Backends', libdirs[ld]);
+                        if (fs.statSync(libdir).isDirectory()) {
+                            var korefile = path.join(libdir, 'korefile.js');
+                            if (fs.existsSync(korefile)) {
+                                project.addSubProject(await Project.createProject(libdir, scriptdir));
                             }
                         }
-                    }*/
-                    resolve(project);
-                });
-                process.on('exit', (code) => {
-                    if (!resolved) {
-                        console.error('Error: korefile.js did not call resolve, no project created.');
                     }
-                });
-                try {
-                    let file = fs.readFileSync(path.resolve(scriptdir, 'korefile.js'), 'utf8');
-                    let project = new Function('log', 'Project', 'Platform', 'platform', 'GraphicsApi', 'graphics', 'AudioApi', 'audio', 'VrApi', 'vr', 'require', 'resolve', 'reject', '__dirname', file)(log, Project, Platform_1.Platform, Project.platform, GraphicsApi_1.GraphicsApi, Options_1.Options.graphicsApi, AudioApi_1.AudioApi, Options_1.Options.audioApi, VrApi_1.VrApi, Options_1.Options.vrApi, require, resolver, reject, scriptdir);
-                }
-                catch (error) {
-                    log.error(error);
-                    throw error;
+                }*/
+                resolve(project);
+            };
+            process.on('exit', (code) => {
+                if (!resolved) {
+                    console.error('Error: korefile.js did not call resolve, no project created.');
                 }
             });
+            try {
+                let file = fs.readFileSync(path.resolve(scriptdir, 'korefile.js'), 'utf8');
+                let AsyncFunction = Object.getPrototypeOf(async () => { }).constructor;
+                let project = new AsyncFunction('log', 'Project', 'Platform', 'platform', 'GraphicsApi', 'graphics', 'AudioApi', 'audio', 'VrApi', 'vr', 'require', 'resolve', 'reject', '__dirname', file)(log, Project, Platform_1.Platform, Project.platform, GraphicsApi_1.GraphicsApi, Options_1.Options.graphicsApi, AudioApi_1.AudioApi, Options_1.Options.audioApi, VrApi_1.VrApi, Options_1.Options.vrApi, require, resolver, reject, scriptdir);
+            }
+            catch (error) {
+                log.error(error);
+                throw error;
+            }
         });
     }
-    static create(directory, platform) {
-        return __awaiter(this, void 0, void 0, function* () {
-            Project.platform = platform;
-            Project.root = path.resolve(directory);
-            let project = yield Project.createProject('.', directory);
-            let defines = getDefines(platform, project.isRotated());
-            for (let define of defines) {
-                project.addDefine(define);
-            }
-            return project;
-        });
+    static async create(directory, platform) {
+        Project.platform = platform;
+        Project.root = path.resolve(directory);
+        let project = await Project.createProject('.', directory);
+        let defines = getDefines(platform, project.isRotated());
+        for (let define of defines) {
+            project.addDefine(define);
+        }
+        return project;
     }
     isRotated() {
         return this.rotated;
