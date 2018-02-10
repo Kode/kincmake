@@ -456,7 +456,7 @@ export class Project {
 	}
 
 	// deprecated
-	createProject(): Promise<void> {
+	static createProject(): Promise<void> {
 		log.info('Warning: createProject was removed, see updates.md for instructions.');
 		return new Promise<void>((resolve, reject) => {
 			resolve();

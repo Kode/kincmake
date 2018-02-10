@@ -372,7 +372,7 @@ class Project {
         this.cmd = true;
     }
     // deprecated
-    createProject() {
+    static createProject() {
         log.info('Warning: createProject was removed, see updates.md for instructions.');
         return new Promise((resolve, reject) => {
             resolve();
