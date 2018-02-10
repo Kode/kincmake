@@ -32,8 +32,83 @@ function isAbsolute(path: string) {
 	return (path.length > 0 && path[0] === '/') || (path.length > 1 && path[1] === ':');
 }
 
+let projectInProgress = 0;
+
+process.on('exit', (code: number) => {
+	if (projectInProgress > 0) {
+		console.error('Error: korefile.js did not call resolve, no project created.');
+	}
+});
+
 let scriptdir = '.';
+// let lastScriptDir = '.';
 let koreDir = '.';
+
+async function loadProject(directory: string): Promise<Project> {
+	return new Promise<Project>((resolve, reject) => {
+		projectInProgress += 1;
+		let resolver = async (project: Project) => {
+			projectInProgress -= 1;
+
+			// TODO: This accidentally finds Kha/Backends/KoreHL
+			/*if (fs.existsSync(path.join(scriptdir, 'Backends'))) {
+				var libdirs = fs.readdirSync(path.join(scriptdir, 'Backends'));
+				for (var ld in libdirs) {
+					var libdir = path.join(scriptdir, 'Backends', libdirs[ld]);
+					if (fs.statSync(libdir).isDirectory()) {
+						var korefile = path.join(libdir, 'korefile.js');
+						if (fs.existsSync(korefile)) {
+							project.addSubProject(await Project.createProject(libdir, scriptdir));
+						}
+					}
+				}
+			}*/
+
+			resolve(project);
+		};
+		
+		try {
+			scriptdir = directory;
+			let file = fs.readFileSync(path.resolve(directory, 'korefile.js'), 'utf8');
+			let AsyncFunction = Object.getPrototypeOf(async () => {}).constructor;
+			let project = new AsyncFunction(
+				'log',
+				'Project',
+				'Platform',
+				'platform',
+				'GraphicsApi',
+				'graphics',
+				'AudioApi',
+				'audio',
+				'VrApi',
+				'vr',
+				'require',
+				'resolve',
+				'reject',
+				'__dirname',
+				file)
+			(
+				log,
+				Project,
+				Platform,
+				Project.platform,
+				GraphicsApi,
+				Options.graphicsApi,
+				AudioApi,
+				Options.audioApi,
+				VrApi,
+				Options.vrApi,
+				require,
+				resolver,
+				reject,
+				directory);
+			}
+		catch (error) {
+			log.error(error);
+			throw error;
+		}
+	});
+}
 
 export interface File {
 	file: string;
@@ -45,7 +120,7 @@ export interface File {
 export class Project {
 	static platform: string;
 	static koreDir: string;
-	static root: string;
+	// static root: string;
 	name: string;
 	debugDir: string;
 	basedir: string;
@@ -64,12 +139,10 @@ export class Project {
 	rotated: boolean;
 	cmd: boolean;
 
-	constructor(name: string, basedir: string) {
-		if (basedir === undefined) throw 'Please pass __dirname to the Project';
+	constructor(name: string) {
 		this.name = name;
 		this.debugDir = '';
-		this.basedir = basedir;
-		if (name === 'Kore') Project.koreDir = this.basedir;
+		this.basedir = scriptdir;
 		this.uuid = uuid.v4();
 
 		this.files = [];
@@ -287,10 +360,6 @@ export class Project {
 		}
 	}
 
-	addSubProject(project: Project) {
-		this.subProjects.push(project);
-	}
-
 	addLib(lib: string) {
 		this.libs.push(lib);
 	}
@@ -354,84 +423,15 @@ export class Project {
 		this.debugDir = path.resolve(this.basedir, debugDir);
 	}
 
-	static async createProject(filename: string, scriptdir: string): Promise<Project> {
-		return new Promise<Project>((resolve, reject) => {
-			let originalscriptdir = scriptdir;
-			scriptdir = path.resolve(scriptdir, filename);
-
-			let resolved = false;
-			let resolver = async (project: Project) => {
-				resolved = true;
-
-				// TODO: This accidentally finds Kha/Backends/KoreHL
-				/*if (fs.existsSync(path.join(scriptdir, 'Backends'))) {
-					var libdirs = fs.readdirSync(path.join(scriptdir, 'Backends'));
-					for (var ld in libdirs) {
-						var libdir = path.join(scriptdir, 'Backends', libdirs[ld]);
-						if (fs.statSync(libdir).isDirectory()) {
-							var korefile = path.join(libdir, 'korefile.js');
-							if (fs.existsSync(korefile)) {
-								project.addSubProject(await Project.createProject(libdir, scriptdir));
-							}
-						}
-					}
-				}*/
-
-				resolve(project);
-			};
-
-			process.on('exit', (code: number) => {
-				if (!resolved) {
-					console.error('Error: korefile.js did not call resolve, no project created.');
-				}
-			});
-			
-			try {
-				let file = fs.readFileSync(path.resolve(scriptdir, 'korefile.js'), 'utf8');
-				let AsyncFunction = Object.getPrototypeOf(async () => {}).constructor;
-				let project = new AsyncFunction(
-					'log',
-					'Project',
-					'Platform',
-					'platform',
-					'GraphicsApi',
-					'graphics',
-					'AudioApi',
-					'audio',
-					'VrApi',
-					'vr',
-					'require',
-					'resolve',
-					'reject',
-					'__dirname',
-					file)
-				(
-					log,
-					Project,
-					Platform,
-					Project.platform,
-					GraphicsApi,
-					Options.graphicsApi,
-					AudioApi,
-					Options.audioApi,
-					VrApi,
-					Options.vrApi,
-					require,
-					resolver,
-					reject,
-					scriptdir);
-				}
-			catch (error) {
-				log.error(error);
-				throw error;
-			}
-		});
+	async addProject(directory: string) {
+		this.subProjects.push(await loadProject(path.isAbsolute(directory) ? directory : path.join(this.basedir, directory)));
 	}
 
 	static async create(directory: string, platform: string) {
+		Project.koreDir = path.join(__dirname, '../../..');
 		Project.platform = platform;
-		Project.root = path.resolve(directory);
-		let project = await Project.createProject('.', directory);
+		let project = await loadProject(path.resolve(directory));
+		await project.addProject(Project.koreDir);
 		let defines = getDefines(platform, project.isRotated());
 		for (let define of defines) {
 			project.addDefine(define);
@@ -453,5 +453,18 @@ export class Project {
 
 	setCmd() {
 		this.cmd = true;
+	}
+
+	// deprecated
+	createProject(): Promise<void> {
+		log.info('Warning: createProject was removed, see updates.md for instructions.');
+		return new Promise<void>((resolve, reject) => {
+			resolve();
+		});
+	}
+
+	// deprecated
+	addSubProject() {
+
 	}
 }
