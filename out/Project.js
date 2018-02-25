@@ -90,6 +90,7 @@ class Project {
         this.includes = [];
         this.excludes = [];
         this.cpp11 = false;
+        this.kore = true;
         this.targetOptions = {
             android: {}
         };
@@ -352,7 +353,9 @@ class Project {
         Project.koreDir = path.join(__dirname, '../../..');
         Project.platform = platform;
         let project = await loadProject(path.resolve(directory));
-        await project.addProject(Project.koreDir);
+        if (project.kore) {
+            await project.addProject(Project.koreDir);
+        }
         let defines = getDefines(platform, project.isRotated());
         for (let define of defines) {
             project.addDefine(define);
