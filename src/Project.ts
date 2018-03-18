@@ -120,7 +120,7 @@ export interface File {
 export class Project {
 	static platform: string;
 	static koreDir: string;
-	// static root: string;
+	static root: string;
 	name: string;
 	debugDir: string;
 	basedir: string;

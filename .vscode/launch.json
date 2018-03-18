@@ -9,7 +9,10 @@
 			"request": "launch",
 			"name": "Launch Program",
 			"program": "${workspaceFolder}\\koremake.js",
-			"cwd": "${workspaceFolder}",
+			"cwd": "${workspaceFolder}\\..\\..\\..",
+			"args": [
+				
+			],
 			"outFiles": [
 				"${workspaceFolder}/out/**/*.js"
 			]

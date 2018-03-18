@@ -206,6 +206,7 @@ async function compileShader(projectDir, type, from, to, temp, platform, builddi
 async function exportKoremakeProject(from, to, platform, options) {
     log.info('korefile found.');
     log.info('Creating ' + fromPlatform(platform) + ' project files.');
+    Project_1.Project.root = path.resolve(from);
     let project;
     try {
         project = await Project_1.Project.create(from, platform);

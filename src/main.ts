@@ -225,6 +225,7 @@ async function exportKoremakeProject(from: string, to: string, platform: string,
 	log.info('korefile found.');
 	log.info('Creating ' + fromPlatform(platform) + ' project files.');
 
+	Project.root = path.resolve(from);
 	let project: Project;
 	try {
 		project = await Project.create(from, platform);
