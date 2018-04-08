@@ -56,6 +56,8 @@ function valueOf(str) {
 function getShaderLang() {
     if (Options_1.Options.graphicsApi === GraphicsApi_1.GraphicsApi.OpenGL)
         return 'glsl';
+    if (Options_1.Options.graphicsApi === GraphicsApi_1.GraphicsApi.Direct3D9)
+        return 'd3d9';
     if (Options_1.Options.graphicsApi === GraphicsApi_1.GraphicsApi.Direct3D11 || Options_1.Options.graphicsApi === GraphicsApi_1.GraphicsApi.Direct3D12 || Options_1.Options.graphicsApi === GraphicsApi_1.GraphicsApi.Default)
         return 'd3d11';
     if (Options_1.Options.graphicsApi === GraphicsApi_1.GraphicsApi.Vulkan)
