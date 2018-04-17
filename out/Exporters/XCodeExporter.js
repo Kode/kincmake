@@ -217,6 +217,7 @@ class XCodeExporter extends Exporter_1.Exporter {
             // version: "1.0", // somehow the plist can't read the values for this
             // build: "1", // somehow the plist can't read the values for this
             organizationName: 'KTX Software Development',
+            developmentTeam: ''
         };
         if (project.targetOptions != null && project.targetOptions.ios != null) {
             let userOptions = project.targetOptions.ios;
@@ -226,6 +227,8 @@ class XCodeExporter extends Exporter_1.Exporter {
             // if (userOptions.build != null) targetOptions.build = userOptions.build;
             if (userOptions.organizationName != null)
                 targetOptions.organizationName = userOptions.organizationName;
+            if (userOptions.developmentTeam != null)
+                targetOptions.developmentTeam = userOptions.developmentTeam;
         }
         const projectId = newId();
         const appFileId = newId();
@@ -283,6 +286,7 @@ class XCodeExporter extends Exporter_1.Exporter {
                     framework.localPath = path.resolve(from, framework.toString());
                     this.p(framework.getFileId() + ' /* ' + framework.toString() + ' */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ' + framework.toString() + '; path = ' + framework.localPath + '; sourceTree = "<absolute>"; };', 2);
                 }
+                // XCode framework
                 else {
                     this.p(framework.getFileId() + ' /* ' + framework.toString() + ' */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ' + framework.toString() + '; path = System/Library/Frameworks/' + framework.toString() + '; sourceTree = SDKROOT; };', 2);
                 }
@@ -429,6 +433,7 @@ class XCodeExporter extends Exporter_1.Exporter {
         this.p('TargetAttributes = {', 4);
         this.p(targetId + ' = {', 5);
         this.p('CreatedOnToolsVersion = 6.1.1;', 6);
+        this.p('DevelopmentTeam = ' + targetOptions.developmentTeam + ';', 6);
         this.p('};', 5);
         this.p('};', 4);
         this.p('};', 3);
