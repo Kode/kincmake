@@ -263,6 +263,7 @@ export class XCodeExporter extends Exporter {
 			// version: "1.0", // somehow the plist can't read the values for this
 			// build: "1", // somehow the plist can't read the values for this
 			organizationName: 'KTX Software Development',
+			developmentTeam: ''
 		};
 		if (project.targetOptions != null && project.targetOptions.ios != null) {
 			let userOptions = project.targetOptions.ios;
@@ -270,6 +271,7 @@ export class XCodeExporter extends Exporter {
 			// if (userOptions.version != null) targetOptions.version = userOptions.version;
 			// if (userOptions.build != null) targetOptions.build = userOptions.build;
 			if (userOptions.organizationName != null) targetOptions.organizationName = userOptions.organizationName;
+			if(userOptions.developmentTeam != null) targetOptions.developmentTeam = userOptions.developmentTeam;
 		}
 
 		const projectId = newId();
@@ -465,6 +467,7 @@ export class XCodeExporter extends Exporter {
 		this.p('TargetAttributes = {', 4);
 		this.p(targetId + ' = {', 5);
 		this.p('CreatedOnToolsVersion = 6.1.1;', 6);
+		this.p('DevelopmentTeam = ' + targetOptions.developmentTeam + ';', 6)
 		this.p('};', 5);
 		this.p('};', 4);
 		this.p('};', 3);
