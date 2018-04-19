@@ -265,13 +265,13 @@ export class XCodeExporter extends Exporter {
 			organizationName: 'KTX Software Development',
 			developmentTeam: ''
 		};
-		if (project.targetOptions != null && project.targetOptions.ios != null) {
+		if (project.targetOptions && project.targetOptions.ios) {
 			let userOptions = project.targetOptions.ios;
-			if (userOptions.bundle != null) targetOptions.bundle = userOptions.bundle;
-			// if (userOptions.version != null) targetOptions.version = userOptions.version;
-			// if (userOptions.build != null) targetOptions.build = userOptions.build;
-			if (userOptions.organizationName != null) targetOptions.organizationName = userOptions.organizationName;
-			if(userOptions.developmentTeam != null) targetOptions.developmentTeam = userOptions.developmentTeam;
+			if (userOptions.bundle) targetOptions.bundle = userOptions.bundle;
+			// if (userOptions.version) targetOptions.version = userOptions.version;
+			// if (userOptions.build) targetOptions.build = userOptions.build;
+			if (userOptions.organizationName) targetOptions.organizationName = userOptions.organizationName;
+			if (userOptions.developmentTeam) targetOptions.developmentTeam = userOptions.developmentTeam;
 		}
 
 		const projectId = newId();
@@ -467,7 +467,9 @@ export class XCodeExporter extends Exporter {
 		this.p('TargetAttributes = {', 4);
 		this.p(targetId + ' = {', 5);
 		this.p('CreatedOnToolsVersion = 6.1.1;', 6);
-		this.p('DevelopmentTeam = ' + targetOptions.developmentTeam + ';', 6)
+		if (targetOptions.developmentTeam) {
+			this.p('DevelopmentTeam = ' + targetOptions.developmentTeam + ';', 6);
+		}
 		this.p('};', 5);
 		this.p('};', 4);
 		this.p('};', 3);
