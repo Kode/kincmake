@@ -518,12 +518,7 @@ class XCodeExporter extends Exporter_1.Exporter {
         this.p('CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";', 4);
         this.p('CLANG_CXX_LIBRARY = "compiler-default";', 4);
         this.p('CLANG_ENABLE_MODULES = YES;', 4);
-        if (platform === Platform_1.Platform.iOS) {
-            this.p('CLANG_ENABLE_OBJC_ARC = YES;', 4);
-        }
-        else {
-            this.p('CLANG_ENABLE_OBJC_ARC = NO;', 4);
-        }
+        this.p('CLANG_ENABLE_OBJC_ARC = YES;', 4);
         this.p('CLANG_WARN_BOOL_CONVERSION = YES;', 4);
         this.p('CLANG_WARN_CONSTANT_CONVERSION = YES;', 4);
         this.p('CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;', 4);
@@ -593,12 +588,7 @@ class XCodeExporter extends Exporter_1.Exporter {
         this.p('CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";', 4);
         this.p('CLANG_CXX_LIBRARY = "compiler-default";', 4);
         this.p('CLANG_ENABLE_MODULES = YES;', 4);
-        if (platform === Platform_1.Platform.iOS) {
-            this.p('CLANG_ENABLE_OBJC_ARC = YES;', 4);
-        }
-        else {
-            this.p('CLANG_ENABLE_OBJC_ARC = NO;', 4);
-        }
+        this.p('CLANG_ENABLE_OBJC_ARC = YES;', 4);
         this.p('CLANG_WARN_BOOL_CONVERSION = YES;', 4);
         this.p('CLANG_WARN_CONSTANT_CONVERSION = YES;', 4);
         this.p('CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;', 4);
