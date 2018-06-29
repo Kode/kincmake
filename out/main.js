@@ -74,20 +74,20 @@ function shaderLang(platform) {
         case Platform_1.Platform.iOS:
         case Platform_1.Platform.tvOS:
             switch (Options_1.Options.graphicsApi) {
+                case GraphicsApi_1.GraphicsApi.Default:
                 case GraphicsApi_1.GraphicsApi.Metal:
                     return 'metal';
                 case GraphicsApi_1.GraphicsApi.OpenGL:
-                case GraphicsApi_1.GraphicsApi.Default:
                     return 'essl';
                 default:
                     throw new Error('Unsupported shader language.');
             }
         case Platform_1.Platform.OSX:
             switch (Options_1.Options.graphicsApi) {
+                case GraphicsApi_1.GraphicsApi.Default:
                 case GraphicsApi_1.GraphicsApi.Metal:
                     return 'metal';
                 case GraphicsApi_1.GraphicsApi.OpenGL:
-                case GraphicsApi_1.GraphicsApi.Default:
                     return 'glsl';
                 default:
                     throw new Error('Unsupported shader language.');

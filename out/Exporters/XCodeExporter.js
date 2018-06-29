@@ -562,11 +562,11 @@ class XCodeExporter extends Exporter_1.Exporter {
             this.p('IPHONEOS_DEPLOYMENT_TARGET = 7.0;', 4);
         }
         else {
-            if (Options_1.Options.graphicsApi === GraphicsApi_1.GraphicsApi.Metal) {
-                this.p('MACOSX_DEPLOYMENT_TARGET = 10.11;', 4);
+            if (Options_1.Options.graphicsApi === GraphicsApi_1.GraphicsApi.OpenGL) {
+                this.p('MACOSX_DEPLOYMENT_TARGET = 10.9;', 4);
             }
             else {
-                this.p('MACOSX_DEPLOYMENT_TARGET = 10.9;', 4);
+                this.p('MACOSX_DEPLOYMENT_TARGET = 10.11;', 4);
             }
         }
         this.p('MTL_ENABLE_DEBUG_INFO = YES;', 4);
@@ -632,11 +632,11 @@ class XCodeExporter extends Exporter_1.Exporter {
             this.p('IPHONEOS_DEPLOYMENT_TARGET = 7.0;', 4);
         }
         else {
-            if (Options_1.Options.graphicsApi === GraphicsApi_1.GraphicsApi.Metal) {
-                this.p('MACOSX_DEPLOYMENT_TARGET = 10.11;', 4);
+            if (Options_1.Options.graphicsApi === GraphicsApi_1.GraphicsApi.OpenGL) {
+                this.p('MACOSX_DEPLOYMENT_TARGET = 10.9;', 4);
             }
             else {
-                this.p('MACOSX_DEPLOYMENT_TARGET = 10.9;', 4);
+                this.p('MACOSX_DEPLOYMENT_TARGET = 10.11;', 4);
             }
         }
         this.p('MTL_ENABLE_DEBUG_INFO = NO;', 4);

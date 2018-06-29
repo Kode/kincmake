@@ -34,9 +34,9 @@ export class TizenExporter extends Exporter {
 		fs.writeFileSync(path.resolve(to, 'manifest.xml'), manifest);
 
 		for (let file of project.getFiles()) {
-			let target = path.resolve(to, 'CopiedSources', file);
+			let target = path.resolve(to, 'CopiedSources', file.file);
 			fs.ensureDirSync(path.join(target.substr(0, target.lastIndexOf('/'))));
-			fs.copySync(path.resolve(from, file), target, { overwrite: true });
+			fs.copySync(path.resolve(from, file.file), target, { overwrite: true });
 		}
 	}
 }
