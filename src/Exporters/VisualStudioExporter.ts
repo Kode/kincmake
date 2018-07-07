@@ -759,6 +759,9 @@ export class VisualStudioExporter extends Exporter {
 				this.p('<DisableSpecificWarnings>4453;28204</DisableSpecificWarnings>', 3);
 				this.p('<PreprocessorDefinitions>' + defines + moredefines + '%(PreprocessorDefinitions)</PreprocessorDefinitions>', 3);
 				this.p('</ClCompile>', 2);
+				this.p('<Manifest>', 2);
+				this.p('<EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>', 3);
+				this.p('</Manifest>', 2);
 				this.p('</ItemDefinitionGroup>', 1);
 			}
 		}
@@ -801,6 +804,9 @@ export class VisualStudioExporter extends Exporter {
 					}
 					this.p('<AdditionalDependencies>' + libs + 'kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>', 3);
 					this.p('</Link>', 2);
+					this.p('<Manifest>', 2);
+					this.p('<EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>', 3);
+					this.p('</Manifest>', 2);
 				}
 				this.p('</ItemDefinitionGroup>', 1);
 				this.p('<ItemDefinitionGroup Condition="\'$(Configuration)|$(Platform)\'==\'Release|' + system + '\'">', 1);
@@ -843,6 +849,9 @@ export class VisualStudioExporter extends Exporter {
 					}
 					this.p('<AdditionalDependencies>' + libs + 'kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>', 3);
 					this.p('</Link>', 2);
+					this.p('<Manifest>', 2);
+					this.p('<EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>', 3);
+					this.p('</Manifest>', 2);
 				}
 				this.p('</ItemDefinitionGroup>', 1);
 			}
