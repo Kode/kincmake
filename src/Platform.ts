@@ -12,7 +12,7 @@ export interface PlatformType {
 	PS4: string;
 	XboxOne: string;
 	Switch: string;
-};
+}
 
 export let Platform: PlatformType = {
 	Windows: 'windows',
