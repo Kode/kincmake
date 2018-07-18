@@ -423,37 +423,39 @@ export async function run(options: any, loglog: any): Promise<string> {
 		else if ((options.customTarget && options.customTarget.baseTarget === Platform.Windows) || options.target === Platform.Windows
 			|| (options.customTarget && options.customTarget.baseTarget === Platform.WindowsApp) || options.target === Platform.WindowsApp) {
 			let vsvars: string = null;
+			const dothemath = true;
+			const bits = dothemath ? '64' : '32';
 			switch (options.visualstudio) {
 				case VisualStudioVersion.VS2017:
 					const vspath = child_process.execFileSync(path.join(__dirname, '..', 'Data', 'windows', 'vswhere.exe'), ['-latest', '-property', 'installationPath'], {encoding: 'utf8'});
-					const varspath = path.join(vspath.trim(), 'VC', 'Auxiliary', 'Build', 'vcvars32.bat');
+					const varspath = path.join(vspath.trim(), 'VC', 'Auxiliary', 'Build', 'vcvars' + bits + '.bat');
 					if (fs.existsSync(varspath)) {
 						vsvars = varspath;
 					}
 					break;
 				case VisualStudioVersion.VS2015:
 					if (process.env.VS140COMNTOOLS) {
-						vsvars = process.env.VS140COMNTOOLS + '\\vsvars32.bat';
+						vsvars = process.env.VS140COMNTOOLS + '\\vsvars' + bits + '.bat';
 					}
 					break;
 				case VisualStudioVersion.VS2013:
 					if (process.env.VS120COMNTOOLS) {
-						vsvars = process.env.VS120COMNTOOLS + '\\vsvars32.bat';
+						vsvars = process.env.VS120COMNTOOLS + '\\vsvars' + bits + '.bat';
 					}
 					break;
 				case VisualStudioVersion.VS2012:
 					if (process.env.VS110COMNTOOLS) {
-						vsvars = process.env.VS110COMNTOOLS + '\\vsvars32.bat';
+						vsvars = process.env.VS110COMNTOOLS + '\\vsvars' + bits + '.bat';
 					}
 					break;
 				case VisualStudioVersion.VS2010:
 					if (process.env.VS100COMNTOOLS) {
-						vsvars = process.env.VS100COMNTOOLS + '\\vsvars32.bat';
+						vsvars = process.env.VS100COMNTOOLS + '\\vsvars' + bits + '.bat';
 					}
 					break;
 			}
 			if (vsvars !== null) {
-				fs.writeFileSync(path.join(options.to, 'build.bat'), '@call "' + vsvars + '"\n' + '@MSBuild.exe "' + path.resolve(options.to, solutionName + '.vcxproj') + '" /m /p:Configuration=' + (options.debug ? 'Debug' : 'Release') + ',Platform=Win32');
+				fs.writeFileSync(path.join(options.to, 'build.bat'), '@call "' + vsvars + '"\n' + '@MSBuild.exe "' + path.resolve(options.to, solutionName + '.vcxproj') + '" /m /clp:ErrorsOnly /p:Configuration=' + (options.debug ? 'Debug' : 'Release') + ',Platform=' + (dothemath ? 'x64' : 'win32'));
 				make = child_process.spawn('build.bat', [], {cwd: options.to});
 			}
 			else {
