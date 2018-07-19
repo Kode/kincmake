@@ -17,7 +17,7 @@ export class AndroidExporter extends Exporter {
 		let safename = project.getName().replace(/ /g, '-');
 		this.safename = safename;
 		let targetOptions = {
-			package: 'com.ktxsoftware.kore',
+			package: 'tech.kode.kore',
 			screenOrientation: 'sensor',
 			permissions: new Array<string>(),
 			disableStickyImmersiveMode: false

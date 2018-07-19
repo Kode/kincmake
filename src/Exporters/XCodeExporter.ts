@@ -259,10 +259,10 @@ export class XCodeExporter extends Exporter {
 		}
 
 		let targetOptions = {
-			bundle: 'com.ktxsoftware.$(PRODUCT_NAME:rfc1034identifier)',
+			bundle: 'tech.kode.$(PRODUCT_NAME:rfc1034identifier)',
 			// version: "1.0", // somehow the plist can't read the values for this
 			// build: "1", // somehow the plist can't read the values for this
-			organizationName: 'KTX Software Development',
+			organizationName: 'the Kore Development Team',
 			developmentTeam: ''
 		};
 		if (project.targetOptions && project.targetOptions.ios) {
