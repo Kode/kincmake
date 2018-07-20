@@ -380,9 +380,9 @@ class VisualStudioExporter extends Exporter_1.Exporter {
             if (dir !== lastdir)
                 lastdir = dir;
             if (file.file.endsWith('.asm')) {
-                this.p('<CustomBuild Include="' + this.nicePath(from, to, file.file) + '">', 2);
+                this.p('<MASM Include="' + this.nicePath(from, to, file.file) + '">', 2);
                 this.p('<Filter>' + dir.replace(/\//g, '\\') + '</Filter>', 3);
-                this.p('</CustomBuild>', 2);
+                this.p('</MASM>', 2);
             }
         }
         this.p('</ItemGroup>', 1);
@@ -494,10 +494,12 @@ class VisualStudioExporter extends Exporter_1.Exporter {
     additionalPropertyGroups(indent) {
     }
     extensionSettings(indent) {
+        this.p('<Import Project="$(VCTargetsPath)\\BuildCustomizations\\masm.props" />');
     }
     additionalImportGroups(indent) {
     }
     extensionTargets(indent) {
+        this.p('<Import Project="$(VCTargetsPath)\\BuildCustomizations\\masm.targets"/>', indent);
     }
     exportProject(from, to, project, platform, cmd, noshaders) {
         for (let proj of project.getSubProjects())
@@ -932,13 +934,8 @@ class VisualStudioExporter extends Exporter_1.Exporter {
             this.p('</ItemGroup>', 1);
             this.p('<ItemGroup>', 1);
             for (let file of project.getFiles()) {
-                if (Project_1.Project.koreDir && Project_1.Project.koreDir.toString() !== '' && file.file.endsWith('.asm')) {
-                    this.p('<CustomBuild Include="' + this.nicePath(from, to, file.file) + '">', 2);
-                    this.p('<FileType>Document</FileType>', 2);
-                    this.p('<Command>' + path.resolve(from, Project_1.Project.koreDir).replace(/\//g, '\\') + '\\Tools\\yasm-1.2.0-win32.exe -Xvc -f Win32 -g cv8 -o $(OutDir)\\%(Filename).obj -I ..\\Kt\\WebM\\src -I ..\\Kt\\WebM\\build -rnasm -pnasm "%(FullPath)"</Command>', 2);
-                    this.p('<Outputs>$(OutDir)\\%(Filename).obj</Outputs>', 2);
-                    this.p('<Message>Compiling %(FullPath)</Message>', 2);
-                    this.p('</CustomBuild>', 2);
+                if (file.file.endsWith('.asm')) {
+                    this.p('<MASM Include="' + this.nicePath(from, to, file.file) + '"/>');
                 }
             }
             this.p('</ItemGroup>', 1);
