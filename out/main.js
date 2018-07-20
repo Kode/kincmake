@@ -296,7 +296,7 @@ async function exportProject(from, to, platform, options) {
         throw 'korefile.js not found.';
     }
 }
-function compileProject(make, project, solutionName, options) {
+function compileProject(make, project, solutionName, options, dothemath) {
     return new Promise((resolve, reject) => {
         make.stdout.on('data', function (data) {
             log.info(data.toString(), false);
@@ -310,7 +310,10 @@ function compileProject(make, project, solutionName, options) {
                     fs.copySync(path.resolve(path.join(options.to.toString(), options.buildPath), solutionName), path.resolve(options.from.toString(), project.getDebugDir(), solutionName), { overwrite: true });
                 }
                 else if ((options.customTarget && options.customTarget.baseTarget === Platform_1.Platform.Windows) || options.target === Platform_1.Platform.Windows) {
-                    fs.copySync(path.join(options.to.toString(), options.debug ? 'Debug' : 'Release', solutionName + '.exe'), path.join(options.from.toString(), project.getDebugDir(), solutionName + '.exe'), { overwrite: true });
+                    let from = dothemath
+                        ? path.join(options.to.toString(), 'x64', options.debug ? 'Debug' : 'Release', solutionName + '.exe')
+                        : path.join(options.to.toString(), options.debug ? 'Debug' : 'Release', solutionName + '.exe');
+                    fs.copySync(from, path.join(options.from.toString(), project.getDebugDir(), solutionName + '.exe'), { overwrite: true });
                 }
                 if (options.run) {
                     if ((options.customTarget && options.customTarget.baseTarget === Platform_1.Platform.OSX) || options.target === Platform_1.Platform.OSX) {
@@ -371,6 +374,7 @@ async function run(options, loglog) {
     let solutionName = project.getName();
     if (options.compile && solutionName !== '') {
         log.info('Compiling...');
+        const dothemath = true;
         let make = null;
         if ((options.customTarget && options.customTarget.baseTarget === Platform_1.Platform.Linux) || options.target === Platform_1.Platform.Linux) {
             make = child_process.spawn('make', [], { cwd: path.join(options.to, options.buildPath) });
@@ -384,7 +388,6 @@ async function run(options, loglog) {
         else if ((options.customTarget && options.customTarget.baseTarget === Platform_1.Platform.Windows) || options.target === Platform_1.Platform.Windows
             || (options.customTarget && options.customTarget.baseTarget === Platform_1.Platform.WindowsApp) || options.target === Platform_1.Platform.WindowsApp) {
             let vsvars = null;
-            const dothemath = true;
             const bits = dothemath ? '64' : '32';
             switch (options.visualstudio) {
                 case VisualStudioVersion_1.VisualStudioVersion.VS2017:
@@ -430,7 +433,7 @@ async function run(options, loglog) {
             make = child_process.spawn(gradlew, args, { cwd: path.join(options.to, solutionName) });
         }
         if (make !== null) {
-            await compileProject(make, project, solutionName, options);
+            await compileProject(make, project, solutionName, options, dothemath);
             return solutionName;
         }
         else {

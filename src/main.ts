@@ -320,7 +320,7 @@ async function exportProject(from: string, to: string, platform: string, options
 	}
 }
 
-function compileProject(make: child_process.ChildProcess, project: Project, solutionName: string, options: any): Promise<void> {
+function compileProject(make: child_process.ChildProcess, project: Project, solutionName: string, options: any, dothemath: boolean): Promise<void> {
 	return new Promise<void>((resolve, reject) => {
 		make.stdout.on('data', function (data: any) {
 			log.info(data.toString(), false);
@@ -336,7 +336,11 @@ function compileProject(make: child_process.ChildProcess, project: Project, solu
 					fs.copySync(path.resolve(path.join(options.to.toString(), options.buildPath), solutionName), path.resolve(options.from.toString(), project.getDebugDir(), solutionName), { overwrite: true });
 				}
 				else if ((options.customTarget && options.customTarget.baseTarget === Platform.Windows) || options.target === Platform.Windows) {
-					fs.copySync(path.join(options.to.toString(), options.debug ? 'Debug' : 'Release', solutionName + '.exe'), path.join(options.from.toString(), project.getDebugDir(), solutionName + '.exe'), { overwrite: true });
+					let from =
+					dothemath
+					? path.join(options.to.toString(), 'x64', options.debug ? 'Debug' : 'Release', solutionName + '.exe')
+					: path.join(options.to.toString(), options.debug ? 'Debug' : 'Release', solutionName + '.exe'); 
+					fs.copySync(from, path.join(options.from.toString(), project.getDebugDir(), solutionName + '.exe'), { overwrite: true });
 				}
 				if (options.run) {
 					if ((options.customTarget && options.customTarget.baseTarget === Platform.OSX) || options.target === Platform.OSX) {
@@ -408,7 +412,8 @@ export async function run(options: any, loglog: any): Promise<string> {
 	
 	if (options.compile && solutionName !== '') {
 		log.info('Compiling...');
-		
+
+		const dothemath = true;
 		let make: child_process.ChildProcess = null;
 
 		if ((options.customTarget && options.customTarget.baseTarget === Platform.Linux) || options.target === Platform.Linux) {
@@ -423,7 +428,6 @@ export async function run(options: any, loglog: any): Promise<string> {
 		else if ((options.customTarget && options.customTarget.baseTarget === Platform.Windows) || options.target === Platform.Windows
 			|| (options.customTarget && options.customTarget.baseTarget === Platform.WindowsApp) || options.target === Platform.WindowsApp) {
 			let vsvars: string = null;
-			const dothemath = true;
 			const bits = dothemath ? '64' : '32';
 			switch (options.visualstudio) {
 				case VisualStudioVersion.VS2017:
@@ -470,7 +474,7 @@ export async function run(options: any, loglog: any): Promise<string> {
 		}
 
 		if (make !== null) {
-			await compileProject(make, project, solutionName, options);
+			await compileProject(make, project, solutionName, options, dothemath);
 			return solutionName;
 		}
 		else {
