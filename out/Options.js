@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const GraphicsApi_1 = require("./GraphicsApi");
 const AudioApi_1 = require("./AudioApi");
 const VrApi_1 = require("./VrApi");
+const RayTraceApi_1 = require("./RayTraceApi");
 const VisualStudioVersion_1 = require("./VisualStudioVersion");
 exports.Options = {
     precompiledHeaders: false,
@@ -10,6 +11,7 @@ exports.Options = {
     graphicsApi: GraphicsApi_1.GraphicsApi.Default,
     audioApi: AudioApi_1.AudioApi.Default,
     vrApi: VrApi_1.VrApi.None,
+    rayTraceApi: RayTraceApi_1.RayTraceApi.None,
     visualStudioVersion: VisualStudioVersion_1.VisualStudioVersion.VS2017,
     compile: false,
     run: false

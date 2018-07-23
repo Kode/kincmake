@@ -346,6 +346,9 @@ async function run(options, loglog) {
     if (options.vr !== undefined) {
         Options_1.Options.vrApi = options.vr;
     }
+    if (options.raytrace !== undefined) {
+        Options_1.Options.rayTraceApi = options.raytrace;
+    }
     if (options.visualstudio !== undefined) {
         Options_1.Options.visualStudioVersion = options.visualstudio;
     }

@@ -6,6 +6,7 @@ const log = require("./log");
 const GraphicsApi_1 = require("./GraphicsApi");
 const AudioApi_1 = require("./AudioApi");
 const VrApi_1 = require("./VrApi");
+const RayTraceApi_1 = require("./RayTraceApi");
 const Options_1 = require("./Options");
 const Platform_1 = require("./Platform");
 const uuid = require('uuid');
@@ -66,7 +67,7 @@ async function loadProject(directory) {
             scriptdir = directory;
             let file = fs.readFileSync(path.resolve(directory, 'korefile.js'), 'utf8');
             let AsyncFunction = Object.getPrototypeOf(async () => { }).constructor;
-            let project = new AsyncFunction('log', 'Project', 'Platform', 'platform', 'GraphicsApi', 'graphics', 'AudioApi', 'audio', 'VrApi', 'vr', 'require', 'resolve', 'reject', '__dirname', file)(log, Project, Platform_1.Platform, Project.platform, GraphicsApi_1.GraphicsApi, Options_1.Options.graphicsApi, AudioApi_1.AudioApi, Options_1.Options.audioApi, VrApi_1.VrApi, Options_1.Options.vrApi, require, resolver, reject, directory);
+            let project = new AsyncFunction('log', 'Project', 'Platform', 'platform', 'GraphicsApi', 'graphics', 'AudioApi', 'audio', 'VrApi', 'vr', 'RayTraceApi', 'raytrace', 'require', 'resolve', 'reject', '__dirname', file)(log, Project, Platform_1.Platform, Project.platform, GraphicsApi_1.GraphicsApi, Options_1.Options.graphicsApi, AudioApi_1.AudioApi, Options_1.Options.audioApi, VrApi_1.VrApi, Options_1.Options.vrApi, RayTraceApi_1.RayTraceApi, Options_1.Options.rayTraceApi, require, resolver, reject, directory);
         }
         catch (error) {
             log.error(error);
