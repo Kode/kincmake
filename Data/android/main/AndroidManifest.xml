@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" package="{package}">{permissions}
 	<application android:allowBackup="true" android:label="@string/app_name" android:icon="@mipmap/ic_launcher" android:supportsRtl="true">
-		<activity android:name="tech.kore.KoreActivity" android:label="@string/app_name" android:configChanges="orientation|keyboardHidden|keyboard|screenSize"
+		<activity android:name="tech.kode.kore.KoreActivity" android:label="@string/app_name" android:configChanges="orientation|keyboardHidden|keyboard|screenSize"
 			android:screenOrientation="{screenOrientation}"
 			android:launchMode="singleTask"
 			android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen">
