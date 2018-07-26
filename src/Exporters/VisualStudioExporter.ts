@@ -484,7 +484,7 @@ export class VisualStudioExporter extends Exporter {
 
 	}
 
-	additionalItemGroups(indent: number) {
+	additionalItemGroups(indent: number, from: string, to: string, project: Project) {
 
 	}
 
@@ -985,7 +985,7 @@ export class VisualStudioExporter extends Exporter {
 			this.p('</ItemGroup>', 1);
 		}
 
-		this.additionalItemGroups(1);
+		this.additionalItemGroups(1, from, to, project);
 
 		this.p('<Import Project="$(VCTargetsPath)\\Microsoft.Cpp.targets" />', 1);
 		this.p('<ImportGroup Label="ExtensionTargets">', 1);

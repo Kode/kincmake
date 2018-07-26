@@ -449,7 +449,7 @@ class VisualStudioExporter extends Exporter_1.Exporter {
     }
     itemDefinition(config, system, includes, defines, indent) {
     }
-    additionalItemGroups(indent) {
+    additionalItemGroups(indent, from, to, project) {
     }
     // private void addWinMD(String name) {
     //     p("<Reference Include=\"" + name + ".winmd\">", 2);
@@ -946,7 +946,7 @@ class VisualStudioExporter extends Exporter_1.Exporter {
             this.p('<ResourceCompile Include="resources.rc" />', 2);
             this.p('</ItemGroup>', 1);
         }
-        this.additionalItemGroups(1);
+        this.additionalItemGroups(1, from, to, project);
         this.p('<Import Project="$(VCTargetsPath)\\Microsoft.Cpp.targets" />', 1);
         this.p('<ImportGroup Label="ExtensionTargets">', 1);
         this.extensionTargets(2);
