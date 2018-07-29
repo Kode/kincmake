@@ -291,8 +291,16 @@ class XCodeExporter extends Exporter_1.Exporter {
                     this.p(framework.getFileId() + ' /* ' + framework.toString() + ' */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ' + framework.toString() + '; path = System/Library/Frameworks/' + framework.toString() + '; sourceTree = SDKROOT; };', 2);
                 }
             }
-            else if (framework.toString().endsWith('.dylib'))
-                this.p(framework.getFileId() + ' /* ' + framework.toString() + ' */ = {isa = PBXFileReference; lastKnownFileType = compiled.mach-o.dylib; name = ' + framework.toString() + '; path = usr/lib/' + framework.toString() + '; sourceTree = SDKROOT; };', 2);
+            else if (framework.toString().endsWith('.dylib')) {
+                // Local dylib, e.g. V8 in Krom - a directory is specified
+                if (framework.toString().indexOf('/') >= 0) {
+                    framework.localPath = path.resolve(from, framework.toString());
+                    this.p(framework.getFileId() + ' /* ' + framework.toString() + ' */ = {isa = PBXFileReference; lastKnownFileType = compiled.mach-o.dylib; name = ' + framework.toString() + '; path = ' + framework.localPath + '; sourceTree = "<absolute>"; };', 2);
+                }
+                else {
+                    this.p(framework.getFileId() + ' /* ' + framework.toString() + ' */ = {isa = PBXFileReference; lastKnownFileType = compiled.mach-o.dylib; name = ' + framework.toString() + '; path = usr/lib/' + framework.toString() + '; sourceTree = SDKROOT; };', 2);
+                }
+            }
             else {
                 framework.localPath = path.resolve(from, framework.toString());
                 this.p(framework.getFileId() + ' /* ' + framework.toString() + ' */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = ' + framework.toString() + '; path = ' + framework.localPath + '; sourceTree = "<group>"; };', 2);
@@ -672,13 +680,25 @@ class XCodeExporter extends Exporter_1.Exporter {
         for (let projectpath of project.getIncludeDirs())
             this.p('"' + path.resolve(from, projectpath).replace(/ /g, '\\\\ ') + '",', 5);
         this.p(');', 4);
+        this.p('LIBRARY_SEARCH_PATHS = (', 4);
+        for (let framework of frameworks) {
+            if (framework.toString().endsWith('.dylib') && framework.localPath != null) {
+                this.p(framework.localPath.substr(0, framework.localPath.lastIndexOf('/')) + ',', 5);
+            }
+        }
+        this.p(');', 4);
         this.p('INFOPLIST_FILE = "' + path.resolve(from, plistname) + '";', 4);
+        this.p('LD_RUNPATH_SEARCH_PATHS = (', 4);
+        this.p('"$(inherited)",', 5);
         if (platform === Platform_1.Platform.iOS) {
-            this.p('LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";', 4);
+            this.p('@executable_path/Frameworks",', 5);
         }
-        else {
-            this.p('LD_RUNPATH_SEARCH_PATHS = "$(inherited)";', 4);
+        for (let framework of frameworks) {
+            if (framework.toString().endsWith('.dylib') && framework.localPath != null) {
+                this.p(framework.localPath.substr(0, framework.localPath.lastIndexOf('/')) + ',', 5);
+            }
         }
+        this.p(');', 4);
         this.p('PRODUCT_BUNDLE_IDENTIFIER = "' + targetOptions.bundle + '";', 4);
         // this.p('BUNDLE_VERSION = "' + targetOptions.version + '";', 4);
         // this.p('BUILD_VERSION = "' + targetOptions.build + '";', 4);
