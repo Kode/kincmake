@@ -4,6 +4,7 @@ import * as log from './log';
 import {GraphicsApi} from './GraphicsApi';
 import {AudioApi} from './AudioApi';
 import {VrApi} from './VrApi';
+import {RayTraceApi} from './RayTraceApi';
 import {Options} from './Options';
 import {Platform} from './Platform';
 const uuid = require('uuid');
@@ -82,6 +83,8 @@ async function loadProject(directory: string): Promise<Project> {
 				'audio',
 				'VrApi',
 				'vr',
+				'RayTraceApi',
+				'raytrace',
 				'require',
 				'resolve',
 				'reject',
@@ -98,6 +101,8 @@ async function loadProject(directory: string): Promise<Project> {
 				Options.audioApi,
 				VrApi,
 				Options.vrApi,
+				RayTraceApi,
+				Options.rayTraceApi,
 				require,
 				resolver,
 				reject,

@@ -5,6 +5,7 @@ const Platform_1 = require("./Platform");
 const GraphicsApi_1 = require("./GraphicsApi");
 const AudioApi_1 = require("./AudioApi");
 const VrApi_1 = require("./VrApi");
+const RayTraceApi_1 = require("./RayTraceApi");
 const VisualStudioVersion_1 = require("./VisualStudioVersion");
 let defaultTarget;
 if (os.platform() === 'linux') {
@@ -41,6 +42,12 @@ let options = [
         value: true,
         description: 'Target VR device',
         default: VrApi_1.VrApi.None
+    },
+    {
+        full: 'raytrace',
+        value: true,
+        description: 'Target ray-tracing API',
+        default: RayTraceApi_1.RayTraceApi.None
     },
     {
         full: 'pch',
