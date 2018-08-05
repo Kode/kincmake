@@ -150,7 +150,7 @@ export class XCodeExporter extends Exporter {
 	exportWorkspace(to: string, project: Project) {
 		const dir = path.resolve(to, project.getName() + '.xcodeproj', 'project.xcworkspace');
 		fs.ensureDirSync(dir);
-		
+
 		this.writeFile(path.resolve(to, project.getName() + '.xcodeproj', 'project.xcworkspace', 'contents.xcworkspacedata'));
 
 		this.p('<?xml version="1.0" encoding="UTF-8"?>');
@@ -344,7 +344,7 @@ export class XCodeExporter extends Exporter {
 					framework.localPath = path.resolve(from, framework.toString());
 					this.p(framework.getFileId() + ' /* ' + framework.toString() + ' */ = {isa = PBXFileReference; lastKnownFileType = compiled.mach-o.dylib; name = ' + framework.toString() + '; path = ' + framework.localPath + '; sourceTree = "<absolute>"; };', 2);
 				} else {
-					this.p(framework.getFileId() + ' /* ' + framework.toString() + ' */ = {isa = PBXFileReference; lastKnownFileType = compiled.mach-o.dylib; name = ' + framework.toString() + '; path = usr/lib/' + framework.toString() + '; sourceTree = SDKROOT; };', 2);			
+					this.p(framework.getFileId() + ' /* ' + framework.toString() + ' */ = {isa = PBXFileReference; lastKnownFileType = compiled.mach-o.dylib; name = ' + framework.toString() + '; path = usr/lib/' + framework.toString() + '; sourceTree = SDKROOT; };', 2);
 				}
 			}
 			else {
@@ -725,7 +725,7 @@ export class XCodeExporter extends Exporter {
 		this.p('LD_RUNPATH_SEARCH_PATHS = (', 4);
 		this.p('"$(inherited)",', 5);
 		if (platform === Platform.iOS) {
-			this.p('@executable_path/Frameworks",', 5);
+			this.p('"@executable_path/Frameworks",', 5);
 		}
 		for (let framework of frameworks) {
 			if (framework.toString().endsWith('.dylib') && framework.localPath != null) {
