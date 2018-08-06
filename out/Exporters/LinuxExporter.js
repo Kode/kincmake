@@ -83,6 +83,8 @@ class LinuxExporter extends Exporter_1.Exporter {
         let optimization = '';
         if (!options.debug)
             optimization = '-O2';
+        else
+            optimization = '-g';
         this.p(project.getName() + ': ' + gchfilelist + ofilelist);
         let cpp = '';
         if (project.cpp11) {
