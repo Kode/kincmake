@@ -691,7 +691,7 @@ class XCodeExporter extends Exporter_1.Exporter {
         this.p('LD_RUNPATH_SEARCH_PATHS = (', 4);
         this.p('"$(inherited)",', 5);
         if (platform === Platform_1.Platform.iOS) {
-            this.p('@executable_path/Frameworks",', 5);
+            this.p('"@executable_path/Frameworks",', 5);
         }
         for (let framework of frameworks) {
             if (framework.toString().endsWith('.dylib') && framework.localPath != null) {
