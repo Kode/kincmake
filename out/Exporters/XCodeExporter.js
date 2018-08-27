@@ -699,6 +699,13 @@ class XCodeExporter extends Exporter_1.Exporter {
             }
         }
         this.p(');', 4);
+        if (project.cppFlags.length > 0) {
+            this.p('OTHER_CPLUSPLUSFLAGS = (', 4);
+            for (let cppFlag of project.cppFlags) {
+                this.p('"' + cppFlag + '",', 5);
+            }
+            this.p(');', 4);
+        }
         this.p('PRODUCT_BUNDLE_IDENTIFIER = "' + targetOptions.bundle + '";', 4);
         // this.p('BUNDLE_VERSION = "' + targetOptions.version + '";', 4);
         // this.p('BUILD_VERSION = "' + targetOptions.build + '";', 4);
@@ -733,6 +740,13 @@ class XCodeExporter extends Exporter_1.Exporter {
         }
         else {
             this.p('LD_RUNPATH_SEARCH_PATHS = "$(inherited)";', 4);
+        }
+        if (project.cppFlags.length > 0) {
+            this.p('OTHER_CPLUSPLUSFLAGS = (', 4);
+            for (let cppFlag of project.cppFlags) {
+                this.p('"' + cppFlag + '",', 5);
+            }
+            this.p(');', 4);
         }
         this.p('PRODUCT_BUNDLE_IDENTIFIER = "' + targetOptions.bundle + '";', 4);
         // this.p('BUNDLE_VERSION = "' + targetOptions.version + '";', 4);

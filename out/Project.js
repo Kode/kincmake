@@ -77,6 +77,7 @@ async function loadProject(directory) {
 }
 class Project {
     constructor(name) {
+        this.cppFlags = [];
         this.name = name;
         this.debugDir = '';
         this.basedir = scriptdir;
@@ -148,6 +149,11 @@ class Project {
                     }
                 }
             }
+            for (let flag of sub.cppFlags) {
+                if (!this.cppFlags.includes(flag)) {
+                    this.cppFlags.push(flag);
+                }
+            }
         }
         this.subProjects = [];
     }
@@ -171,6 +177,16 @@ class Project {
     }
     stringify(path) {
         return path.replace(/\\/g, '/');
+    }
+    addCppFlag(flag) {
+        this.cppFlags.push(flag);
+    }
+    addCppFlags() {
+        for (let i = 0; i < arguments.length; ++i) {
+            if (typeof arguments[i] === 'string') {
+                this.addCppFlag(arguments[i]);
+            }
+        }
     }
     addFileForReal(file, options) {
         for (let index in this.files) {

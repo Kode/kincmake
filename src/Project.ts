@@ -144,6 +144,7 @@ export class Project {
 	targetOptions: any;
 	rotated: boolean;
 	cmd: boolean;
+	cppFlags: string[] = [];
 
 	constructor(name: string) {
 		this.name = name;
@@ -208,6 +209,11 @@ export class Project {
 					}
 				}
 			}
+			for (let flag of sub.cppFlags) {
+				if (!this.cppFlags.includes(flag)) {
+					this.cppFlags.push(flag);
+				}
+			}
 		}
 		this.subProjects = [];
 	}
@@ -235,6 +241,18 @@ export class Project {
 
 	stringify(path: string) {
 		return path.replace(/\\/g, '/');
+	}
+
+	addCppFlag(flag: string) {
+		this.cppFlags.push(flag);
+	}
+
+	addCppFlags() {
+		for (let i = 0; i < arguments.length; ++i) {
+			if (typeof arguments[i] === 'string') {
+				this.addCppFlag(arguments[i]);
+			}
+		}
 	}
 
 	addFileForReal(file: string, options: any) {
