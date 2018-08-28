@@ -72,7 +72,7 @@ class File {
 	}
 
 	isBuildFile() {
-		return this.filename.endsWith('.c') || this.filename.endsWith('.cpp') || this.filename.endsWith('.m') || this.filename.endsWith('.mm') || this.filename.endsWith('.cc') || this.filename.endsWith('.s') || this.filename.endsWith('.metal');
+		return this.filename.endsWith('.c') || this.filename.endsWith('.cpp') || this.filename.endsWith('.m') || this.filename.endsWith('.mm') || this.filename.endsWith('.cc') || this.filename.endsWith('.s') || this.filename.endsWith('S') || this.filename.endsWith('.metal');
 	}
 
 	getName() {
@@ -363,7 +363,7 @@ export class XCodeExporter extends Exporter {
 			if (file.getName().endsWith('.cpp')) filetype = 'sourcecode.c.cpp';
 			if (file.getName().endsWith('.cc')) filetype = 'sourcecode.c.cpp';
 			if (file.getName().endsWith('.mm')) filetype = 'sourcecode.c.objcpp';
-			if (file.getName().endsWith('.s')) filetype = 'sourcecode.asm';
+			if (file.getName().endsWith('.s') || file.getName().endsWith('.S')) filetype = 'sourcecode.asm';
 			if (file.getName().endsWith('.metal')) {
 				filetype = 'sourcecode.metal';
 				fileencoding = 'fileEncoding = 4; ';
