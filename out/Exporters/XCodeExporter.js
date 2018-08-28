@@ -699,6 +699,13 @@ class XCodeExporter extends Exporter_1.Exporter {
             }
         }
         this.p(');', 4);
+        if (project.cFlags.length > 0) {
+            this.p('OTHER_CFLAGS = (', 4);
+            for (let cFlag of project.cFlags) {
+                this.p('"' + cFlag + '",', 5);
+            }
+            this.p(');', 4);
+        }
         if (project.cppFlags.length > 0) {
             this.p('OTHER_CPLUSPLUSFLAGS = (', 4);
             for (let cppFlag of project.cppFlags) {
@@ -740,6 +747,13 @@ class XCodeExporter extends Exporter_1.Exporter {
         }
         else {
             this.p('LD_RUNPATH_SEARCH_PATHS = "$(inherited)";', 4);
+        }
+        if (project.cFlags.length > 0) {
+            this.p('OTHER_CFLAGS = (', 4);
+            for (let cFlag of project.cFlags) {
+                this.p('"' + cFlag + '",', 5);
+            }
+            this.p(');', 4);
         }
         if (project.cppFlags.length > 0) {
             this.p('OTHER_CPLUSPLUSFLAGS = (', 4);

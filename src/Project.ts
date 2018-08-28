@@ -144,6 +144,7 @@ export class Project {
 	targetOptions: any;
 	rotated: boolean;
 	cmd: boolean;
+	cFlags: string[] = [];
 	cppFlags: string[] = [];
 
 	constructor(name: string) {
@@ -209,6 +210,11 @@ export class Project {
 					}
 				}
 			}
+			for (let flag of sub.cFlags) {
+				if (!this.cFlags.includes(flag)) {
+					this.cFlags.push(flag);
+				}
+			}
 			for (let flag of sub.cppFlags) {
 				if (!this.cppFlags.includes(flag)) {
 					this.cppFlags.push(flag);
@@ -241,6 +247,18 @@ export class Project {
 
 	stringify(path: string) {
 		return path.replace(/\\/g, '/');
+	}
+
+	addCFlag(flag: string) {
+		this.cFlags.push(flag);
+	}
+
+	addCFlags() {
+		for (let i = 0; i < arguments.length; ++i) {
+			if (typeof arguments[i] === 'string') {
+				this.addCFlag(arguments[i]);
+			}
+		}
 	}
 
 	addCppFlag(flag: string) {

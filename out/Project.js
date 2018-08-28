@@ -77,6 +77,7 @@ async function loadProject(directory) {
 }
 class Project {
     constructor(name) {
+        this.cFlags = [];
         this.cppFlags = [];
         this.name = name;
         this.debugDir = '';
@@ -149,6 +150,11 @@ class Project {
                     }
                 }
             }
+            for (let flag of sub.cFlags) {
+                if (!this.cFlags.includes(flag)) {
+                    this.cFlags.push(flag);
+                }
+            }
             for (let flag of sub.cppFlags) {
                 if (!this.cppFlags.includes(flag)) {
                     this.cppFlags.push(flag);
@@ -177,6 +183,16 @@ class Project {
     }
     stringify(path) {
         return path.replace(/\\/g, '/');
+    }
+    addCFlag(flag) {
+        this.cFlags.push(flag);
+    }
+    addCFlags() {
+        for (let i = 0; i < arguments.length; ++i) {
+            if (typeof arguments[i] === 'string') {
+                this.addCFlag(arguments[i]);
+            }
+        }
     }
     addCppFlag(flag) {
         this.cppFlags.push(flag);
