@@ -28,7 +28,7 @@ function fromPlatform(platform) {
         case Platform_1.Platform.iOS:
             return 'iOS';
         case Platform_1.Platform.OSX:
-            return 'OS X';
+            return 'macOS';
         case Platform_1.Platform.Android:
             return 'Android';
         case Platform_1.Platform.Linux:

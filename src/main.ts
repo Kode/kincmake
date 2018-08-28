@@ -32,7 +32,7 @@ function fromPlatform(platform: string): string {
 		case Platform.iOS:
 			return 'iOS';
 		case Platform.OSX:
-			return 'OS X';
+			return 'macOS';
 		case Platform.Android:
 			return 'Android';
 		case Platform.Linux:
