@@ -6,6 +6,7 @@ const GraphicsApi_1 = require("./GraphicsApi");
 const AudioApi_1 = require("./AudioApi");
 const VrApi_1 = require("./VrApi");
 const RayTraceApi_1 = require("./RayTraceApi");
+const Compiler_1 = require("./Compiler");
 const VisualStudioVersion_1 = require("./VisualStudioVersion");
 let defaultTarget;
 if (os.platform() === 'linux') {
@@ -130,6 +131,12 @@ let options = [
         value: true,
         description: 'Name of your project file, defaults to "korefile.js"',
         default: 'korefile.js'
+    },
+    {
+        full: 'compiler',
+        value: true,
+        description: 'Use a specific compiler',
+        default: Compiler_1.Compiler.Default
     }
 ];
 let parsedOptions = {};

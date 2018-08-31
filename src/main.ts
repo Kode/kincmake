@@ -382,6 +382,10 @@ export async function run(options: any, loglog: any): Promise<string> {
 	if (options.raytrace !== undefined) {
 		Options.rayTraceApi = options.raytrace;
 	}
+
+	if (options.compiler !== undefined) {
+		Options.compiler = options.compiler;
+	} 
 	
 	if (options.visualstudio !== undefined) {
 		Options.visualStudioVersion = options.visualstudio;	

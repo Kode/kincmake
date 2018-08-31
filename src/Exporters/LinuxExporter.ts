@@ -5,6 +5,7 @@ import {Platform} from '../Platform';
 import {Project} from '../Project';
 import * as fs from 'fs-extra';
 import * as path from 'path';
+import { Compiler } from '../Compiler';
 
 export class LinuxExporter extends Exporter {
 	constructor() {
@@ -18,6 +19,9 @@ export class LinuxExporter extends Exporter {
 	}
 	
 	exportMakefile(project: Project, from: string, to: string, platform: string, vrApi: any, options: any) {
+		const cCompiler = Options.compiler === Compiler.Clang ? 'clang' : 'gcc';
+		const cppCompiler = Options.compiler === Compiler.Clang ? 'clang++' : 'g++';
+		
 		let objects: any = {};
 		let ofiles: any = {};
 		let outputPath = path.resolve(to, options.buildPath);
@@ -91,6 +95,18 @@ export class LinuxExporter extends Exporter {
 		this.p('DEF=' + defline);
 		this.p();
 
+		let cline = '';
+		for (let flag of project.cFlags) {
+			cline += flag + ' ';
+		} 
+		this.p('CFLAGS=' + cline);
+
+		let cppline = '';
+		for (let flag of project.cppFlags) {
+			cppline += flag + ' ';
+		}
+		this.p('CPPFLAGS=' + cppline);
+
 		let optimization = '';
 		if (!options.debug) optimization = '-O2'
 		else optimization = '-g';
@@ -98,11 +114,11 @@ export class LinuxExporter extends Exporter {
 		this.p(project.getName() + ': ' + gchfilelist + ofilelist);
 		
 		let cpp = '';
-		if (project.cpp11) {
+		if (project.cpp11 && options.compiler !== Compiler.Clang) {
 			cpp = '-std=c++11';
 		}
 
-		this.p('\tg++ ' + cpp + ' ' + optimization + ' ' + ofilelist + ' -o "' + project.getName() + '" $(LIB)');
+		this.p('\t' + cppCompiler + ' ' + cpp + ' ' + optimization + ' ' + ofilelist + ' -o "' + project.getName() + '" $(LIB)');
 		
 		for (let file of project.getFiles()) {
 			let precompiledHeader: string = null;
@@ -115,8 +131,7 @@ export class LinuxExporter extends Exporter {
 			if (precompiledHeader !== null) {
 				let realfile = path.relative(outputPath, path.resolve(from, file.file));
 				this.p(path.basename(realfile) + '.gch: ' + realfile);
-				let compiler = 'g++';
-				this.p('\t' + compiler + ' ' + cpp + ' ' + optimization + ' $(INC) $(DEF) -c ' + realfile + ' -o ' + path.basename(file.file) + '.gch $(LIB)');
+				this.p('\t' + cppCompiler + ' ' + cpp + ' ' + optimization + ' $(INC) $(DEF) -c ' + realfile + ' -o ' + path.basename(file.file) + '.gch $(LIB)');
 			}
 		}
 
@@ -127,9 +142,15 @@ export class LinuxExporter extends Exporter {
 				let name = ofiles[file];
 				let realfile = path.relative(outputPath, path.resolve(from, file));
 				this.p(name + '.o: ' + realfile);
-				let compiler = 'g++';
-				if (file.endsWith('.c')) compiler = 'gcc';
-				this.p('\t' + compiler + ' ' + cpp + ' ' + optimization + ' $(INC) $(DEF) -c ' + realfile + ' -o ' + name + '.o $(LIB)');
+				
+				let compiler = cppCompiler;
+				let flags = '$(CPPFLAGS)';
+				if (file.endsWith('.c')) {
+					compiler = cCompiler;
+					flags = '$(CFLAGS)';
+				}
+				
+				this.p('\t' + compiler + ' ' + cpp + ' ' + optimization + ' $(INC) $(DEF) ' + flags + ' -c ' + realfile + ' -o ' + name + '.o $(LIB)');
 			}
 		}
 

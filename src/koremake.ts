@@ -5,6 +5,7 @@ import {GraphicsApi} from './GraphicsApi';
 import {AudioApi} from './AudioApi';
 import {VrApi} from './VrApi';
 import {RayTraceApi} from './RayTraceApi';
+import {Compiler} from './Compiler';
 import {VisualStudioVersion} from './VisualStudioVersion';
 
 let defaultTarget: string;
@@ -131,7 +132,13 @@ let options = [
 		value: true,
 		description: 'Name of your project file, defaults to "korefile.js"',
 		default: 'korefile.js'
-	}
+	},
+	{
+		full: 'compiler',
+		value: true,
+		description: 'Use a specific compiler',
+		default: Compiler.Default
+	}	
 ];
 
 let parsedOptions: any = {

@@ -1,9 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const Exporter_1 = require("./Exporter");
+const Options_1 = require("../Options");
 const Platform_1 = require("../Platform");
 const fs = require("fs-extra");
 const path = require("path");
+const Compiler_1 = require("../Compiler");
 class LinuxExporter extends Exporter_1.Exporter {
     constructor() {
         super();
@@ -14,6 +16,8 @@ class LinuxExporter extends Exporter_1.Exporter {
         this.exportCLion(project, from, to, platform, vrApi, options);
     }
     exportMakefile(project, from, to, platform, vrApi, options) {
+        const cCompiler = Options_1.Options.compiler === Compiler_1.Compiler.Clang ? 'clang' : 'gcc';
+        const cppCompiler = Options_1.Options.compiler === Compiler_1.Compiler.Clang ? 'clang++' : 'g++';
         let objects = {};
         let ofiles = {};
         let outputPath = path.resolve(to, options.buildPath);
@@ -80,6 +84,16 @@ class LinuxExporter extends Exporter_1.Exporter {
         }
         this.p('DEF=' + defline);
         this.p();
+        let cline = '';
+        for (let flag of project.cFlags) {
+            cline += flag + ' ';
+        }
+        this.p('CFLAGS=' + cline);
+        let cppline = '';
+        for (let flag of project.cppFlags) {
+            cppline += flag + ' ';
+        }
+        this.p('CPPFLAGS=' + cppline);
         let optimization = '';
         if (!options.debug)
             optimization = '-O2';
@@ -87,10 +101,10 @@ class LinuxExporter extends Exporter_1.Exporter {
             optimization = '-g';
         this.p(project.getName() + ': ' + gchfilelist + ofilelist);
         let cpp = '';
-        if (project.cpp11) {
+        if (project.cpp11 && options.compiler !== Compiler_1.Compiler.Clang) {
             cpp = '-std=c++11';
         }
-        this.p('\tg++ ' + cpp + ' ' + optimization + ' ' + ofilelist + ' -o "' + project.getName() + '" $(LIB)');
+        this.p('\t' + cppCompiler + ' ' + cpp + ' ' + optimization + ' ' + ofilelist + ' -o "' + project.getName() + '" $(LIB)');
         for (let file of project.getFiles()) {
             let precompiledHeader = null;
             for (let header of precompiledHeaders) {
@@ -102,8 +116,7 @@ class LinuxExporter extends Exporter_1.Exporter {
             if (precompiledHeader !== null) {
                 let realfile = path.relative(outputPath, path.resolve(from, file.file));
                 this.p(path.basename(realfile) + '.gch: ' + realfile);
-                let compiler = 'g++';
-                this.p('\t' + compiler + ' ' + cpp + ' ' + optimization + ' $(INC) $(DEF) -c ' + realfile + ' -o ' + path.basename(file.file) + '.gch $(LIB)');
+                this.p('\t' + cppCompiler + ' ' + cpp + ' ' + optimization + ' $(INC) $(DEF) -c ' + realfile + ' -o ' + path.basename(file.file) + '.gch $(LIB)');
             }
         }
         for (let fileobject of project.getFiles()) {
@@ -113,10 +126,13 @@ class LinuxExporter extends Exporter_1.Exporter {
                 let name = ofiles[file];
                 let realfile = path.relative(outputPath, path.resolve(from, file));
                 this.p(name + '.o: ' + realfile);
-                let compiler = 'g++';
-                if (file.endsWith('.c'))
-                    compiler = 'gcc';
-                this.p('\t' + compiler + ' ' + cpp + ' ' + optimization + ' $(INC) $(DEF) -c ' + realfile + ' -o ' + name + '.o $(LIB)');
+                let compiler = cppCompiler;
+                let flags = '$(CPPFLAGS)';
+                if (file.endsWith('.c')) {
+                    compiler = cCompiler;
+                    flags = '$(CFLAGS)';
+                }
+                this.p('\t' + compiler + ' ' + cpp + ' ' + optimization + ' $(INC) $(DEF) ' + flags + ' -c ' + realfile + ' -o ' + name + '.o $(LIB)');
             }
         }
         // project.getDefines()
