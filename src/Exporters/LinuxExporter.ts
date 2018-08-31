@@ -29,7 +29,7 @@ export class LinuxExporter extends Exporter {
 
 		for (let fileobject of project.getFiles()) {
 			let file = fileobject.file;
-			if (file.endsWith('.cpp') || file.endsWith('.c') || file.endsWith('.cc')) {
+			if (file.endsWith('.cpp') || file.endsWith('.c') || file.endsWith('.cc') || file.endsWith('.s') || file.endsWith('.S')) {
 				let name = file.toLowerCase();
 				if (name.indexOf('/') >= 0) name = name.substr(name.lastIndexOf('/') + 1);
 				name = name.substr(0, name.lastIndexOf('.'));
@@ -137,7 +137,7 @@ export class LinuxExporter extends Exporter {
 
 		for (let fileobject of project.getFiles()) {
 			let file = fileobject.file;
-			if (file.endsWith('.c') || file.endsWith('.cpp') || file.endsWith('cc')) {
+			if (file.endsWith('.c') || file.endsWith('.cpp') || file.endsWith('.cc') || file.endsWith('.s') || file.endsWith('.S')) {
 				this.p();
 				let name = ofiles[file];
 				let realfile = path.relative(outputPath, path.resolve(from, file));
@@ -149,6 +149,10 @@ export class LinuxExporter extends Exporter {
 					compiler = cCompiler;
 					flags = '$(CFLAGS)';
 				}
+				else if (file.endsWith('.s') || file.endsWith('.S')) {
+					compiler = cCompiler;
+					flags = '';
+				} 
 				
 				this.p('\t' + compiler + ' ' + cpp + ' ' + optimization + ' $(INC) $(DEF) ' + flags + ' -c ' + realfile + ' -o ' + name + '.o $(LIB)');
 			}
