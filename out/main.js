@@ -389,7 +389,7 @@ async function run(options, loglog) {
             make = child_process.spawn('make', [], { cwd: path.join(options.to, options.buildPath) });
         }
         else if ((options.customTarget && (options.customTarget.baseTarget === Platform_1.Platform.OSX || options.customTarget.baseTarget === Platform_1.Platform.iOS)) || options.target === Platform_1.Platform.OSX || options.target === Platform_1.Platform.iOS) {
-            make = child_process.spawn('xcodebuild', ['-configuration', options.debug ? 'Debug' : 'Release', '-project', solutionName + '.xcodeproj'], { cwd: options.to });
+            make = child_process.spawn('xcodebuild', ['-configuration', options.debug ? 'Debug' : 'Release', '-jobs', '2', '-project', solutionName + '.xcodeproj'], { cwd: options.to });
         }
         else if ((options.customTarget && options.customTarget.baseTarget === Platform_1.Platform.Windows) || options.target === Platform_1.Platform.Windows
             || (options.customTarget && options.customTarget.baseTarget === Platform_1.Platform.WindowsApp) || options.target === Platform_1.Platform.WindowsApp) {
