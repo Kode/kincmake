@@ -383,7 +383,7 @@ async function run(options, loglog) {
         const dothemath = true;
         let make = null;
         if ((options.customTarget && options.customTarget.baseTarget === Platform_1.Platform.Linux) || options.target === Platform_1.Platform.Linux) {
-            make = child_process.spawn('make', [], { cwd: path.join(options.to, options.buildPath) });
+            make = child_process.spawn('make', ['-j', '2'], { cwd: path.join(options.to, options.buildPath) });
         }
         if ((options.customTarget && options.customTarget.baseTarget === Platform_1.Platform.Pi) || options.target === Platform_1.Platform.Pi) {
             make = child_process.spawn('make', [], { cwd: path.join(options.to, options.buildPath) });

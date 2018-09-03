@@ -425,7 +425,7 @@ export async function run(options: any, loglog: any): Promise<string> {
 		let make: child_process.ChildProcess = null;
 
 		if ((options.customTarget && options.customTarget.baseTarget === Platform.Linux) || options.target === Platform.Linux) {
-			make = child_process.spawn('make', [], { cwd: path.join(options.to, options.buildPath) });
+			make = child_process.spawn('make', ['-j', '2'], { cwd: path.join(options.to, options.buildPath) });
 		}
 		if ((options.customTarget && options.customTarget.baseTarget === Platform.Pi) || options.target === Platform.Pi) {
 			make = child_process.spawn('make', [], { cwd: path.join(options.to, options.buildPath) });
