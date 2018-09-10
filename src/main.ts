@@ -302,7 +302,7 @@ async function exportKoremakeProject(from: string, to: string, platform: string,
 		throw 'No exporter found for platform ' + platform + '.';
 	}
 
-	exporter.exportSolution(project, from, to, platform, options.vrApi, options);
+	await exporter.exportSolution(project, from, to, platform, options.vrApi, options);
 
 	return project;
 }

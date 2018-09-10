@@ -282,7 +282,7 @@ async function exportKoremakeProject(from, to, platform, options) {
     if (exporter === null) {
         throw 'No exporter found for platform ' + platform + '.';
     }
-    exporter.exportSolution(project, from, to, platform, options.vrApi, options);
+    await exporter.exportSolution(project, from, to, platform, options.vrApi, options);
     return project;
 }
 function isKoremakeProject(directory) {

@@ -7,7 +7,7 @@ class TizenExporter extends Exporter_1.Exporter {
     constructor() {
         super();
     }
-    exportSolution(project, from, to, platform) {
+    async exportSolution(project, from, to, platform) {
         if (project.getDebugDir() !== '')
             fs.copySync(path.resolve(from, project.getDebugDir()), path.resolve(to, 'data'), { overwrite: true });
         let dotcproject = fs.readFileSync(path.resolve(__dirname, 'Data', 'tizen', '.cproject'), 'utf8');

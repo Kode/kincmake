@@ -13,7 +13,7 @@ export class AndroidExporter extends Exporter {
 		super();
 	}
 
-	exportSolution(project: Project, from: string, to: string, platform: string, vr: any) {
+	async exportSolution(project: Project, from: string, to: string, platform: string, vr: any) {
 		let safename = project.getName().replace(/ /g, '-');
 		this.safename = safename;
 		let targetOptions = {

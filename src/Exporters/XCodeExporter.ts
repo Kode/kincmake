@@ -164,7 +164,7 @@ export class XCodeExporter extends Exporter {
 		this.closeFile();
 	}
 
-	exportSolution(project: Project, from: string, to: string, platform: string) {
+	async exportSolution(project: Project, from: string, to: string, platform: string) {
 		const xdir = path.resolve(to, project.getName() + '.xcodeproj');
 		fs.ensureDirSync(xdir);
 

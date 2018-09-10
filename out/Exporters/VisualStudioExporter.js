@@ -9,6 +9,7 @@ const Options_1 = require("../Options");
 const VisualStudioVersion_1 = require("../VisualStudioVersion");
 const Configuration_1 = require("../Configuration");
 const VrApi_1 = require("../VrApi");
+const log = require("../log");
 const fs = require("fs-extra");
 const path = require("path");
 const uuid = require('uuid');
@@ -144,7 +145,7 @@ class VisualStudioExporter extends Exporter_1.Exporter {
         for (let proj of project.getSubProjects())
             this.writeProjectBuilds(proj, platform);
     }
-    exportSolution(project, from, to, platform, vrApi, options) {
+    async exportSolution(project, from, to, platform, vrApi, options) {
         this.exportCLion(project, from, to, platform, vrApi, options);
         standardconfs = [];
         standardconfs.push('Debug');
@@ -202,7 +203,7 @@ class VisualStudioExporter extends Exporter_1.Exporter {
         this.postSolution();
         this.p('EndGlobal');
         this.closeFile();
-        this.exportProject(from, to, project, platform, project.isCmd(), options.noshaders);
+        await this.exportProject(from, to, project, platform, project.isCmd(), options.noshaders);
         this.exportFilters(from, to, project, platform);
         this.exportUserFile(from, to, project, platform);
         if (platform === Platform_1.Platform.WindowsApp) {
@@ -468,8 +469,68 @@ class VisualStudioExporter extends Exporter_1.Exporter {
                 return '4.0';
         }
     }
-    globals(platform, indent) {
-        const windowsTargetVersion = Options_1.Options.visualStudioVersion === VisualStudioVersion_1.VisualStudioVersion.VS2017 ? '10.0.16299.0' : '10.0.14393.0';
+    findWindowsSdk() {
+        return new Promise((resolve, reject) => {
+            try {
+                const Registry = require('winreg');
+                const regKey = new Registry({ hive: Registry.HKLM, key: '\\SOFTWARE\\Microsoft\\Windows Kits\\Installed Roots' });
+                regKey.keys((err, items) => {
+                    if (err) {
+                        log.error('Error while reading the registry: ' + err);
+                    }
+                    else {
+                        let best = [0, 0, 0, 0];
+                        for (let item of items) {
+                            let key = item.key;
+                            let elements = key.split('\\');
+                            let last = elements[elements.length - 1];
+                            if (last.indexOf('.') >= 0) {
+                                let numstrings = last.split('.');
+                                let nums = [];
+                                for (let str of numstrings) {
+                                    nums.push(parseInt(str));
+                                }
+                                if (nums[0] > best[0]) {
+                                    best = nums;
+                                }
+                                else if (nums[0] === best[0]) {
+                                    if (nums[1] > best[1]) {
+                                        best = nums;
+                                    }
+                                    else if (nums[1] === best[1]) {
+                                        if (nums[2] > best[2]) {
+                                            best = nums;
+                                        }
+                                        else if (nums[2] === best[2]) {
+                                            if (nums[3] > best[3]) {
+                                                best = nums;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        if (best[0] > 0) {
+                            resolve(best[0] + '.' + best[1] + '.' + best[2] + '.' + best[3]);
+                        }
+                        else {
+                            resolve(null);
+                        }
+                    }
+                });
+            }
+            catch (err) {
+                log.error('Error while trying to figure out the Windows SDK version: ' + err);
+                resolve(null);
+            }
+        });
+    }
+    async globals(platform, indent) {
+        let windowsTargetVersion = Options_1.Options.visualStudioVersion === VisualStudioVersion_1.VisualStudioVersion.VS2017 ? '10.0.16299.0' : '10.0.14393.0';
+        let foundVersion = await this.findWindowsSdk();
+        if (foundVersion) {
+            windowsTargetVersion = foundVersion;
+        }
         if (Options_1.Options.visualStudioVersion === VisualStudioVersion_1.VisualStudioVersion.VS2017) {
             this.p('<VCProjectVersion>15.0</VCProjectVersion>', indent);
             this.p('<WindowsTargetPlatformVersion>' + windowsTargetVersion + '</WindowsTargetPlatformVersion>', indent);
@@ -501,9 +562,9 @@ class VisualStudioExporter extends Exporter_1.Exporter {
     extensionTargets(indent) {
         this.p('<Import Project="$(VCTargetsPath)\\BuildCustomizations\\masm.targets"/>', indent);
     }
-    exportProject(from, to, project, platform, cmd, noshaders) {
+    async exportProject(from, to, project, platform, cmd, noshaders) {
         for (let proj of project.getSubProjects())
-            this.exportProject(from, to, proj, platform, cmd, noshaders);
+            await this.exportProject(from, to, proj, platform, cmd, noshaders);
         this.writeFile(path.resolve(to, project.getName() + '.vcxproj'));
         this.p('<?xml version="1.0" encoding="utf-8"?>');
         this.p('<Project DefaultTargets="Build" ToolsVersion="' + this.toolsVersion() + '" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">');
@@ -522,7 +583,7 @@ class VisualStudioExporter extends Exporter_1.Exporter {
         this.p('<ProjectGuid>{' + project.getUuid().toString().toUpperCase() + '}</ProjectGuid>', 2);
         // p("<Keyword>Win32Proj</Keyword>", 2);
         // p("<RootNamespace>" + project.Name + "</RootNamespace>", 2);
-        this.globals(platform, 2);
+        await this.globals(platform, 2);
         this.p('</PropertyGroup>', 1);
         this.p('<Import Project="$(VCTargetsPath)\\Microsoft.Cpp.Default.props" />', 1);
         if (platform === Platform_1.Platform.WindowsApp) {

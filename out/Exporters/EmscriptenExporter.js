@@ -60,7 +60,7 @@ class EmscriptenExporter extends Exporter_1.Exporter {
                 console.log(res.error);
         }
     }
-    exportSolution(project, from, to, platform) {
+    async exportSolution(project, from, to, platform) {
         let debugDirName = project.getDebugDir();
         debugDirName = debugDirName.replace(/\\/g, '/');
         if (debugDirName.endsWith('/'))

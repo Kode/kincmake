@@ -10,7 +10,7 @@ class LinuxExporter extends Exporter_1.Exporter {
     constructor() {
         super();
     }
-    exportSolution(project, from, to, platform, vrApi, options) {
+    async exportSolution(project, from, to, platform, vrApi, options) {
         this.exportMakefile(project, from, to, platform, vrApi, options);
         this.exportCodeBlocks(project, from, to, platform, vrApi, options);
         this.exportCLion(project, from, to, platform, vrApi, options);

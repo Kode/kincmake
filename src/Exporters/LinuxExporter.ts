@@ -12,7 +12,7 @@ export class LinuxExporter extends Exporter {
 		super();
 	}
 
-	exportSolution(project: Project, from: string, to: string, platform: string, vrApi: any, options: any) {
+	async exportSolution(project: Project, from: string, to: string, platform: string, vrApi: any, options: any) {
 		this.exportMakefile(project, from, to, platform, vrApi, options);
 		this.exportCodeBlocks(project, from, to, platform, vrApi, options);
 		this.exportCLion(project, from, to, platform, vrApi, options);
@@ -108,7 +108,7 @@ export class LinuxExporter extends Exporter {
 		this.p('CPPFLAGS=' + cppline);
 
 		let optimization = '';
-		if (!options.debug) optimization = '-O2'
+		if (!options.debug) optimization = '-O2';
 		else optimization = '-g';
 
 		this.p(project.getName() + ': ' + gchfilelist + ofilelist);

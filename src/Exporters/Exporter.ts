@@ -32,7 +32,7 @@ export abstract class Exporter {
 		return path.relative(to, absolute);
 	}
 
-	abstract exportSolution(project: Project, from: string, to: string, platform: string, vrApi: any, options: any): void;
+	abstract async exportSolution(project: Project, from: string, to: string, platform: string, vrApi: any, options: any): Promise<void>;
 
 	exportCLion(project: Project, from: string, to: string, platform: string, vrApi: any, options: any) {
 		let name = project.getName().replace(/ /g, '_');

@@ -74,7 +74,7 @@ export class EmscriptenExporter extends Exporter {
 		}
 	}
 
-	exportSolution(project: Project, from: string, to: string, platform: string) {
+	async exportSolution(project: Project, from: string, to: string, platform: string) {
 		let debugDirName = project.getDebugDir();
 		debugDirName = debugDirName.replace(/\\/g, '/');
 		if (debugDirName.endsWith('/')) debugDirName = debugDirName.substr(0, debugDirName.length - 1);
