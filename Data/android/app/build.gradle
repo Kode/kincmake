@@ -12,6 +12,7 @@ android {
         externalNativeBuild {
             cmake {
                 cppFlags "{cppflags}"
+                cFlags "{cflags}"
                 arguments '-DANDROID_ARM_MODE=arm'
             }
         }
