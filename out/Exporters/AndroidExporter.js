@@ -18,7 +18,12 @@ class AndroidExporter extends Exporter_1.Exporter {
             permissions: new Array(),
             disableStickyImmersiveMode: false
         };
+        let cflags = '';
+        for (let flag of project.cFlags)
+            cflags += flag + ' ';
         let cppflags = '';
+        for (let flag of project.cppFlags)
+            cppflags += flag + ' ';
         if (project.targetOptions != null && project.targetOptions.android != null) {
             let userOptions = project.targetOptions.android;
             if (userOptions.package != null)
@@ -29,8 +34,6 @@ class AndroidExporter extends Exporter_1.Exporter {
                 targetOptions.permissions = userOptions.permissions;
             if (userOptions.disableStickyImmersiveMode != null)
                 targetOptions.disableStickyImmersiveMode = userOptions.disableStickyImmersiveMode;
-            if (userOptions.cppflags != null)
-                cppflags += userOptions.cppflags;
         }
         const indir = path.join(__dirname, '..', '..', 'Data', 'android');
         const outdir = path.join(to.toString(), safename);
@@ -43,6 +46,7 @@ class AndroidExporter extends Exporter_1.Exporter {
         fs.copySync(path.join(indir, 'app', 'gitignore'), path.join(outdir, 'app', '.gitignore'));
         let gradle = fs.readFileSync(path.join(indir, 'app', 'build.gradle'), { encoding: 'utf8' });
         gradle = gradle.replace(/{package}/g, targetOptions.package);
+        gradle = gradle.replace(/{cflags}/g, cflags);
         cppflags = '-frtti -fexceptions ' + cppflags;
         if (project.cpp11) {
             cppflags = '-std=c++11 ' + cppflags;

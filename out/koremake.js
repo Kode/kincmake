@@ -215,7 +215,7 @@ for (let i = 2; i < args.length; ++i) {
         }
     }
     else {
-        parsedOptions.target = arg;
+        parsedOptions.target = arg.toLowerCase();
     }
 }
 if (parsedOptions.run) {
