@@ -205,7 +205,12 @@ async function compileShader(projectDir, type, from, to, temp, platform, builddi
 }
 async function exportKoremakeProject(from, to, platform, options) {
     log.info('korefile found.');
-    log.info('Creating ' + fromPlatform(platform) + ' project files.');
+    if(options.onlyshaders) {
+         log.info('Only compiling shaders.');
+    } 
+    else {
+        log.info('Creating ' + fromPlatform(platform) + ' project files.');
+    }
     Project_1.Project.root = path.resolve(from);
     let project;
     try {
@@ -243,6 +248,10 @@ async function exportKoremakeProject(from, to, platform, options) {
                 await compileShader(from, shaderLang(platform), file.file, path.join(project.getDebugDir(), outfile), 'build', platform, 'build');
             }
         }
+    }
+
+    if(options.onlyshaders){
+        return project;
     }
     // Run again to find new shader files for Metal
     project.searchFiles(undefined);
@@ -378,6 +387,9 @@ async function run(options, loglog) {
         return '';
     }
     let solutionName = project.getName();
+    if(options.onlyshaders){
+        return solutionName;
+    }
     if (options.compile && solutionName !== '') {
         log.info('Compiling...');
         const dothemath = true;
