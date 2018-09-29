@@ -158,7 +158,7 @@ async function compileShader(projectDir: string, type: string, from: string, to:
 				funcname = funcname.replace(/\./g, '_');
 				funcname += '_main';
 
-				fs.writeFileSync(to, funcname, 'utf8');
+				fs.writeFileSync(to, '>' + funcname, 'utf8');
 
 				to = path.join(builddir, 'Sources', fileinfo.name + '.' + type);
 				temp = to + '.temp';
