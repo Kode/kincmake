@@ -138,7 +138,12 @@ let options = [
 		value: true,
 		description: 'Use a specific compiler',
 		default: Compiler.Default
-	}	
+	},
+	{
+		full: 'onlyshaders',
+		value: false,
+		description: 'Compile only shaders'
+	}
 ];
 
 let parsedOptions: any = {
