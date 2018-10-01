@@ -84,7 +84,16 @@ class AndroidExporter extends Exporter_1.Exporter {
             libraries2 += '  ${' + lib + '-lib}\n';
         }
         cmake = cmake.replace(/{libraries1}/g, libraries1).replace(/{libraries2}/g, libraries2);
-        fs.writeFileSync(path.join(outdir, 'app', 'CMakeLists.txt'), cmake, { encoding: 'utf8' });
+        // prevent overwriting CMakeLists.txt if it has not changed
+        const cmakePath = path.join(outdir, 'app', 'CMakeLists.txt');
+        if (!fs.existsSync(cmakePath)) {
+            fs.writeFileSync(cmakePath, cmake, { encoding: 'utf8' });
+        }
+        else {
+            const file = fs.readFileSync(cmakePath, 'utf8');
+            if (file !== cmake)
+                fs.writeFileSync(cmakePath, cmake, { encoding: 'utf8' });
+        }
         fs.copySync(path.join(indir, 'app', 'proguard-rules.pro'), path.join(outdir, 'app', 'proguard-rules.pro'));
         fs.ensureDirSync(path.join(outdir, 'app', 'src'));
         // fs.emptyDirSync(path.join(outdir, 'app', 'src'));
