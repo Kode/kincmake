@@ -33,7 +33,7 @@ function run(from: string, to: string, width: number, height: number, format: st
 
 function findIcon(from: string) {
 	if (fs.existsSync(path.join(from, 'icon.png'))) return path.join(from, 'icon.png');
-	else return path.join(__dirname, '..', '..', 'kraffiti', 'ball.png');
+	else return path.join(__dirname, '..', '..', 'kraffiti', 'icon.png');
 }
 
 export function exportIco(to: string, from: string) {
