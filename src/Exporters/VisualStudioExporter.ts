@@ -662,6 +662,7 @@ export class VisualStudioExporter extends Exporter {
 			else if (platform === Platform.Windows && Options.visualStudioVersion === VisualStudioVersion.VS2012) {
 				this.p('<PlatformToolset>v110</PlatformToolset>', 2);
 			}
+			this.p('<PreferredToolArchitecture>x64</PreferredToolArchitecture>', 2);
 			if (platform === Platform.Windows) {
 				this.p('<CharacterSet>Unicode</CharacterSet>', 2);
 			}
@@ -681,6 +682,7 @@ export class VisualStudioExporter extends Exporter {
 			else if (platform === Platform.Windows && Options.visualStudioVersion === VisualStudioVersion.VS2012) {
 				this.p('<PlatformToolset>v110</PlatformToolset>', 2);
 			}
+			this.p('<PreferredToolArchitecture>x64</PreferredToolArchitecture>', 2);
 			if (platform === Platform.Windows) {
 				this.p('<WholeProgramOptimization>true</WholeProgramOptimization>', 2);
 				this.p('<CharacterSet>Unicode</CharacterSet>', 2);
