@@ -2,7 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const child_process = require("child_process");
 const fs = require("fs-extra");
-const os = require("os");
 const path = require("path");
 const log = require("./log");
 const GraphicsApi_1 = require("./GraphicsApi");
@@ -17,6 +16,7 @@ const EmscriptenExporter_1 = require("./Exporters/EmscriptenExporter");
 const TizenExporter_1 = require("./Exporters/TizenExporter");
 const VisualStudioExporter_1 = require("./Exporters/VisualStudioExporter");
 const XCodeExporter_1 = require("./Exporters/XCodeExporter");
+const cpuCores = require('physical-cpu-count');
 let _global = global;
 _global.__base = __dirname + '/';
 let debug = false;
@@ -395,7 +395,7 @@ async function run(options, loglog) {
         const dothemath = true;
         let make = null;
         if ((options.customTarget && options.customTarget.baseTarget === Platform_1.Platform.Linux) || options.target === Platform_1.Platform.Linux) {
-            make = child_process.spawn('make', ['-j', os.cpus().length.toString()], { cwd: path.join(options.to, options.buildPath) });
+            make = child_process.spawn('make', ['-j', cpuCores.toString()], { cwd: path.join(options.to, options.buildPath) });
         }
         if ((options.customTarget && options.customTarget.baseTarget === Platform_1.Platform.Pi) || options.target === Platform_1.Platform.Pi) {
             make = child_process.spawn('make', [], { cwd: path.join(options.to, options.buildPath) });

@@ -26,6 +26,7 @@
     "@types/uuid": "^3.4.3",
     "chokidar": "^2.0.3",
     "fs-extra": "^6.0.0",
+    "physical-cpu-count": "^2.0.0",
     "uuid": "^3.2.1",
     "winreg": "^1.2.4"
   }

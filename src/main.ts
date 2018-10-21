@@ -1,6 +1,5 @@
 import * as child_process from 'child_process';
 import * as fs from 'fs-extra';
-import * as os from 'os';
 import * as path from 'path';
 import * as log from './log';
 import {GraphicsApi} from './GraphicsApi';
@@ -17,6 +16,7 @@ import {EmscriptenExporter} from './Exporters/EmscriptenExporter';
 import {TizenExporter} from './Exporters/TizenExporter';
 import {VisualStudioExporter} from './Exporters/VisualStudioExporter';
 import {XCodeExporter} from './Exporters/XCodeExporter';
+const cpuCores: number = require('physical-cpu-count');
 
 let _global: any = global;
 _global.__base = __dirname + '/';
@@ -437,7 +437,7 @@ export async function run(options: any, loglog: any): Promise<string> {
 		let make: child_process.ChildProcess = null;
 
 		if ((options.customTarget && options.customTarget.baseTarget === Platform.Linux) || options.target === Platform.Linux) {
-			make = child_process.spawn('make', ['-j', os.cpus().length.toString()], { cwd: path.join(options.to, options.buildPath) });
+			make = child_process.spawn('make', ['-j', cpuCores.toString()], { cwd: path.join(options.to, options.buildPath) });
 		}
 		if ((options.customTarget && options.customTarget.baseTarget === Platform.Pi) || options.target === Platform.Pi) {
 			make = child_process.spawn('make', [], { cwd: path.join(options.to, options.buildPath) });
