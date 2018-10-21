@@ -223,7 +223,7 @@ async function compileShader(projectDir: string, type: string, from: string, to:
 
 async function exportKoremakeProject(from: string, to: string, platform: string, options: any) {
 	log.info('korefile found.');
-	if(options.onlyshaders) {
+	if (options.onlyshaders) {
 		log.info('Only compiling shaders.');
 	} 
 	else {
@@ -272,7 +272,7 @@ async function exportKoremakeProject(from: string, to: string, platform: string,
 		}
 	}
 
-	if(options.onlyshaders){
+	if (options.onlyshaders) {
 		return project;
 	}
 
@@ -426,7 +426,7 @@ export async function run(options: any, loglog: any): Promise<string> {
 		return '';
 	}
 	let solutionName = project.getName();
-	if(options.onlyshaders){
+	if (options.onlyshaders) {
 		return solutionName;
 	}
 
@@ -437,7 +437,7 @@ export async function run(options: any, loglog: any): Promise<string> {
 		let make: child_process.ChildProcess = null;
 
 		if ((options.customTarget && options.customTarget.baseTarget === Platform.Linux) || options.target === Platform.Linux) {
-			make = child_process.spawn('make', ['-j', '2'], { cwd: path.join(options.to, options.buildPath) });
+			make = child_process.spawn('make', ['-j', os.cpus().length.toString()], { cwd: path.join(options.to, options.buildPath) });
 		}
 		if ((options.customTarget && options.customTarget.baseTarget === Platform.Pi) || options.target === Platform.Pi) {
 			make = child_process.spawn('make', [], { cwd: path.join(options.to, options.buildPath) });

@@ -102,9 +102,10 @@ export class AndroidExporter extends Exporter {
 
 		// prevent overwriting CMakeLists.txt if it has not changed
 		const cmakePath = path.join(outdir, 'app', 'CMakeLists.txt');
-		if(!fs.existsSync(cmakePath)) {
+		if (!fs.existsSync(cmakePath)) {
 			fs.writeFileSync(cmakePath, cmake, {encoding: 'utf8'});
-		} else {
+		}
+		else {
 			const file = fs.readFileSync(cmakePath, 'utf8');
 			if (file !== cmake) fs.writeFileSync(cmakePath, cmake, {encoding: 'utf8'});
 		}
