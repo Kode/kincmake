@@ -15,7 +15,7 @@ class Exporter {
         let tabs = '';
         for (let i = 0; i < indent; ++i)
             tabs += '\t';
-        let data = new Buffer(tabs + line + '\n');
+        let data = Buffer.from(tabs + line + '\n');
         fs.writeSync(this.out, data, 0, data.length, null);
     }
     nicePath(from, to, filepath) {
