@@ -1061,6 +1061,16 @@ export class VisualStudioExporter extends Exporter {
 			}
 			this.p('</ItemGroup>', 1);
 			this.p('<ItemGroup>', 1);
+			for (let file of project.customs) {
+				this.p('<CustomBuild Include="' + this.nicePath(from, to, file.file) + '">', 2);
+				this.p('<FileType>Document</FileType>', 2);
+				this.p('<Command>' + file.command + '</Command>', 2);
+				this.p('<Outputs>%(Outputs)</Outputs>', 2);
+				this.p('<Message>%(Filename)%(Extension)</Message>', 2);
+				this.p('</CustomBuild>', 2);
+			}
+			this.p('</ItemGroup>');
+			this.p('<ItemGroup>', 1);
 			this.p('<None Include="icon.ico" />', 2);
 			this.p('</ItemGroup>', 1);
 			this.p('<ItemGroup>', 1);

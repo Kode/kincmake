@@ -151,6 +151,7 @@ export class Project {
 	systemDependendLibraries: any;
 	includes: {file: string, options: any}[];
 	excludes: string[];
+	customs: {file: string, command: string}[];
 	cpp11: boolean;
 	kore: boolean;
 	targetOptions: any;
@@ -357,6 +358,10 @@ export class Project {
 
 	addFile(file: string, options: any) {
 		this.includes.push({file: file, options: options});
+	}
+
+	addCustomFile(file: string, command: string) {
+		this.customs.push({file, command});
 	}
 
 	addFiles() {

@@ -288,6 +288,9 @@ class Project {
     addFile(file, options) {
         this.includes.push({ file: file, options: options });
     }
+    addCustomFile(file, command) {
+        this.customs.push({ file, command });
+    }
     addFiles() {
         let options = undefined;
         for (let i = 0; i < arguments.length; ++i) {
