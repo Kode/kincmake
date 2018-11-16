@@ -84,9 +84,12 @@ export class EmscriptenExporter extends Exporter {
 		
 		defines = '';
 		definesArray = [];
-		for (let def in project.getDefines()) {
-			defines += '-D' + project.getDefines()[def] + ' ';
-			definesArray.push('-D' + project.getDefines()[def]);
+		for (const def of project.getDefines()) {
+			if (def.config && def.config.toLowerCase() === 'debug') {
+				continue;
+			}
+			defines += '-D' + def.value + ' ';
+			definesArray.push('-D' + def.value);
 		}
 		defines += '-D KORE_DEBUGDIR="\\"' + debugDirName + '\\""' + ' ';
 		definesArray.push('-D KORE_DEBUGDIR="\\"' + debugDirName + '\\""');

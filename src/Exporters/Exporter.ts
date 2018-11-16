@@ -63,8 +63,8 @@ export abstract class Exporter {
 		}
 
 		let defines = '';
-		for (let def of project.getDefines()) {
-			defines += '  -D' + def + '\n';
+		for (const def of project.getDefines()) {
+			defines += '  -D' + def.value + '\n';
 		}
 		this.p('add_definitions(\n' + defines + ')');
 

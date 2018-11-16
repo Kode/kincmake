@@ -19,8 +19,8 @@ export class TizenExporter extends Exporter {
 		}
 		dotcproject = dotcproject.replace(/{includes}/g, includes);
 		let defines = '';
-		for (let define of project.getDefines()) {
-			defines += '<listOptionValue builtIn="false" value="' + define + '"/>';
+		for (const define of project.getDefines()) {
+			defines += '<listOptionValue builtIn="false" value="' + define.value + '"/>';
 		}
 		dotcproject = dotcproject.replace(/{defines}/g, defines);
 		fs.writeFileSync(path.resolve(to, '.cproject'), dotcproject);

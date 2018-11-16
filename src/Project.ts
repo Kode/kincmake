@@ -23,8 +23,15 @@ function getDefines(platform: string, rotated: boolean) {
 }
 
 function contains(array: any[], value: any) {
-	for (let element of array) {
+	for (const element of array) {
 		if (element === value) return true;
+	}
+	return false;
+}
+
+function containsDefine(array: Define[], value: Define) {
+	for (const element of array) {
+		if (element.value === value.value && element.config === value.config) return true;
 	}
 	return false;
 }
@@ -122,6 +129,11 @@ export interface File {
 	projectName: string;
 }
 
+export class Define {
+	value: string;
+	config: string;
+}
+
 export class Project {
 	static platform: string;
 	static koreDir: string;
@@ -134,7 +146,7 @@ export class Project {
 	javadirs: string[];
 	subProjects: Project[];
 	includeDirs: string[];
-	defines: string[];
+	defines: Define[];
 	libs: string[];
 	systemDependendLibraries: any;
 	includes: {file: string, options: any}[];
@@ -381,8 +393,9 @@ export class Project {
 		}
 	}
 
-	addDefine(define: string) {
-		if (contains(this.defines, define)) return;
+	addDefine(value: string, config: string = null) {
+		const define = {value, config};
+		if (containsDefine(this.defines, define)) return;
 		this.defines.push(define);
 	}
 

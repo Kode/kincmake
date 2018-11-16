@@ -73,10 +73,28 @@ export class AndroidExporter extends Exporter {
 		let cmake = fs.readFileSync(path.join(indir, 'app', 'CMakeLists.txt'), {encoding: 'utf8'});
 
 		let defines = '';
-		for (let def of project.getDefines()) {
-			defines += '  -D' + def + '\n';
+		for (const def of project.getDefines()) {
+			if (!def.config) {
+				defines += '  -D' + def + '\n';
+			}
 		}
 		cmake = cmake.replace(/{defines}/g, defines);
+
+		let debugDefines = '';
+		for (const def of project.getDefines()) {
+			if (def.config && def.config.toLowerCase() === 'debug') {
+				debugDefines += '  -D' + def + '\n';
+			}
+		}
+		cmake = cmake.replace(/{debug_defines}/g, debugDefines);
+
+		let releaseDefines = '';
+		for (const def of project.getDefines()) {
+			if (def.config && def.config.toLowerCase() === 'release') {
+				releaseDefines += '  -D' + def + '\n';
+			}
+		}
+		cmake = cmake.replace(/{release_defines}/g, releaseDefines);
 
 		let includes = '';
 		for (let inc of project.getIncludeDirs()) {

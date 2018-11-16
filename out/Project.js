@@ -25,8 +25,15 @@ function getDefines(platform, rotated) {
     return defines;
 }
 function contains(array, value) {
-    for (let element of array) {
+    for (const element of array) {
         if (element === value)
+            return true;
+    }
+    return false;
+}
+function containsDefine(array, value) {
+    for (const element of array) {
+        if (element.value === value.value && element.config === value.config)
             return true;
     }
     return false;
@@ -75,6 +82,9 @@ async function loadProject(directory) {
         }
     });
 }
+class Define {
+}
+exports.Define = Define;
 class Project {
     constructor(name) {
         this.cFlags = [];
@@ -307,8 +317,9 @@ class Project {
             this.addExclude(arguments[i]);
         }
     }
-    addDefine(define) {
-        if (contains(this.defines, define))
+    addDefine(value, config = null) {
+        const define = { value, config };
+        if (containsDefine(this.defines, define))
             return;
         this.defines.push(define);
     }

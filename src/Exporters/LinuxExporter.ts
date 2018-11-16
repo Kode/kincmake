@@ -89,8 +89,11 @@ export class LinuxExporter extends Exporter {
 		this.p('LIB=' + libsline);
 
 		let defline = '';
-		for (let def of project.getDefines()) {
-			defline += '-D' + def + ' ';
+		for (const def of project.getDefines()) {
+			if (def.config && def.config.toLowerCase() === 'debug') {
+				continue;
+			}
+			defline += '-D' + def.value + ' ';
 		}
 		this.p('DEF=' + defline);
 		this.p();
@@ -209,8 +212,8 @@ export class LinuxExporter extends Exporter {
 			this.p('<Add option="-std=c++11" />', 3);
 		}
 		this.p('<Add option="-Wall" />', 3);
-		for (let def of project.getDefines()) {
-			this.p('<Add option="-D' + def.replace(/\"/g, '\\"') + '" />', 3);
+		for (const def of project.getDefines()) {
+			this.p('<Add option="-D' + def.value.replace(/\"/g, '\\"') + '" />', 3);
 		}
 		for (let inc of project.getIncludeDirs()) {
 			this.p('<Add directory="' + path.resolve(from, inc) + '" />', 3);

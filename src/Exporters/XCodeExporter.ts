@@ -586,9 +586,12 @@ export class XCodeExporter extends Exporter {
 		this.p('GCC_OPTIMIZATION_LEVEL = 0;', 4);
 		this.p('GCC_PREPROCESSOR_DEFINITIONS = (', 4);
 		this.p('"DEBUG=1",', 5);
-		for (let define of project.getDefines()) {
-			if (define.indexOf('=') >= 0) this.p('"' + define.replace(/\"/g, '\\\\\\"') + '",', 5);
-			else this.p(define + ',', 5);
+		for (const define of project.getDefines()) {
+			if (define.config && define.config.toLowerCase() === 'release') {
+				continue;
+			}
+			if (define.value.indexOf('=') >= 0) this.p('"' + define.value.replace(/\"/g, '\\\\\\"') + '",', 5);
+			else this.p(define.value + ',', 5);
 		}
 		this.p('"$(inherited)",', 5);
 		this.p(');', 4);
@@ -656,9 +659,12 @@ export class XCodeExporter extends Exporter {
 		this.p('ENABLE_STRICT_OBJC_MSGSEND = YES;', 4);
 		this.p('GCC_C_LANGUAGE_STANDARD = gnu99;', 4);
 		this.p('GCC_PREPROCESSOR_DEFINITIONS = (', 4);
-		for (let define of project.getDefines()) {
-			if (define.indexOf('=') >= 0) this.p('"' + define.replace(/\"/g, '\\\\\\"') + '",', 5);
-			else this.p(define + ',', 5);
+		for (const define of project.getDefines()) {
+			if (define.config && define.config.toLowerCase() === 'debug') {
+				continue;
+			}
+			if (define.value.indexOf('=') >= 0) this.p('"' + define.value.replace(/\"/g, '\\\\\\"') + '",', 5);
+			else this.p(define.value + ',', 5);
 		}
 		this.p('"$(inherited)",', 5);
 		this.p(');', 4);

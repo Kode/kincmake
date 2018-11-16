@@ -47,8 +47,8 @@ class Exporter {
             this.p('set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread -static-libgcc -static-libstdc++")');
         }
         let defines = '';
-        for (let def of project.getDefines()) {
-            defines += '  -D' + def + '\n';
+        for (const def of project.getDefines()) {
+            defines += '  -D' + def.value + '\n';
         }
         this.p('add_definitions(\n' + defines + ')');
         let includes = '';

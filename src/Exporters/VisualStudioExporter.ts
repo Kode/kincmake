@@ -480,7 +480,7 @@ export class VisualStudioExporter extends Exporter {
 
 	}
 
-	itemDefinition(config: string, system: string, includes: string, defines: string, indent: number) {
+	itemDefinition(config: string, system: string, includes: string, debugDefines: string, releaseDefines: string, indent: number) {
 
 	}
 
@@ -750,8 +750,20 @@ export class VisualStudioExporter extends Exporter {
 			}
 		}
 
-		let defines = '';
-		for (let define of project.getDefines()) defines += define + ';';
+		let debugDefines = '';
+		let releaseDefines = '';
+		for (const define of project.getDefines()) {
+			if (define.config && define.config.toLowerCase() === 'debug') {
+				debugDefines += define.value + ';';
+			}
+			else if (define.config && define.config.toLowerCase() === 'release') {
+				releaseDefines += define.value + ';';
+			}
+			else {
+				debugDefines += define.value + ';';
+				releaseDefines += define.value + ';';
+			}
+		}
 
 		let incstring = '';
 		for (let include of project.getIncludeDirs()) {
@@ -823,7 +835,7 @@ export class VisualStudioExporter extends Exporter {
 				this.p('<AdditionalIncludeDirectories>' + incstring + ';%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>', 3);
 				this.p('<AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>', 3);
 				this.p('<DisableSpecificWarnings>4453;28204</DisableSpecificWarnings>', 3);
-				this.p('<PreprocessorDefinitions>' + defines + moredefines + '%(PreprocessorDefinitions)</PreprocessorDefinitions>', 3);
+				this.p('<PreprocessorDefinitions>' + (config.config === 'Debug' ? debugDefines : releaseDefines) + moredefines + '%(PreprocessorDefinitions)</PreprocessorDefinitions>', 3);
 				this.p('</ClCompile>', 2);
 				this.p('<Manifest>', 2);
 				this.p('<EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>', 3);
@@ -842,8 +854,8 @@ export class VisualStudioExporter extends Exporter {
 
 				this.p('<WarningLevel>Level3</WarningLevel>', 3);
 				this.p('<Optimization>Disabled</Optimization>', 3);
-				if (system === 'x64') this.p('<PreprocessorDefinitions>' + defines + 'SYS_64;WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>', 3);
-				else this.p('<PreprocessorDefinitions>' + defines + 'WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>', 3);
+				if (system === 'x64') this.p('<PreprocessorDefinitions>' + debugDefines + 'SYS_64;WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>', 3);
+				else this.p('<PreprocessorDefinitions>' + debugDefines + 'WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>', 3);
 				this.p('<RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>', 3);
 				this.p('<MultiProcessorCompilation>true</MultiProcessorCompilation>', 3);
 				this.p('<MinimalRebuild>false</MinimalRebuild>', 3);
@@ -888,8 +900,8 @@ export class VisualStudioExporter extends Exporter {
 				this.p('<Optimization>MaxSpeed</Optimization>', 3);
 				this.p('<FunctionLevelLinking>true</FunctionLevelLinking>', 3);
 				this.p('<IntrinsicFunctions>true</IntrinsicFunctions>', 3);
-				if (system === 'x64') this.p('<PreprocessorDefinitions>' + defines + 'SYS_64;WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>', 3);
-				else this.p('<PreprocessorDefinitions>' + defines + 'WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>', 3);
+				if (system === 'x64') this.p('<PreprocessorDefinitions>' + releaseDefines + 'SYS_64;WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>', 3);
+				else this.p('<PreprocessorDefinitions>' + releaseDefines + 'WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>', 3);
 				this.p('<RuntimeLibrary>MultiThreaded</RuntimeLibrary>', 3);
 				this.p('<MultiProcessorCompilation>true</MultiProcessorCompilation>', 3);
 				this.p('<MinimalRebuild>false</MinimalRebuild>', 3);
@@ -930,7 +942,7 @@ export class VisualStudioExporter extends Exporter {
 		else {
 			for (let config of this.getConfigs(platform)) {
 				for (let system of this.getSystems(platform)) {
-					this.itemDefinition(config, system, incstring, defines, 2);
+					this.itemDefinition(config, system, incstring, debugDefines, releaseDefines, 2);
 				}
 			}
 		}
