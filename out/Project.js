@@ -94,6 +94,7 @@ class Project {
         this.basedir = scriptdir;
         this.uuid = uuid.v4();
         this.files = [];
+        this.customs = [];
         this.javadirs = [];
         this.subProjects = [];
         this.includeDirs = [];
@@ -122,7 +123,7 @@ class Project {
             }
             let subbasedir = sub.basedir;
             for (let d of sub.defines)
-                if (!contains(this.defines, d))
+                if (!containsDefine(this.defines, d))
                     this.defines.push(d);
             for (let file of sub.files) {
                 let absolute = file.file;
@@ -130,6 +131,13 @@ class Project {
                     absolute = path.join(subbasedir, file.file);
                 }
                 this.files.push({ file: absolute.replace(/\\/g, '/'), options: file.options, projectDir: subbasedir, projectName: sub.name });
+            }
+            for (const custom of sub.customs) {
+                let absolute = custom.file;
+                if (!path.isAbsolute(absolute)) {
+                    absolute = path.join(subbasedir, custom.file);
+                }
+                this.customs.push({ file: absolute.replace(/\\/g, '/'), command: custom.command, output: custom.output });
             }
             for (let i of sub.includeDirs)
                 if (!contains(this.includeDirs, path.resolve(subbasedir, i)))
@@ -288,8 +296,8 @@ class Project {
     addFile(file, options) {
         this.includes.push({ file: file, options: options });
     }
-    addCustomFile(file, command) {
-        this.customs.push({ file, command });
+    addCustomFile(file, command, output) {
+        this.customs.push({ file, command, output });
     }
     addFiles() {
         let options = undefined;

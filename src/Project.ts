@@ -151,7 +151,7 @@ export class Project {
 	systemDependendLibraries: any;
 	includes: {file: string, options: any}[];
 	excludes: string[];
-	customs: {file: string, command: string}[];
+	customs: {file: string, command: string, output: string}[];
 	cpp11: boolean;
 	kore: boolean;
 	targetOptions: any;
@@ -167,6 +167,7 @@ export class Project {
 		this.uuid = uuid.v4();
 
 		this.files = [];
+		this.customs = [];
 		this.javadirs = [];
 		this.subProjects = [];
 		this.includeDirs = [];
@@ -195,13 +196,20 @@ export class Project {
 			}
 			let subbasedir = sub.basedir;
 
-			for (let d of sub.defines) if (!contains(this.defines, d)) this.defines.push(d);
+			for (let d of sub.defines) if (!containsDefine(this.defines, d)) this.defines.push(d);
 			for (let file of sub.files) {
 				let absolute = file.file;
 				if (!path.isAbsolute(absolute)) {
 					absolute = path.join(subbasedir, file.file);
 				}
 				this.files.push({file: absolute.replace(/\\/g, '/'), options: file.options, projectDir: subbasedir, projectName: sub.name });
+			}
+			for (const custom of sub.customs) {
+				let absolute = custom.file;
+				if (!path.isAbsolute(absolute)) {
+					absolute = path.join(subbasedir, custom.file);
+				}
+				this.customs.push({file: absolute.replace(/\\/g, '/'), command: custom.command, output: custom.output });
 			}
 			for (let i of sub.includeDirs) if (!contains(this.includeDirs, path.resolve(subbasedir, i))) this.includeDirs.push(path.resolve(subbasedir, i));
 			for (let j of sub.javadirs) if (!contains(this.javadirs, path.resolve(subbasedir, j))) this.javadirs.push(path.resolve(subbasedir, j));
@@ -360,8 +368,8 @@ export class Project {
 		this.includes.push({file: file, options: options});
 	}
 
-	addCustomFile(file: string, command: string) {
-		this.customs.push({file, command});
+	addCustomFile(file: string, command: string, output: string) {
+		this.customs.push({file, command, output});
 	}
 
 	addFiles() {
