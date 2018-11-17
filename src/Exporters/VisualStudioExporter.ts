@@ -140,14 +140,23 @@ export class VisualStudioExporter extends Exporter {
 	writeProjectBuilds(project: Project, platform: string) {
 		for (let config of this.getConfigs(platform)) {
 			for (let system of this.getSystems(platform)) {
-				this.p('{' + project.getUuid().toString().toUpperCase() + '}.' + config + '|' + system + '.ActiveCfg = ' + config + '|' + system, 2);
-				this.p('{' + project.getUuid().toString().toUpperCase() + '}.' + config + '|' + system + '.Build.0 = ' + config + '|' + system, 2);
+				this.p('{' + project.getUuid().toString().toUpperCase() + '}.' + config + '|' + this.renameSystem(system) + '.ActiveCfg = ' + config + '|' + system, 2);
+				this.p('{' + project.getUuid().toString().toUpperCase() + '}.' + config + '|' + this.renameSystem(system) + '.Build.0 = ' + config + '|' + system, 2);
 				if (platform === Platform.WindowsApp || platform === Platform.XboxOne) {
-					this.p('{' + project.getUuid().toString().toUpperCase() + '}.' + config + '|' + system + '.Deploy.0 = ' + config + '|' + system, 2);
+					this.p('{' + project.getUuid().toString().toUpperCase() + '}.' + config + '|' + this.renameSystem(system) + '.Deploy.0 = ' + config + '|' + system, 2);
 				}
 			}
 		}
 		for (let proj of project.getSubProjects()) this.writeProjectBuilds(proj, platform);
+	}
+
+	renameSystem(system: string) {
+		if (system === 'Win32') {
+			return 'x86';
+		}
+		else {
+			return system;
+		}
 	}
 
 	async exportSolution(project: Project, from: string, to: string, platform: string, vrApi: any, options: any) {
@@ -158,11 +167,11 @@ export class VisualStudioExporter extends Exporter {
 		standardconfs.push('Release');
 		windows8systems = [];
 		windows8systems.push('ARM');
-		windows8systems.push('Win32');
 		windows8systems.push('x64');
+		windows8systems.push('Win32');
 		windowssystems = [];
-		windowssystems.push('Win32');
 		windowssystems.push('x64');
+		windowssystems.push('Win32');
 
 		this.writeFile(path.resolve(to, project.getName() + '.sln'));
 
@@ -198,7 +207,7 @@ export class VisualStudioExporter extends Exporter {
 		this.p('GlobalSection(SolutionConfigurationPlatforms) = preSolution', 1);
 		for (let config of this.getConfigs(platform)) {
 			for (let system of this.getSystems(platform)) {
-				this.p(config + '|' + system + ' = ' + config + '|' + system, 2);
+				this.p(config + '|' + this.renameSystem(system) + ' = ' + config + '|' + this.renameSystem(system), 2);
 			}
 		}
 		this.p('EndGlobalSection', 1);
