@@ -38,8 +38,14 @@ class Exporter {
         workspace = workspace.replace(/{target}/g, name);
         fs.writeFileSync(path.join(to, project.getName(), '.idea', 'workspace.xml'), workspace, 'utf8');
         this.writeFile(path.resolve(to, project.getName(), 'CMakeLists.txt'));
-        this.p('cmake_minimum_required(VERSION 3.6)');
+        this.p('cmake_minimum_required(VERSION 3.10)');
         this.p('project(' + name + ')');
+        if (project.cpp11) {
+            this.p('set(CMAKE_CXX_STANDARD 11)');
+        }
+        else {
+            this.p('set(CMAKE_CXX_STANDARD 98)');
+        }
         if (project.cpp11) {
             this.p('set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -pthread -static-libgcc -static-libstdc++")');
         }
@@ -48,9 +54,25 @@ class Exporter {
         }
         let defines = '';
         for (const def of project.getDefines()) {
-            defines += '  -D' + def.value + '\n';
+            if (!def.config) {
+                defines += '  -D' + def.value + '\n';
+            }
         }
         this.p('add_definitions(\n' + defines + ')');
+        let debugDefines = '';
+        for (const def of project.getDefines()) {
+            if (def.config && def.config.toLowerCase() === 'debug') {
+                debugDefines += '  -D' + def + '\n';
+            }
+        }
+        this.p('set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}\n' + debugDefines + '")');
+        let releaseDefines = '';
+        for (const def of project.getDefines()) {
+            if (def.config && def.config.toLowerCase() === 'release') {
+                releaseDefines += '  -D' + def + '\n';
+            }
+        }
+        this.p('set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_RELEASE}\n' + releaseDefines + '")');
         let includes = '';
         for (let inc of project.getIncludeDirs()) {
             includes += '  "' + path.resolve(inc).replace(/\\/g, '/') + '"\n';
