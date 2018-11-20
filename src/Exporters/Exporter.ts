@@ -60,36 +60,24 @@ export abstract class Exporter {
 		else {
 			this.p('set(CMAKE_CXX_STANDARD 98)');
 		}
-		if (project.cpp11) {
-			this.p('set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -pthread -static-libgcc -static-libstdc++")');
-		}
-		else {
-			this.p('set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread -static-libgcc -static-libstdc++")');
-		}
-
-		let defines = '';
-		for (const def of project.getDefines()) {
-			if (!def.config) {
-				defines += '  -D' + def.value + '\n';
-			}
-		}
-		this.p('add_definitions(\n' + defines + ')');
-
+		
+		this.p('set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread -static-libgcc -static-libstdc++")');
+		
 		let debugDefines = '';
 		for (const def of project.getDefines()) {
-			if (def.config && def.config.toLowerCase() === 'debug') {
-				debugDefines += '  -D' + def + '\n';
+			if (!def.config || def.config.toLowerCase() === 'debug') {
+				debugDefines += ' -D' + def.value;
 			}
 		}
-		this.p('set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}\n' + debugDefines + '")');
+		this.p('set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}' + debugDefines + '")');
 
 		let releaseDefines = '';
 		for (const def of project.getDefines()) {
-			if (def.config && def.config.toLowerCase() === 'release') {
-				releaseDefines += '  -D' + def + '\n';
+			if (!def.config || def.config.toLowerCase() === 'release') {
+				releaseDefines += ' -D' + def.value;
 			}
 		}
-		this.p('set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_RELEASE}\n' + releaseDefines + '")');
+		this.p('set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}' + releaseDefines + '")');
 
 		let includes = '';
 		for (let inc of project.getIncludeDirs()) {

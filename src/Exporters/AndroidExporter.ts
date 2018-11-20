@@ -72,18 +72,10 @@ export class AndroidExporter extends Exporter {
 
 		let cmake = fs.readFileSync(path.join(indir, 'app', 'CMakeLists.txt'), {encoding: 'utf8'});
 
-		let defines = '';
-		for (const def of project.getDefines()) {
-			if (!def.config) {
-				defines += '  -D' + def + '\n';
-			}
-		}
-		cmake = cmake.replace(/{defines}/g, defines);
-
 		let debugDefines = '';
 		for (const def of project.getDefines()) {
 			if (def.config && def.config.toLowerCase() === 'debug') {
-				debugDefines += '  -D' + def + '\n';
+				debugDefines += ' -D' + def.value;
 			}
 		}
 		cmake = cmake.replace(/{debug_defines}/g, debugDefines);
@@ -91,7 +83,7 @@ export class AndroidExporter extends Exporter {
 		let releaseDefines = '';
 		for (const def of project.getDefines()) {
 			if (def.config && def.config.toLowerCase() === 'release') {
-				releaseDefines += '  -D' + def + '\n';
+				releaseDefines += ' -D' + def.value;
 			}
 		}
 		cmake = cmake.replace(/{release_defines}/g, releaseDefines);
