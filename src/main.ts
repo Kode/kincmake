@@ -345,11 +345,14 @@ function compileProject(make: child_process.ChildProcess, project: Project, solu
 					fs.copySync(path.resolve(path.join(options.to.toString(), options.buildPath), solutionName), path.resolve(options.from.toString(), project.getDebugDir(), solutionName), { overwrite: true });
 				}
 				else if ((options.customTarget && options.customTarget.baseTarget === Platform.Windows) || options.target === Platform.Windows) {
-					let from =
+					const from =
 					dothemath
 					? path.join(options.to.toString(), 'x64', options.debug ? 'Debug' : 'Release', solutionName + '.exe')
 					: path.join(options.to.toString(), options.debug ? 'Debug' : 'Release', solutionName + '.exe'); 
-					fs.copySync(from, path.join(options.from.toString(), project.getDebugDir(), solutionName + '.exe'), { overwrite: true });
+					const dir = path.isAbsolute(project.getDebugDir())
+						? project.getDebugDir()
+						: path.join(options.from.toString(), project.getDebugDir());
+					fs.copySync(from, path.join(dir, solutionName + '.exe'), { overwrite: true });
 				}
 				if (options.run) {
 					if ((options.customTarget && options.customTarget.baseTarget === Platform.OSX) || options.target === Platform.OSX) {
