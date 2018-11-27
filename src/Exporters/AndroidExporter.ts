@@ -74,7 +74,7 @@ export class AndroidExporter extends Exporter {
 
 		let debugDefines = '';
 		for (const def of project.getDefines()) {
-			if (def.config && def.config.toLowerCase() === 'debug') {
+			if (!def.config || def.config.toLowerCase() === 'debug') {
 				debugDefines += ' -D' + def.value;
 			}
 		}
@@ -82,7 +82,7 @@ export class AndroidExporter extends Exporter {
 
 		let releaseDefines = '';
 		for (const def of project.getDefines()) {
-			if (def.config && def.config.toLowerCase() === 'release') {
+			if (!def.config || def.config.toLowerCase() === 'release') {
 				releaseDefines += ' -D' + def.value;
 			}
 		}

@@ -62,14 +62,14 @@ class AndroidExporter extends Exporter_1.Exporter {
         let cmake = fs.readFileSync(path.join(indir, 'app', 'CMakeLists.txt'), { encoding: 'utf8' });
         let debugDefines = '';
         for (const def of project.getDefines()) {
-            if (def.config && def.config.toLowerCase() === 'debug') {
+            if (!def.config || def.config.toLowerCase() === 'debug') {
                 debugDefines += ' -D' + def.value;
             }
         }
         cmake = cmake.replace(/{debug_defines}/g, debugDefines);
         let releaseDefines = '';
         for (const def of project.getDefines()) {
-            if (def.config && def.config.toLowerCase() === 'release') {
+            if (!def.config || def.config.toLowerCase() === 'release') {
                 releaseDefines += ' -D' + def.value;
             }
         }
