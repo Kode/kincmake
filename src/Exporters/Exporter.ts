@@ -69,6 +69,7 @@ export abstract class Exporter {
 				debugDefines += ' -D' + def.value;
 			}
 		}
+		this.p('set(CMAKE_C_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}' + debugDefines + '")');
 		this.p('set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}' + debugDefines + '")');
 
 		let releaseDefines = '';
@@ -77,6 +78,7 @@ export abstract class Exporter {
 				releaseDefines += ' -D' + def.value;
 			}
 		}
+		this.p('set(CMAKE_C_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}' + releaseDefines + '")');
 		this.p('set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}' + releaseDefines + '")');
 
 		let includes = '';
