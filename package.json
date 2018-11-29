@@ -29,5 +29,8 @@
     "physical-cpu-count": "^2.0.0",
     "uuid": "^3.2.1",
     "winreg": "^1.2.4"
+  },
+  "devDependencies": {
+    "typescript": "^3.1.6"
   }
 }
