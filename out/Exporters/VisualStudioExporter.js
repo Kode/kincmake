@@ -842,6 +842,9 @@ class VisualStudioExporter extends Exporter_1.Exporter {
                             libs += lib + '.lib;';
                     }
                     this.p('<AdditionalDependencies>' + libs + 'kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>', 3);
+                    if (project.stackSize) {
+                        this.p('<StackReserveSize>' + project.stackSize + '</StackReserveSize>', 3);
+                    }
                     this.p('</Link>', 2);
                     this.p('<Manifest>', 2);
                     this.p('<EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>', 3);
@@ -897,6 +900,9 @@ class VisualStudioExporter extends Exporter_1.Exporter {
                             libs += lib + '.lib;';
                     }
                     this.p('<AdditionalDependencies>' + libs + 'kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>', 3);
+                    if (project.stackSize) {
+                        this.p('<StackReserveSize>' + project.stackSize + '</StackReserveSize>', 3);
+                    }
                     this.p('</Link>', 2);
                     this.p('<Manifest>', 2);
                     this.p('<EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>', 3);

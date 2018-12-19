@@ -159,6 +159,7 @@ export class Project {
 	cmd: boolean;
 	cFlags: string[] = [];
 	cppFlags: string[] = [];
+	stackSize: number;
 
 	constructor(name: string) {
 		this.name = name;
@@ -183,6 +184,7 @@ export class Project {
 		};
 		this.rotated = false;
 		this.cmd = false;
+		this.stackSize = 0;
 	}
 
 	flatten() {

@@ -110,6 +110,7 @@ class Project {
         };
         this.rotated = false;
         this.cmd = false;
+        this.stackSize = 0;
     }
     flatten() {
         for (let sub of this.subProjects)
