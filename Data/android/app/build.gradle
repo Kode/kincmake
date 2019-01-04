@@ -6,8 +6,8 @@ android {
         applicationId "{package}"
         minSdkVersion 14
         targetSdkVersion 27
-        versionCode 1
-        versionName "1.0"
+        versionCode {versionCode}
+        versionName "{versionName}"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         externalNativeBuild {
             cmake {

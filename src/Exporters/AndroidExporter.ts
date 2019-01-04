@@ -18,6 +18,8 @@ export class AndroidExporter extends Exporter {
 		this.safename = safename;
 		let targetOptions = {
 			package: 'tech.kode.kore',
+			versionCode: 1,
+			versionName: '1.0',
 			screenOrientation: 'sensor',
 			permissions: new Array<string>(),
 			disableStickyImmersiveMode: false
@@ -33,6 +35,8 @@ export class AndroidExporter extends Exporter {
 		if (project.targetOptions != null && project.targetOptions.android != null) {
 			let userOptions = project.targetOptions.android;
 			if (userOptions.package != null) targetOptions.package = userOptions.package;
+			if (userOptions.versionCode != null) targetOptions.versionCode = userOptions.versionCode;
+			if (userOptions.versionName != null) targetOptions.versionName = userOptions.versionName;
 			if (userOptions.screenOrientation != null) targetOptions.screenOrientation = userOptions.screenOrientation;
 			if (userOptions.permissions != null) targetOptions.permissions = userOptions.permissions;
 			if (userOptions.disableStickyImmersiveMode != null) targetOptions.disableStickyImmersiveMode = userOptions.disableStickyImmersiveMode;
@@ -52,7 +56,8 @@ export class AndroidExporter extends Exporter {
 
 		let gradle = fs.readFileSync(path.join(indir, 'app', 'build.gradle'), {encoding: 'utf8'});
 		gradle = gradle.replace(/{package}/g, targetOptions.package);
-
+		gradle = gradle.replace(/{versionCode}/g, targetOptions.versionCode.toString());
+		gradle = gradle.replace(/{versionName}/g, targetOptions.versionName);
 		gradle = gradle.replace(/{cflags}/g, cflags);
 
 		cppflags = '-frtti -fexceptions ' + cppflags;
@@ -129,6 +134,8 @@ export class AndroidExporter extends Exporter {
 
 		let manifest = fs.readFileSync(path.join(indir, 'main', 'AndroidManifest.xml'), {encoding: 'utf8'});
 		manifest = manifest.replace(/{package}/g, targetOptions.package);
+		manifest = manifest.replace(/{versionCode}/g, targetOptions.versionCode.toString());
+		manifest = manifest.replace(/{versionName}/g, targetOptions.versionName);
 		manifest = manifest.replace(/{screenOrientation}/g, targetOptions.screenOrientation);
 		manifest = manifest.replace(/{permissions}/g, targetOptions.permissions.map((p) => { return '\n\t<uses-permission android:name="' + p + '"/>'; }).join(''));
 		manifest = manifest.replace(/{metadata}/g, targetOptions.disableStickyImmersiveMode ? '\n\t\t<meta-data android:name="disableStickyImmersiveMode" android:value="true"/>' : '');
