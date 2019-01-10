@@ -89,6 +89,7 @@ class Project {
     constructor(name) {
         this.cFlags = [];
         this.cppFlags = [];
+        this.icon = null;
         this.name = name;
         this.debugDir = '';
         this.basedir = scriptdir;

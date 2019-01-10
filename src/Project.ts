@@ -160,6 +160,7 @@ export class Project {
 	cFlags: string[] = [];
 	cppFlags: string[] = [];
 	stackSize: number;
+	icon: string = null;
 
 	constructor(name: string) {
 		this.name = name;

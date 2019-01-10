@@ -231,15 +231,15 @@ export class VisualStudioExporter extends Exporter {
 			fs.copySync(path.join(indir, 'TemporaryKey.pfx'), path.join(to, 'TemporaryKey.pfx'));
 			
 			const white = 0xffffffff;
-			Icon.exportPng(path.resolve(to, 'Logo.scale-100.png'), 150, 150, white, from);
-			Icon.exportPng(path.resolve(to, 'SmallLogo.scale-100.png'), 44, 44, white, from);
-			Icon.exportPng(path.resolve(to, 'StoreLogo.scale-100.png'), 50, 50, white, from);
-			Icon.exportPng(path.resolve(to, 'SplashScreen.scale-100.png'), 620, 300, white, from);
-			Icon.exportPng(path.resolve(to, 'WideLogo.scale-100.png'), 310, 150, white, from);
+			Icon.exportPng(project.icon, path.resolve(to, 'Logo.scale-100.png'), 150, 150, white, from);
+			Icon.exportPng(project.icon, path.resolve(to, 'SmallLogo.scale-100.png'), 44, 44, white, from);
+			Icon.exportPng(project.icon, path.resolve(to, 'StoreLogo.scale-100.png'), 50, 50, white, from);
+			Icon.exportPng(project.icon, path.resolve(to, 'SplashScreen.scale-100.png'), 620, 300, white, from);
+			Icon.exportPng(project.icon, path.resolve(to, 'WideLogo.scale-100.png'), 310, 150, white, from);
 		}
 		else if (platform === Platform.Windows) {
 			this.exportResourceScript(to);
-			Icon.exportIco(path.resolve(to, 'icon.ico'), from);
+			Icon.exportIco(project.icon, path.resolve(to, 'icon.ico'), from);
 		}
 		else {
 			this.additionalFiles(fs, Icon, from, to, project);

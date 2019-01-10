@@ -148,15 +148,15 @@ export class AndroidExporter extends Exporter {
 		fs.writeFileSync(path.join(outdir, 'app', 'src', 'main', 'res', 'values', 'strings.xml'), strings, {encoding: 'utf8'});
 
 		fs.ensureDirSync(path.join(outdir, 'app', 'src', 'main', 'res', 'mipmap-hdpi'));
-		Icon.exportPng(path.resolve(to, safename, 'app', 'src', 'main', 'res', 'mipmap-hdpi', 'ic_launcher.png'), 72, 72, undefined, from);
+		Icon.exportPng(project.icon, path.resolve(to, safename, 'app', 'src', 'main', 'res', 'mipmap-hdpi', 'ic_launcher.png'), 72, 72, undefined, from);
 		fs.ensureDirSync(path.join(outdir, 'app', 'src', 'main', 'res', 'mipmap-mdpi'));
-		Icon.exportPng(path.resolve(to, safename, 'app', 'src', 'main', 'res', 'mipmap-mdpi', 'ic_launcher.png'), 48, 48, undefined, from);
+		Icon.exportPng(project.icon, path.resolve(to, safename, 'app', 'src', 'main', 'res', 'mipmap-mdpi', 'ic_launcher.png'), 48, 48, undefined, from);
 		fs.ensureDirSync(path.join(outdir, 'app', 'src', 'main', 'res', 'mipmap-xhdpi'));
-		Icon.exportPng(path.resolve(to, safename, 'app', 'src', 'main', 'res', 'mipmap-xhdpi', 'ic_launcher.png'), 96, 96, undefined, from);
+		Icon.exportPng(project.icon, path.resolve(to, safename, 'app', 'src', 'main', 'res', 'mipmap-xhdpi', 'ic_launcher.png'), 96, 96, undefined, from);
 		fs.ensureDirSync(path.join(outdir, 'app', 'src', 'main', 'res', 'mipmap-xxhdpi'));
-		Icon.exportPng(path.resolve(to, safename, 'app', 'src', 'main', 'res', 'mipmap-xxhdpi', 'ic_launcher.png'), 144, 144, undefined, from);
+		Icon.exportPng(project.icon, path.resolve(to, safename, 'app', 'src', 'main', 'res', 'mipmap-xxhdpi', 'ic_launcher.png'), 144, 144, undefined, from);
 		fs.ensureDirSync(path.join(outdir, 'app', 'src', 'main', 'res', 'mipmap-xxxhdpi'));
-		Icon.exportPng(path.resolve(to, safename, 'app', 'src', 'main', 'res', 'mipmap-xxxhdpi', 'ic_launcher.png'), 192, 192, undefined, from);
+		Icon.exportPng(project.icon, path.resolve(to, safename, 'app', 'src', 'main', 'res', 'mipmap-xxxhdpi', 'ic_launcher.png'), 192, 192, undefined, from);
 
 		fs.copySync(path.join(indir, 'gradle', 'wrapper', 'gradle-wrapper.jar'), path.join(outdir, 'gradle', 'wrapper', 'gradle-wrapper.jar'));
 		fs.copySync(path.join(indir, 'gradle', 'wrapper', 'gradle-wrapper.properties'), path.join(outdir, 'gradle', 'wrapper', 'gradle-wrapper.properties'));

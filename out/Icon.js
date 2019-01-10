@@ -30,22 +30,24 @@ function run(from, to, width, height, format, background, callback) {
         callback();
     });
 }
-function findIcon(from) {
+function findIcon(icon, from) {
+    if (icon && fs.existsSync(path.join(from, icon)))
+        return path.join(from, icon);
     if (fs.existsSync(path.join(from, 'icon.png')))
         return path.join(from, 'icon.png');
     else
         return path.join(__dirname, '..', '..', 'kraffiti', 'icon.png');
 }
-function exportIco(to, from) {
-    run(findIcon(from.toString()), to.toString(), 0, 0, 'ico', undefined, function () { });
+function exportIco(icon, to, from) {
+    run(findIcon(icon, from.toString()), to.toString(), 0, 0, 'ico', undefined, function () { });
 }
 exports.exportIco = exportIco;
-function exportIcns(to, from) {
-    run(findIcon(from.toString()), to.toString(), 0, 0, 'icns', undefined, function () { });
+function exportIcns(icon, to, from) {
+    run(findIcon(icon, from.toString()), to.toString(), 0, 0, 'icns', undefined, function () { });
 }
 exports.exportIcns = exportIcns;
-function exportPng(to, width, height, background, from) {
-    run(findIcon(from.toString()), to.toString(), width, height, 'png', background, function () { });
+function exportPng(icon, to, width, height, background, from) {
+    run(findIcon(icon, from.toString()), to.toString(), width, height, 'png', background, function () { });
 }
 exports.exportPng = exportPng;
 //# sourceMappingURL=Icon.js.map
