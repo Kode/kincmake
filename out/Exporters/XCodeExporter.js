@@ -546,7 +546,12 @@ class XCodeExporter extends Exporter_1.Exporter {
         }
         this.p('COPY_PHASE_STRIP = NO;', 4);
         this.p('ENABLE_STRICT_OBJC_MSGSEND = YES;', 4);
-        this.p('GCC_C_LANGUAGE_STANDARD = gnu99;', 4);
+        if (project.c11) {
+            this.p('GCC_C_LANGUAGE_STANDARD = c11;', 4);
+        }
+        else {
+            this.p('GCC_C_LANGUAGE_STANDARD = gnu99;', 4);
+        }
         this.p('GCC_DYNAMIC_NO_PIC = NO;', 4);
         this.p('GCC_OPTIMIZATION_LEVEL = 0;', 4);
         this.p('GCC_PREPROCESSOR_DEFINITIONS = (', 4);
@@ -623,7 +628,12 @@ class XCodeExporter extends Exporter_1.Exporter {
         }
         this.p('ENABLE_NS_ASSERTIONS = NO;', 4);
         this.p('ENABLE_STRICT_OBJC_MSGSEND = YES;', 4);
-        this.p('GCC_C_LANGUAGE_STANDARD = gnu99;', 4);
+        if (project.c11) {
+            this.p('GCC_C_LANGUAGE_STANDARD = c11;', 4);
+        }
+        else {
+            this.p('GCC_C_LANGUAGE_STANDARD = gnu99;', 4);
+        }
         this.p('GCC_PREPROCESSOR_DEFINITIONS = (', 4);
         for (const define of project.getDefines()) {
             if (define.config && define.config.toLowerCase() === 'debug') {
