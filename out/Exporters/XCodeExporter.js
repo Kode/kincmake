@@ -575,7 +575,7 @@ class XCodeExporter extends Exporter_1.Exporter {
         this.p('GCC_WARN_UNUSED_FUNCTION = YES;', 4);
         this.p('GCC_WARN_UNUSED_VARIABLE = YES;', 4);
         if (platform === Platform_1.Platform.iOS) {
-            this.p('IPHONEOS_DEPLOYMENT_TARGET = 7.0;', 4);
+            this.p('IPHONEOS_DEPLOYMENT_TARGET = 8.0;', 4);
         }
         else {
             if (Options_1.Options.graphicsApi === GraphicsApi_1.GraphicsApi.OpenGL) {
@@ -653,7 +653,7 @@ class XCodeExporter extends Exporter_1.Exporter {
         this.p('GCC_WARN_UNUSED_FUNCTION = YES;', 4);
         this.p('GCC_WARN_UNUSED_VARIABLE = YES;', 4);
         if (platform === Platform_1.Platform.iOS) {
-            this.p('IPHONEOS_DEPLOYMENT_TARGET = 7.0;', 4);
+            this.p('IPHONEOS_DEPLOYMENT_TARGET = 8.0;', 4);
         }
         else {
             if (Options_1.Options.graphicsApi === GraphicsApi_1.GraphicsApi.OpenGL) {
