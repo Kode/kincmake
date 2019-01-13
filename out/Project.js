@@ -105,6 +105,7 @@ class Project {
         this.includes = [];
         this.excludes = [];
         this.cpp11 = false;
+        this.c11 = false;
         this.kore = true;
         this.targetOptions = {
             android: {}
@@ -119,6 +120,9 @@ class Project {
         for (let sub of this.subProjects) {
             if (sub.cpp11) {
                 this.cpp11 = true;
+            }
+            if (sub.c11) {
+                this.c11 = true;
             }
             if (sub.cmd) {
                 this.cmd = true;

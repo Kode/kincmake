@@ -153,6 +153,7 @@ export class Project {
 	excludes: string[];
 	customs: {file: string, command: string, output: string}[];
 	cpp11: boolean;
+	c11: boolean;
 	kore: boolean;
 	targetOptions: any;
 	rotated: boolean;
@@ -179,6 +180,7 @@ export class Project {
 		this.includes = [];
 		this.excludes = [];
 		this.cpp11 = false;
+		this.c11 = false;
 		this.kore = true;
 		this.targetOptions = {
 			android: {}
@@ -193,6 +195,9 @@ export class Project {
 		for (let sub of this.subProjects) {
 			if (sub.cpp11) {
 				this.cpp11 = true;
+			}
+			if (sub.c11) {
+				this.c11 = true;
 			}
 			if (sub.cmd) {
 				this.cmd = true;
