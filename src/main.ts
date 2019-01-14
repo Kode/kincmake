@@ -221,7 +221,7 @@ async function compileShader(projectDir: string, type: string, from: string, to:
 	});
 }
 
-async function exportKoremakeProject(from: string, to: string, platform: string, options: any) {
+async function exportKoremakeProject(from: string, to: string, platform: string, korefile: string, options: any) {
 	log.info('korefile found.');
 	if (options.onlyshaders) {
 		log.info('Only compiling shaders.');
@@ -233,7 +233,7 @@ async function exportKoremakeProject(from: string, to: string, platform: string,
 	Project.root = path.resolve(from);
 	let project: Project;
 	try {
-		project = await Project.create(from, platform);
+		project = await Project.create(from, platform, korefile);
 		if (shaderLang(platform) === 'metal') {
 			project.addFile('build/Sources/*', {});
 		}
@@ -316,16 +316,16 @@ async function exportKoremakeProject(from: string, to: string, platform: string,
 	return project;
 }
 
-function isKoremakeProject(directory: string): boolean {
-	return fs.existsSync(path.resolve(directory, 'korefile.js'));
+function isKoremakeProject(directory: string, korefile: string): boolean {
+	return fs.existsSync(path.resolve(directory, korefile));
 }
 
-async function exportProject(from: string, to: string, platform: string, options: any): Promise<Project> {
-	if (isKoremakeProject(from)) {
-		return exportKoremakeProject(from, to, platform, options);
+async function exportProject(from: string, to: string, platform: string, korefile: string, options: any): Promise<Project> {
+	if (isKoremakeProject(from, korefile)) {
+		return exportKoremakeProject(from, to, platform, korefile, options);
 	}
 	else {
-		throw 'korefile.js not found.';
+		throw 'korefile not found.';
 	}
 }
 
@@ -422,7 +422,7 @@ export async function run(options: any, loglog: any): Promise<string> {
 	
 	let project: Project = null;
 	try {
-		project = await exportProject(options.from, options.to, options.target, options);
+		project = await exportProject(options.from, options.to, options.target, options.korefile, options);
 	}
 	catch (error) {
 		log.error(error);

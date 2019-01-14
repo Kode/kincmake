@@ -44,13 +44,13 @@ function isAbsolute(path) {
 let projectInProgress = 0;
 process.on('exit', (code) => {
     if (projectInProgress > 0) {
-        console.error('Error: korefile.js did not call resolve, no project created.');
+        console.error('Error: korefile did not call resolve, no project created.');
     }
 });
 let scriptdir = '.';
 // let lastScriptDir = '.';
 let koreDir = '.';
-async function loadProject(directory) {
+async function loadProject(directory, korefile = 'korefile.js') {
     return new Promise((resolve, reject) => {
         projectInProgress += 1;
         let resolver = async (project) => {
@@ -61,7 +61,7 @@ async function loadProject(directory) {
                 for (var ld in libdirs) {
                     var libdir = path.join(scriptdir, 'Backends', libdirs[ld]);
                     if (fs.statSync(libdir).isDirectory()) {
-                        var korefile = path.join(libdir, 'korefile.js');
+                        var korefile = path.join(libdir, korefile);
                         if (fs.existsSync(korefile)) {
                             project.addSubProject(await Project.createProject(libdir, scriptdir));
                         }
@@ -72,7 +72,7 @@ async function loadProject(directory) {
         };
         try {
             scriptdir = directory;
-            let file = fs.readFileSync(path.resolve(directory, 'korefile.js'), 'utf8');
+            let file = fs.readFileSync(path.resolve(directory, korefile), 'utf8');
             let AsyncFunction = Object.getPrototypeOf(async () => { }).constructor;
             let project = new AsyncFunction('log', 'Project', 'Platform', 'platform', 'GraphicsApi', 'graphics', 'AudioApi', 'audio', 'VrApi', 'vr', 'RayTraceApi', 'raytrace', 'require', 'resolve', 'reject', '__dirname', file)(log, Project, Platform_1.Platform, Project.platform, GraphicsApi_1.GraphicsApi, Options_1.Options.graphicsApi, AudioApi_1.AudioApi, Options_1.Options.audioApi, VrApi_1.VrApi, Options_1.Options.vrApi, RayTraceApi_1.RayTraceApi, Options_1.Options.rayTraceApi, require, resolver, reject, directory);
         }
@@ -410,10 +410,10 @@ class Project {
     async addProject(directory) {
         this.subProjects.push(await loadProject(path.isAbsolute(directory) ? directory : path.join(this.basedir, directory)));
     }
-    static async create(directory, platform) {
+    static async create(directory, platform, korefile) {
         Project.koreDir = path.join(__dirname, '../../..');
         Project.platform = platform;
-        let project = await loadProject(path.resolve(directory));
+        let project = await loadProject(path.resolve(directory), korefile);
         if (project.kore) {
             await project.addProject(Project.koreDir);
         }

@@ -127,9 +127,9 @@ let options = [
         default: 'Project'
     },
     {
-        full: 'projectfile',
+        full: 'korefile',
         value: true,
-        description: 'Name of your project file, defaults to "korefile.js"',
+        description: 'Name of your korefile, defaults to "korefile.js"',
         default: 'korefile.js'
     },
     {

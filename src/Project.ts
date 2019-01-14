@@ -44,7 +44,7 @@ let projectInProgress = 0;
 
 process.on('exit', (code: number) => {
 	if (projectInProgress > 0) {
-		console.error('Error: korefile.js did not call resolve, no project created.');
+		console.error('Error: korefile did not call resolve, no project created.');
 	}
 });
 
@@ -52,7 +52,7 @@ let scriptdir = '.';
 // let lastScriptDir = '.';
 let koreDir = '.';
 
-async function loadProject(directory: string): Promise<Project> {
+async function loadProject(directory: string, korefile: string = 'korefile.js'): Promise<Project> {
 	return new Promise<Project>((resolve, reject) => {
 		projectInProgress += 1;
 		let resolver = async (project: Project) => {
@@ -64,7 +64,7 @@ async function loadProject(directory: string): Promise<Project> {
 				for (var ld in libdirs) {
 					var libdir = path.join(scriptdir, 'Backends', libdirs[ld]);
 					if (fs.statSync(libdir).isDirectory()) {
-						var korefile = path.join(libdir, 'korefile.js');
+						var korefile = path.join(libdir, korefile);
 						if (fs.existsSync(korefile)) {
 							project.addSubProject(await Project.createProject(libdir, scriptdir));
 						}
@@ -77,7 +77,7 @@ async function loadProject(directory: string): Promise<Project> {
 		
 		try {
 			scriptdir = directory;
-			let file = fs.readFileSync(path.resolve(directory, 'korefile.js'), 'utf8');
+			let file = fs.readFileSync(path.resolve(directory, korefile), 'utf8');
 			let AsyncFunction = Object.getPrototypeOf(async () => {}).constructor;
 			let project = new AsyncFunction(
 				'log',
@@ -504,10 +504,10 @@ export class Project {
 		this.subProjects.push(await loadProject(path.isAbsolute(directory) ? directory : path.join(this.basedir, directory)));
 	}
 
-	static async create(directory: string, platform: string) {
+	static async create(directory: string, platform: string, korefile: string) {
 		Project.koreDir = path.join(__dirname, '../../..');
 		Project.platform = platform;
-		let project = await loadProject(path.resolve(directory));
+		let project = await loadProject(path.resolve(directory), korefile);
 		if (project.kore) {
 			await project.addProject(Project.koreDir);
 		}

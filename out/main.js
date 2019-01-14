@@ -204,7 +204,7 @@ async function compileShader(projectDir, type, from, to, temp, platform, builddi
         }
     });
 }
-async function exportKoremakeProject(from, to, platform, options) {
+async function exportKoremakeProject(from, to, platform, korefile, options) {
     log.info('korefile found.');
     if (options.onlyshaders) {
         log.info('Only compiling shaders.');
@@ -215,7 +215,7 @@ async function exportKoremakeProject(from, to, platform, options) {
     Project_1.Project.root = path.resolve(from);
     let project;
     try {
-        project = await Project_1.Project.create(from, platform);
+        project = await Project_1.Project.create(from, platform, korefile);
         if (shaderLang(platform) === 'metal') {
             project.addFile('build/Sources/*', {});
         }
@@ -294,15 +294,15 @@ async function exportKoremakeProject(from, to, platform, options) {
     await exporter.exportSolution(project, from, to, platform, options.vrApi, options);
     return project;
 }
-function isKoremakeProject(directory) {
-    return fs.existsSync(path.resolve(directory, 'korefile.js'));
+function isKoremakeProject(directory, korefile) {
+    return fs.existsSync(path.resolve(directory, korefile));
 }
-async function exportProject(from, to, platform, options) {
-    if (isKoremakeProject(from)) {
-        return exportKoremakeProject(from, to, platform, options);
+async function exportProject(from, to, platform, korefile, options) {
+    if (isKoremakeProject(from, korefile)) {
+        return exportKoremakeProject(from, to, platform, korefile, options);
     }
     else {
-        throw 'korefile.js not found.';
+        throw 'korefile not found.';
     }
 }
 function compileProject(make, project, solutionName, options, dothemath) {
@@ -383,7 +383,7 @@ async function run(options, loglog) {
     options.buildPath = options.debug ? 'Debug' : 'Release';
     let project = null;
     try {
-        project = await exportProject(options.from, options.to, options.target, options);
+        project = await exportProject(options.from, options.to, options.target, options.korefile, options);
     }
     catch (error) {
         log.error(error);
