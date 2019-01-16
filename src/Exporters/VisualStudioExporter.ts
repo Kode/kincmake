@@ -489,8 +489,65 @@ export class VisualStudioExporter extends Exporter {
 
 	}
 
-	itemDefinition(config: string, system: string, includes: string, debugDefines: string, releaseDefines: string, indent: number) {
+	itemDefinition(config: string, system: string, includes: string, debugDefines: string, releaseDefines: string, indent: number,
+		debuglibs: string, releaselibs: string, from: string, project: Project) {
 
+		this.p('<ItemDefinitionGroup Condition="\'$(Configuration)|$(Platform)\'==\'' + config + '|' + system + '\'">', indent);
+		this.p('<ClCompile>', indent + 1);
+
+		if (Options.precompiledHeaders) this.p('<PrecompiledHeader>Use</PrecompiledHeader>', indent + 2);
+		this.p('<AdditionalIncludeDirectories>' + includes + '</AdditionalIncludeDirectories>', indent + 2);
+		this.p('<AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>', indent + 2);
+
+		this.p('<WarningLevel>Level3</WarningLevel>', 3);
+		this.p('<Optimization>' + (config === 'Release' ? 'MaxSpeed' : 'Disabled') + '</Optimization>', 3);
+		if (config === 'Release') {
+			this.p('<FunctionLevelLinking>true</FunctionLevelLinking>', 3);
+			this.p('<IntrinsicFunctions>true</IntrinsicFunctions>', 3);
+		}
+		if (system === 'x64') this.p('<PreprocessorDefinitions>' + (config === 'Release' ? releaseDefines : debugDefines) + 'SYS_64;WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>', 3);
+		else this.p('<PreprocessorDefinitions>' + (config === 'Release' ? releaseDefines : debugDefines) + 'WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>', 3);
+		this.p('<RuntimeLibrary>' + (config === 'Release' ? 'MultiThreaded' : 'MultiThreadedDebug') + '</RuntimeLibrary>', 3);
+		this.p('<MultiProcessorCompilation>true</MultiProcessorCompilation>', 3);
+		this.p('<MinimalRebuild>false</MinimalRebuild>', 3);
+		// if (Options.visualStudioVersion == VisualStudioVersion.VS2013) this.p("<SDLCheck>true</SDLCheck>", 3);
+
+		this.p('</ClCompile>', 2);
+
+		this.p('<Link>', 2);
+		if (project.isCmd()) this.p('<SubSystem>Console</SubSystem>', 3);
+		else this.p('<SubSystem>Windows</SubSystem>', 3);
+		if (Options.visualStudioVersion !== VisualStudioVersion.VS2017) this.p('<GenerateDebugInformation>true</GenerateDebugInformation>', 3);
+		if (config === 'Release') {
+			this.p('<EnableCOMDATFolding>true</EnableCOMDATFolding>', 3);
+			this.p('<OptimizeReferences>true</OptimizeReferences>', 3);
+		}
+		{
+			let libs = config === 'Release' ? releaselibs : debuglibs;
+			for (let lib of project.getLibsFor((config === 'Release' ? 'release_' : 'debug_') + system)) {
+				if (fs.existsSync(path.resolve(from, lib + '.lib'))) libs += path.resolve(from, lib) + '.lib;';
+				else libs += lib + '.lib;';
+			}
+			for (let lib of project.getLibsFor(system)) {
+				if (fs.existsSync(path.resolve(from, lib + '.lib'))) libs += path.resolve(from, lib) + '.lib;';
+				else libs += lib + '.lib;';
+			}
+			for (let lib of project.getLibsFor(config === 'Release' ? 'release' : 'debug')) {
+				if (fs.existsSync(path.resolve(from, lib + '.lib'))) libs += path.resolve(from, lib) + '.lib;';
+				else libs += lib + '.lib;';
+			}
+	
+			this.p('<AdditionalDependencies>' + libs + 'kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>', 3);
+			if (project.stackSize) {
+				this.p('<StackReserveSize>' + project.stackSize + '</StackReserveSize>', 3);
+			}
+		}
+		this.p('</Link>', 2);
+		this.p('<Manifest>', 2);
+		this.p('<EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>', 3);
+		this.p('</Manifest>', 2);
+
+		this.p('</ItemDefinitionGroup>', 1);
 	}
 
 	additionalItemGroups(indent: number, from: string, to: string, project: Project) {
@@ -852,112 +909,10 @@ export class VisualStudioExporter extends Exporter {
 				this.p('</ItemDefinitionGroup>', 1);
 			}
 		}
-		else if (platform === Platform.Windows) {
-			for (let system of this.getSystems(platform)) {
-				this.p('<ItemDefinitionGroup Condition="\'$(Configuration)|$(Platform)\'==\'Debug|' + system + '\'">', 1);
-				this.p('<ClCompile>', 2);
-
-				if (Options.precompiledHeaders) this.p('<PrecompiledHeader>Use</PrecompiledHeader>', 3);
-				this.p('<AdditionalIncludeDirectories>' + incstring + '</AdditionalIncludeDirectories>', 3);
-				this.p('<AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>', 3);
-
-				this.p('<WarningLevel>Level3</WarningLevel>', 3);
-				this.p('<Optimization>Disabled</Optimization>', 3);
-				if (system === 'x64') this.p('<PreprocessorDefinitions>' + debugDefines + 'SYS_64;WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>', 3);
-				else this.p('<PreprocessorDefinitions>' + debugDefines + 'WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>', 3);
-				this.p('<RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>', 3);
-				this.p('<MultiProcessorCompilation>true</MultiProcessorCompilation>', 3);
-				this.p('<MinimalRebuild>false</MinimalRebuild>', 3);
-				// if (Options.visualStudioVersion == VisualStudioVersion.VS2013) this.p("<SDLCheck>true</SDLCheck>", 3);
-
-				this.p('</ClCompile>', 2);
-
-				this.p('<Link>', 2);
-				if (cmd) this.p('<SubSystem>Console</SubSystem>', 3);
-				else this.p('<SubSystem>Windows</SubSystem>', 3);
-				if (Options.visualStudioVersion !== VisualStudioVersion.VS2017) this.p('<GenerateDebugInformation>true</GenerateDebugInformation>', 3);
-				{
-					let libs = debuglibs;
-					for (let lib of project.getLibsFor('debug_' + system)) {
-						if (fs.existsSync(path.resolve(from, lib + '.lib'))) libs += path.resolve(from, lib) + '.lib;';
-						else libs += lib + '.lib;';
-					}
-					for (let lib of project.getLibsFor(system)) {
-						if (fs.existsSync(path.resolve(from, lib + '.lib'))) libs += path.resolve(from, lib) + '.lib;';
-						else libs += lib + '.lib;';
-					}
-					for (let lib of project.getLibsFor('debug')) {
-						if (fs.existsSync(path.resolve(from, lib + '.lib'))) libs += path.resolve(from, lib) + '.lib;';
-						else libs += lib + '.lib;';
-					}
-			
-					this.p('<AdditionalDependencies>' + libs + 'kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>', 3);
-					if (project.stackSize) {
-						this.p('<StackReserveSize>' + project.stackSize + '</StackReserveSize>', 3);
-					}
-					this.p('</Link>', 2);
-					this.p('<Manifest>', 2);
-					this.p('<EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>', 3);
-					this.p('</Manifest>', 2);
-				}
-
-				this.p('</ItemDefinitionGroup>', 1);
-				this.p('<ItemDefinitionGroup Condition="\'$(Configuration)|$(Platform)\'==\'Release|' + system + '\'">', 1);
-				this.p('<ClCompile>', 2);
-				if (Options.precompiledHeaders) this.p('<PrecompiledHeader>Use</PrecompiledHeader>', 3);
-				this.p('<AdditionalIncludeDirectories>' + incstring + '</AdditionalIncludeDirectories>', 3);
-				this.p('<AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>', 3);
-
-				this.p('<WarningLevel>Level3</WarningLevel>', 3);
-				this.p('<Optimization>MaxSpeed</Optimization>', 3);
-				this.p('<FunctionLevelLinking>true</FunctionLevelLinking>', 3);
-				this.p('<IntrinsicFunctions>true</IntrinsicFunctions>', 3);
-				if (system === 'x64') this.p('<PreprocessorDefinitions>' + releaseDefines + 'SYS_64;WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>', 3);
-				else this.p('<PreprocessorDefinitions>' + releaseDefines + 'WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>', 3);
-				this.p('<RuntimeLibrary>MultiThreaded</RuntimeLibrary>', 3);
-				this.p('<MultiProcessorCompilation>true</MultiProcessorCompilation>', 3);
-				this.p('<MinimalRebuild>false</MinimalRebuild>', 3);
-				// if (Options.visualStudioVersion === VisualStudioVersion.VS2013) this.p("<SDLCheck>true</SDLCheck>", 3);
-
-				this.p('</ClCompile>', 2);
-
-				this.p('<Link>', 2);
-				if (cmd) this.p('<SubSystem>Console</SubSystem>', 3);
-				else this.p('<SubSystem>Windows</SubSystem>', 3);
-				if (Options.visualStudioVersion !== VisualStudioVersion.VS2017) this.p('<GenerateDebugInformation>true</GenerateDebugInformation>', 3);
-				this.p('<EnableCOMDATFolding>true</EnableCOMDATFolding>', 3);
-				this.p('<OptimizeReferences>true</OptimizeReferences>', 3);
-				{
-					let libs = releaselibs;
-					for (let lib of project.getLibsFor('release_' + system)) {
-						if (fs.existsSync(path.resolve(from, lib + '.lib'))) libs += path.resolve(from, lib) + '.lib;';
-						else libs += lib + '.lib;';
-					}
-					for (let lib of project.getLibsFor(system)) {
-						if (fs.existsSync(path.resolve(from, lib + '.lib'))) libs += path.resolve(from, lib) + '.lib;';
-						else libs += lib + '.lib;';
-					}
-					for (let lib of project.getLibsFor('release')) {
-						if (fs.existsSync(path.resolve(from, lib + '.lib'))) libs += path.resolve(from, lib) + '.lib;';
-						else libs += lib + '.lib;';
-					}
-					this.p('<AdditionalDependencies>' + libs + 'kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>', 3);
-					if (project.stackSize) {
-						this.p('<StackReserveSize>' + project.stackSize + '</StackReserveSize>', 3);
-					}
-					this.p('</Link>', 2);
-					this.p('<Manifest>', 2);
-					this.p('<EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>', 3);
-					this.p('</Manifest>', 2);
-				}
-
-				this.p('</ItemDefinitionGroup>', 1);
-			}
-		}
 		else {
 			for (let config of this.getConfigs(platform)) {
 				for (let system of this.getSystems(platform)) {
-					this.itemDefinition(config, system, incstring, debugDefines, releaseDefines, 2);
+					this.itemDefinition(config, system, incstring, debugDefines, releaseDefines, 2, debuglibs, releaselibs, from, project);
 				}
 			}
 		}
