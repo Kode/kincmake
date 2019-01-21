@@ -153,6 +153,7 @@ class XCodeExporter extends Exporter_1.Exporter {
             icons.push(new IconImage('ipad', 40, 2));
             icons.push(new IconImage('ipad', 76, 1));
             icons.push(new IconImage('ipad', 76, 2));
+            icons.push(new IconImage('ios-marketing', 1024, 1));
         }
         else {
             icons.push(new IconImage('mac', 16, 1));
