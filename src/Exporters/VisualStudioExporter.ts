@@ -503,6 +503,18 @@ export class VisualStudioExporter extends Exporter {
 
 	}
 
+	getOptimization(config: string) {
+		switch (config) {
+			case 'Debug':
+			default:
+				return 'Disabled';
+			case 'Develop':
+				return 'Full';
+			case 'Release':
+				return 'MaxSpeed';
+		}
+	}
+
 	itemDefinition(config: string, system: string, includes: string, debugDefines: string, releaseDefines: string, indent: number,
 		debuglibs: string, releaselibs: string, from: string, project: Project) {
 
@@ -514,7 +526,7 @@ export class VisualStudioExporter extends Exporter {
 		this.p('<AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>', indent + 2);
 
 		this.p('<WarningLevel>Level3</WarningLevel>', indent + 2);
-		this.p('<Optimization>' + (config === 'Debug' ? 'Disabled' : 'MaxSpeed') + '</Optimization>', indent + 2);
+		this.p('<Optimization>' + this.getOptimization(config) + '</Optimization>', indent + 2);
 		if (config === 'Release') {
 			this.p('<FunctionLevelLinking>true</FunctionLevelLinking>', indent + 2);
 			this.p('<IntrinsicFunctions>true</IntrinsicFunctions>', indent + 2);

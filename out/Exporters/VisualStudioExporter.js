@@ -471,6 +471,17 @@ class VisualStudioExporter extends Exporter_1.Exporter {
     }
     addOns2(config, system, debugDir, indent) {
     }
+    getOptimization(config) {
+        switch (config) {
+            case 'Debug':
+            default:
+                return 'Disabled';
+            case 'Develop':
+                return 'Full';
+            case 'Release':
+                return 'MaxSpeed';
+        }
+    }
     itemDefinition(config, system, includes, debugDefines, releaseDefines, indent, debuglibs, releaselibs, from, project) {
         this.p('<ItemDefinitionGroup Condition="\'$(Configuration)|$(Platform)\'==\'' + config + '|' + system + '\'">', indent);
         this.p('<ClCompile>', indent + 1);
@@ -479,7 +490,7 @@ class VisualStudioExporter extends Exporter_1.Exporter {
         this.p('<AdditionalIncludeDirectories>' + includes + '</AdditionalIncludeDirectories>', indent + 2);
         this.p('<AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>', indent + 2);
         this.p('<WarningLevel>Level3</WarningLevel>', indent + 2);
-        this.p('<Optimization>' + (config === 'Debug' ? 'Disabled' : 'MaxSpeed') + '</Optimization>', indent + 2);
+        this.p('<Optimization>' + this.getOptimization(config) + '</Optimization>', indent + 2);
         if (config === 'Release') {
             this.p('<FunctionLevelLinking>true</FunctionLevelLinking>', indent + 2);
             this.p('<IntrinsicFunctions>true</IntrinsicFunctions>', indent + 2);
