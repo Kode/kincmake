@@ -197,6 +197,7 @@ export class XCodeExporter extends Exporter {
 			icons.push(new IconImage('ipad', 40, 2));
 			icons.push(new IconImage('ipad', 76, 1));
 			icons.push(new IconImage('ipad', 76, 2));
+			icons.push(new IconImage('ios-marketing', 1024, 1));
 		}
 		else {
 			icons.push(new IconImage('mac', 16, 1));
@@ -260,16 +261,16 @@ export class XCodeExporter extends Exporter {
 
 		let targetOptions = {
 			bundle: 'tech.kode.$(PRODUCT_NAME:rfc1034identifier)',
-			// version: "1.0", // somehow the plist can't read the values for this
-			// build: "1", // somehow the plist can't read the values for this
+			version: "1.0",
+			build: "1",
 			organizationName: 'the Kore Development Team',
 			developmentTeam: ''
 		};
 		if (project.targetOptions && project.targetOptions.ios) {
 			let userOptions = project.targetOptions.ios;
 			if (userOptions.bundle) targetOptions.bundle = userOptions.bundle;
-			// if (userOptions.version) targetOptions.version = userOptions.version;
-			// if (userOptions.build) targetOptions.build = userOptions.build;
+			if (userOptions.version) targetOptions.version = userOptions.version;
+			if (userOptions.build) targetOptions.build = userOptions.build;
 			if (userOptions.organizationName) targetOptions.organizationName = userOptions.organizationName;
 			if (userOptions.developmentTeam) targetOptions.developmentTeam = userOptions.developmentTeam;
 		}
@@ -736,6 +737,7 @@ export class XCodeExporter extends Exporter {
 		}
 		this.p(');', 4);
 
+		this.p('INFOPLIST_EXPAND_BUILD_SETTINGS = "YES";', 4);
 		this.p('INFOPLIST_FILE = "' + path.resolve(from, plistname) + '";', 4);
 
 		this.p('LD_RUNPATH_SEARCH_PATHS = (', 4);
@@ -767,8 +769,8 @@ export class XCodeExporter extends Exporter {
 		}
 
 		this.p('PRODUCT_BUNDLE_IDENTIFIER = "' + targetOptions.bundle + '";', 4);
-		// this.p('BUNDLE_VERSION = "' + targetOptions.version + '";', 4);
-		// this.p('BUILD_VERSION = "' + targetOptions.build + '";', 4);
+		this.p('BUNDLE_VERSION = "' + targetOptions.version + '";', 4);
+		this.p('BUILD_VERSION = "' + targetOptions.build + '";', 4);
 		this.p('PRODUCT_NAME = "$(TARGET_NAME)";', 4);
 		this.p('};', 3);
 		this.p('name = Debug;', 3);
@@ -792,6 +794,7 @@ export class XCodeExporter extends Exporter {
 		this.p('"/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include",', 5);
 		for (let p of project.getIncludeDirs()) this.p('"' + path.resolve(from, p).replace(/ /g, '\\\\ ') + '",', 5);
 		this.p(');', 4);
+		this.p('INFOPLIST_EXPAND_BUILD_SETTINGS = "YES";', 4);
 		this.p('INFOPLIST_FILE = "' + path.resolve(from, plistname) + '";', 4);
 		if (platform === Platform.iOS) {
 			this.p('LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";', 4);
@@ -817,8 +820,8 @@ export class XCodeExporter extends Exporter {
 		}
 
 		this.p('PRODUCT_BUNDLE_IDENTIFIER = "' + targetOptions.bundle + '";', 4);
-		// this.p('BUNDLE_VERSION = "' + targetOptions.version + '";', 4);
-		// this.p('BUILD_VERSION = "' + targetOptions.build + '";', 4);
+		this.p('BUNDLE_VERSION = "' + targetOptions.version + '";', 4);
+		this.p('BUILD_VERSION = "' + targetOptions.build + '";', 4);
 		this.p('PRODUCT_NAME = "$(TARGET_NAME)";', 4);
 		this.p('};', 3);
 		this.p('name = Release;', 3);
