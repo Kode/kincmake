@@ -495,10 +495,7 @@ class VisualStudioExporter extends Exporter_1.Exporter {
             this.p('<FunctionLevelLinking>true</FunctionLevelLinking>', indent + 2);
             this.p('<IntrinsicFunctions>true</IntrinsicFunctions>', indent + 2);
         }
-        if (system === 'x64')
-            this.p('<PreprocessorDefinitions>' + (config === 'Release' ? releaseDefines : debugDefines) + 'SYS_64;WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>', indent + 2);
-        else
-            this.p('<PreprocessorDefinitions>' + (config === 'Release' ? releaseDefines : debugDefines) + 'WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>', indent + 2);
+        this.p('<PreprocessorDefinitions>' + (config === 'Release' ? releaseDefines : debugDefines) + ((system === 'x64') ? 'SYS_64;' : '') + 'WIN32;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>', indent + 2);
         this.p('<RuntimeLibrary>' + (config === 'Release' ? 'MultiThreaded' : 'MultiThreadedDebug') + '</RuntimeLibrary>', indent + 2);
         this.p('<MultiProcessorCompilation>true</MultiProcessorCompilation>', indent + 2);
         this.p('<MinimalRebuild>false</MinimalRebuild>', indent + 2);
@@ -749,8 +746,8 @@ class VisualStudioExporter extends Exporter_1.Exporter {
                 this.addOns2(config, system, this.getDebugDir(from, project), 1);
             }
         }
-        let debugDefines = '';
-        let releaseDefines = '';
+        let debugDefines = '_DEBUG;';
+        let releaseDefines = 'NDEBUG;';
         for (const define of project.getDefines()) {
             if (define.config && define.config.toLowerCase() === 'debug') {
                 debugDefines += define.value + ';';
@@ -811,13 +808,18 @@ class VisualStudioExporter extends Exporter_1.Exporter {
             ];
             for (let config of configs) {
                 let libdir = '';
-                if (config.system === 'ARM')
-                    libdir = '\\arm';
-                else if (config.system === 'x64')
-                    libdir = '\\amd64';
-                let moredefines = config.config === 'Debug' ? '_DEBUG;' : 'NDEBUG;';
-                if (config.system === 'x64')
-                    moredefines += 'SYS_64;';
+                let archDefine = '';
+                switch (config.system) {
+                    case 'ARM': {
+                        libdir = '\\arm';
+                        break;
+                    }
+                    case 'x64': {
+                        libdir = '\\amd64';
+                        archDefine = 'SYS_64;';
+                        break;
+                    }
+                }
                 this.p('<ItemDefinitionGroup Condition="\'$(Configuration)|$(Platform)\'==\'' + config.config + '|' + config.system + '\'">', 1);
                 this.p('<Link>', 2);
                 if (config.config === 'Debug') {
@@ -835,7 +837,7 @@ class VisualStudioExporter extends Exporter_1.Exporter {
                 this.p('<AdditionalIncludeDirectories>' + incstring + ';%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>', 3);
                 this.p('<AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>', 3);
                 this.p('<DisableSpecificWarnings>4453;28204</DisableSpecificWarnings>', 3);
-                this.p('<PreprocessorDefinitions>' + (config.config === 'Debug' ? debugDefines : releaseDefines) + moredefines + '%(PreprocessorDefinitions)</PreprocessorDefinitions>', 3);
+                this.p('<PreprocessorDefinitions>' + (config.config === 'Debug' ? debugDefines : releaseDefines) + archDefine + '%(PreprocessorDefinitions)</PreprocessorDefinitions>', 3);
                 this.p('</ClCompile>', 2);
                 this.p('<Manifest>', 2);
                 this.p('<EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>', 3);
