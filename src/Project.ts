@@ -139,6 +139,7 @@ export class Project {
 	static koreDir: string;
 	static root: string;
 	name: string;
+	version: string;
 	debugDir: string;
 	basedir: string;
 	uuid: string;
@@ -165,6 +166,7 @@ export class Project {
 
 	constructor(name: string) {
 		this.name = name;
+		this.version = '1.0';
 		this.debugDir = '';
 		this.basedir = scriptdir;
 		this.uuid = uuid.v4();

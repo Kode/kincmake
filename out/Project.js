@@ -91,6 +91,7 @@ class Project {
         this.cppFlags = [];
         this.icon = null;
         this.name = name;
+        this.version = '1.0';
         this.debugDir = '';
         this.basedir = scriptdir;
         this.uuid = uuid.v4();
