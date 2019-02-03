@@ -405,6 +405,7 @@ class VisualStudioExporter extends Exporter_1.Exporter {
             this.p('</ItemGroup>', 1);
         }
         if (platform === Platform_1.Platform.Windows) {
+            lastdir = '';
             this.p('<ItemGroup>', 1);
             this.p('<None Include="icon.ico">', 2);
             this.p('<Filter>Ressourcendateien</Filter>', 3);
@@ -414,6 +415,16 @@ class VisualStudioExporter extends Exporter_1.Exporter {
             this.p('<ResourceCompile Include="resources.rc">', 2);
             this.p('<Filter>Ressourcendateien</Filter>', 3);
             this.p('</ResourceCompile>', 2);
+            for (let file of project.getFiles()) {
+                let dir = getDir(file);
+                if (dir !== lastdir)
+                    lastdir = dir;
+                if (file.file.endsWith('.rc')) {
+                    this.p('<ResourceCompile Include="' + this.nicePath(from, to, file.file) + '">', 2);
+                    this.p('<Filter>' + dir.replace(/\//g, '\\') + '</Filter>', 3);
+                    this.p('</ResourceCompile>', 2);
+                }
+            }
             this.p('</ItemGroup>', 1);
         }
         this.p('</Project>');
@@ -974,6 +985,11 @@ class VisualStudioExporter extends Exporter_1.Exporter {
             this.p('</ItemGroup>', 1);
             this.p('<ItemGroup>', 1);
             this.p('<ResourceCompile Include="resources.rc" />', 2);
+            for (let file of project.getFiles()) {
+                if (file.file.endsWith('.rc')) {
+                    this.p('<ResourceCompile Include="' + this.nicePath(from, to, file.file) + '" />', 2);
+                }
+            }
             this.p('</ItemGroup>', 1);
         }
         this.additionalItemGroups(1, from, to, project);
