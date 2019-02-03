@@ -42,21 +42,6 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
-        releaseArm7 {
-            if (project.hasProperty('RELEASE_STORE_FILE')) {
-                signingConfig signingConfigs.release
-            }
-            initWith release
-            ndk {
-                abiFilters 'armeabi-v7a'
-            }
-        }
-        debugArm7 {
-            initWith debug
-            ndk {
-                abiFilters 'armeabi-v7a'
-            }
-        }
     }
     externalNativeBuild {
         cmake {
