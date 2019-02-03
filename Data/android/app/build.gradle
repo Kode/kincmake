@@ -1,11 +1,11 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 27
+    compileSdkVersion 28
     defaultConfig {
         applicationId "{package}"
         minSdkVersion 14
-        targetSdkVersion 27
+        targetSdkVersion 28
         versionCode {versionCode}
         versionName "{versionName}"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -40,9 +40,8 @@ android {
                 signingConfig signingConfigs.release
             }
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
-
         releaseArm7 {
             if (project.hasProperty('RELEASE_STORE_FILE')) {
                 signingConfig signingConfigs.release
@@ -52,7 +51,6 @@ android {
                 abiFilters 'armeabi-v7a'
             }
         }
-
         debugArm7 {
             initWith debug
             ndk {

@@ -531,7 +531,7 @@ export class VisualStudioExporter extends Exporter {
 			this.p('<FunctionLevelLinking>true</FunctionLevelLinking>', indent + 2);
 			this.p('<IntrinsicFunctions>true</IntrinsicFunctions>', indent + 2);
 		}
-		this.p('<PreprocessorDefinitions>' + (config === 'Release' ? releaseDefines : debugDefines) + ((system === 'x64')?'SYS_64;':'') +'WIN32;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>', indent + 2);
+		this.p('<PreprocessorDefinitions>' + (config === 'Release' ? releaseDefines : debugDefines) + ((system === 'x64') ? 'SYS_64;' : '') + 'WIN32;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>', indent + 2);
 		this.p('<RuntimeLibrary>' + (config === 'Release' ? 'MultiThreaded' : 'MultiThreadedDebug') + '</RuntimeLibrary>', indent + 2);
 		this.p('<MultiProcessorCompilation>true</MultiProcessorCompilation>', indent + 2);
 		this.p('<MinimalRebuild>false</MinimalRebuild>', indent + 2);
@@ -862,15 +862,15 @@ export class VisualStudioExporter extends Exporter {
 			for (let config of configs) {
 				let libdir = '';
 				let archDefine = '';
-				switch(config.system) { 
+				switch (config.system) { 
 					case 'ARM': { 
-					   libdir = '\\arm';
-					   break; 
+						libdir = '\\arm';
+						break; 
 					} 
 					case 'x64': { 
-					   libdir = '\\amd64';
-					   archDefine = 'SYS_64;';
-					   break; 
+						libdir = '\\amd64';
+						archDefine = 'SYS_64;';
+						break; 
 					} 
 				}
 				this.p('<ItemDefinitionGroup Condition="\'$(Configuration)|$(Platform)\'==\'' + config.config + '|' + config.system + '\'">', 1);
@@ -891,7 +891,7 @@ export class VisualStudioExporter extends Exporter {
 				this.p('<AdditionalIncludeDirectories>' + incstring + ';%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>', 3);
 				this.p('<AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>', 3);
 				this.p('<DisableSpecificWarnings>4453;28204</DisableSpecificWarnings>', 3);
-				this.p('<PreprocessorDefinitions>' + (config.config === 'Debug' ? debugDefines : releaseDefines) + archDefine +'%(PreprocessorDefinitions)</PreprocessorDefinitions>', 3);
+				this.p('<PreprocessorDefinitions>' + (config.config === 'Debug' ? debugDefines : releaseDefines) + archDefine + '%(PreprocessorDefinitions)</PreprocessorDefinitions>', 3);
 				this.p('</ClCompile>', 2);
 				this.p('<Manifest>', 2);
 				this.p('<EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>', 3);

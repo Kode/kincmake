@@ -215,8 +215,8 @@ class XCodeExporter extends Exporter_1.Exporter {
         }
         let targetOptions = {
             bundle: 'tech.kode.$(PRODUCT_NAME:rfc1034identifier)',
-            version: "1.0",
-            build: "1",
+            version: '1.0',
+            build: '1',
             organizationName: 'the Kore Development Team',
             developmentTeam: ''
         };
