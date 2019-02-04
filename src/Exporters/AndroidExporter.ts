@@ -1,5 +1,7 @@
 import {Exporter} from './Exporter';
 import {Project} from '../Project';
+import {Architecture} from '../Architecture';
+import {Options} from '../Options';
 import * as Icon from '../Icon';
 import {execSync} from 'child_process';
 import * as fs from 'fs-extra';
@@ -58,6 +60,16 @@ export class AndroidExporter extends Exporter {
 		gradle = gradle.replace(/{package}/g, targetOptions.package);
 		gradle = gradle.replace(/{versionCode}/g, targetOptions.versionCode.toString());
 		gradle = gradle.replace(/{versionName}/g, targetOptions.versionName);
+		let arch = 'armeabi-v7a';
+		switch (Options.architecture) {
+			case Architecture.Default: arch = 'armeabi-v7a'; break;
+			case Architecture.Arm7: arch = 'armeabi-v7a'; break;
+			case Architecture.Arm8: arch = 'arm64-v8a'; break;
+			case Architecture.X86: arch = 'x86'; break;
+			case Architecture.X86_64: arch = 'x86_64'; break;
+			default: throw 'Unknown architecture ' + Options.architecture;
+		}
+		gradle = gradle.replace(/{architecture}/g, arch);
 		gradle = gradle.replace(/{cflags}/g, cflags);
 
 		cppflags = '-frtti -fexceptions ' + cppflags;

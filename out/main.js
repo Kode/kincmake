@@ -352,6 +352,9 @@ async function run(options, loglog) {
     if (options.graphics !== undefined) {
         Options_1.Options.graphicsApi = options.graphics;
     }
+    if (options.arch !== undefined) {
+        Options_1.Options.architecture = options.arch;
+    }
     if (options.audio !== undefined) {
         Options_1.Options.audioApi = options.audio;
     }
@@ -450,7 +453,7 @@ async function run(options, loglog) {
         else if ((options.customTarget && options.customTarget.baseTarget === Platform_1.Platform.Android) || options.target === Platform_1.Platform.Android) {
             let gradlew = (process.platform === 'win32') ? 'gradlew.bat' : 'bash';
             let args = (process.platform === 'win32') ? [] : ['gradlew'];
-            args.push('assemble' + (options.debug ? 'Debug' : 'Release') + 'Arm7');
+            args.push('assemble' + (options.debug ? 'Debug' : 'Release'));
             make = child_process.spawn(gradlew, args, { cwd: path.join(options.to, solutionName) });
         }
         if (make !== null) {

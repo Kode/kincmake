@@ -2,6 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const Exporter_1 = require("./Exporter");
 const Project_1 = require("../Project");
+const Architecture_1 = require("../Architecture");
+const Options_1 = require("../Options");
 const Icon = require("../Icon");
 const fs = require("fs-extra");
 const path = require("path");
@@ -54,6 +56,26 @@ class AndroidExporter extends Exporter_1.Exporter {
         gradle = gradle.replace(/{package}/g, targetOptions.package);
         gradle = gradle.replace(/{versionCode}/g, targetOptions.versionCode.toString());
         gradle = gradle.replace(/{versionName}/g, targetOptions.versionName);
+        let arch = 'armeabi-v7a';
+        switch (Options_1.Options.architecture) {
+            case Architecture_1.Architecture.Default:
+                arch = 'armeabi-v7a';
+                break;
+            case Architecture_1.Architecture.Arm7:
+                arch = 'armeabi-v7a';
+                break;
+            case Architecture_1.Architecture.Arm8:
+                arch = 'arm64-v8a';
+                break;
+            case Architecture_1.Architecture.X86:
+                arch = 'x86';
+                break;
+            case Architecture_1.Architecture.X86_64:
+                arch = 'x86_64';
+                break;
+            default: throw 'Unknown architecture ' + Options_1.Options.architecture;
+        }
+        gradle = gradle.replace(/{architecture}/g, arch);
         gradle = gradle.replace(/{cflags}/g, cflags);
         cppflags = '-frtti -fexceptions ' + cppflags;
         if (project.cpp11) {

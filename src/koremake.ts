@@ -2,6 +2,7 @@ import * as os from 'os';
 import {Options} from './Options';
 import {Platform} from './Platform';
 import {GraphicsApi} from './GraphicsApi';
+import {Architecture} from './Architecture';
 import {AudioApi} from './AudioApi';
 import {VrApi} from './VrApi';
 import {RayTraceApi} from './RayTraceApi';
@@ -69,6 +70,12 @@ let options = [
 		description: 'Graphics api to use',
 		value: true,
 		default: GraphicsApi.Default
+	},
+	{
+		full: 'arch',
+		description: 'Target architecture for compilation',
+		value: true,
+		default: Architecture.Default
 	},
 	{
 		full: 'audio',
@@ -236,7 +243,7 @@ if (parsedOptions.init) {
 }
 else if (parsedOptions.update) {
 	console.log('Updating everything...');
-	require('child_process').spawnSync('git', ['submodule', 'foreach', '--recursive', 'git', 'pull', 'origin', 'master'], { stdio: 'inherit', stderr: 'inherit' });	
+	require('child_process').spawnSync('git', ['submodule', 'foreach', '--recursive', 'git', 'pull', 'origin', 'master'], { stdio: 'inherit', stderr: 'inherit' });
 }
 else {
 	let logInfo = function (text: string, newline: boolean) {
