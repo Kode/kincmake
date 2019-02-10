@@ -1011,6 +1011,14 @@ export class VisualStudioExporter extends Exporter {
 		}
 		this.p('</ItemGroup>', 1);
 
+		this.p('<ItemGroup>', 1);
+		for (let file of project.getFiles()) {
+			if (file.file.endsWith('.natvis')) {
+				this.p('<Natvis Include="' + this.nicePath(from, to, file.file) + '"/>', 2);
+			}
+		}
+		this.p('</ItemGroup>', 1);
+
 		if (platform === Platform.Windows) {
 			this.p('<ItemGroup>', 1);
 			for (let file of project.getFiles()) {
