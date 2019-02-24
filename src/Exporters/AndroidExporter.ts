@@ -60,14 +60,17 @@ export class AndroidExporter extends Exporter {
 		gradle = gradle.replace(/{package}/g, targetOptions.package);
 		gradle = gradle.replace(/{versionCode}/g, targetOptions.versionCode.toString());
 		gradle = gradle.replace(/{versionName}/g, targetOptions.versionName);
-		let arch = 'armeabi-v7a';
+		let arch = '';
 		switch (Options.architecture) {
-			case Architecture.Default: arch = 'armeabi-v7a'; break;
+			case Architecture.Default: arch = ''; break;
 			case Architecture.Arm7: arch = 'armeabi-v7a'; break;
 			case Architecture.Arm8: arch = 'arm64-v8a'; break;
 			case Architecture.X86: arch = 'x86'; break;
 			case Architecture.X86_64: arch = 'x86_64'; break;
 			default: throw 'Unknown architecture ' + Options.architecture;
+		}
+		if (Options.architecture !== Architecture.Default) {
+			arch = `ndk {abiFilters '${arch}'}`;
 		}
 		gradle = gradle.replace(/{architecture}/g, arch);
 		gradle = gradle.replace(/{cflags}/g, cflags);
