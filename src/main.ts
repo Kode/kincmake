@@ -131,7 +131,7 @@ function shaderLang(platform: string): string {
 async function compileShader(projectDir: string, type: string, from: string, to: string, temp: string, platform: string, builddir: string) {
 	return new Promise<void>((resolve, reject) => {
 		let compilerPath = '';
-		
+
 		if (Project.koreDir !== '') {
 			compilerPath = path.resolve(Project.koreDir, 'Tools', 'krafix', 'krafix' + exec.sys());
 		}
@@ -167,7 +167,7 @@ async function compileShader(projectDir: string, type: string, from: string, to:
 			let params = [type, from, to, temp, platform];
 			if (debug) params.push('--debug');
 			let compiler = child_process.spawn(compilerPath, params);
-			
+
 			compiler.stdout.on('data', (data: any) => {
 				log.info(data.toString());
 			});
@@ -175,7 +175,7 @@ async function compileShader(projectDir: string, type: string, from: string, to:
 			let errorLine = '';
 			let newErrorLine = true;
 			let errorData = false;
-			
+
 			function parseData(data: string) {
 
 			}
@@ -225,7 +225,7 @@ async function exportKoremakeProject(from: string, to: string, platform: string,
 	log.info('korefile found.');
 	if (options.onlyshaders) {
 		log.info('Only compiling shaders.');
-	} 
+	}
 	else {
 		log.info('Creating ' + fromPlatform(platform) + ' project files.');
 	}
@@ -265,7 +265,7 @@ async function exportKoremakeProject(from: string, to: string, platform: string,
 
 				let parsedFile = path.parse(file.file);
 				log.info('Compiling shader ' + (shaderIndex + 1) + ' of ' + shaderCount + ' (' + parsedFile.name + ').');
-				
+
 				++shaderIndex;
 				await compileShader(from, shaderLang(platform), file.file, path.join(project.getDebugDir(), outfile), 'build', platform, 'build');
 			}
@@ -348,7 +348,7 @@ function compileProject(make: child_process.ChildProcess, project: Project, solu
 					const from =
 					dothemath
 					? path.join(options.to.toString(), 'x64', options.debug ? 'Debug' : 'Release', solutionName + '.exe')
-					: path.join(options.to.toString(), options.debug ? 'Debug' : 'Release', solutionName + '.exe'); 
+					: path.join(options.to.toString(), options.debug ? 'Debug' : 'Release', solutionName + '.exe');
 					const dir = path.isAbsolute(project.getDebugDir())
 						? project.getDebugDir()
 						: path.join(options.from.toString(), project.getDebugDir());
@@ -378,9 +378,13 @@ export let api = 2;
 
 export async function run(options: any, loglog: any): Promise<string> {
 	log.set(loglog);
-	
+
 	if (options.graphics !== undefined) {
 		Options.graphicsApi = options.graphics;
+	}
+
+	if (options.arch !== undefined) {
+		Options.architecture = options.arch;
 	}
 
 	if (options.audio !== undefined) {
@@ -397,10 +401,10 @@ export async function run(options: any, loglog: any): Promise<string> {
 
 	if (options.compiler !== undefined) {
 		Options.compiler = options.compiler;
-	} 
-	
+	}
+
 	if (options.visualstudio !== undefined) {
-		Options.visualStudioVersion = options.visualstudio;	
+		Options.visualStudioVersion = options.visualstudio;
 	}
 
 	if (!options.kore) {
@@ -414,12 +418,12 @@ export async function run(options: any, loglog: any): Promise<string> {
 	}
 
 	debug = options.debug;
-	
+
 	if (options.vr !== undefined) {
 		Options.vrApi = options.vr;
 	}
 	options.buildPath = options.debug ? 'Debug' : 'Release';
-	
+
 	let project: Project = null;
 	try {
 		project = await exportProject(options.from, options.to, options.target, options.korefile, options);
@@ -492,7 +496,7 @@ export async function run(options: any, loglog: any): Promise<string> {
 		else if ((options.customTarget && options.customTarget.baseTarget === Platform.Android) || options.target === Platform.Android) {
 			let gradlew = (process.platform === 'win32') ? 'gradlew.bat' : 'bash';
 			let args = (process.platform === 'win32') ? [] : ['gradlew'];
-			args.push('assemble' + (options.debug ? 'Debug' : 'Release') + 'Arm7');
+			args.push('assemble' + (options.debug ? 'Debug' : 'Release'));
 			make = child_process.spawn(gradlew, args, { cwd: path.join(options.to, solutionName) });
 		}
 

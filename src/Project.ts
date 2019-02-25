@@ -2,6 +2,7 @@ import * as fs from 'fs-extra';
 import * as path from 'path';
 import * as log from './log';
 import {GraphicsApi} from './GraphicsApi';
+import {Architecture} from './Architecture';
 import {AudioApi} from './AudioApi';
 import {VrApi} from './VrApi';
 import {RayTraceApi} from './RayTraceApi';
@@ -74,7 +75,7 @@ async function loadProject(directory: string, korefile: string = 'korefile.js'):
 
 			resolve(project);
 		};
-		
+
 		try {
 			scriptdir = directory;
 			let file = fs.readFileSync(path.resolve(directory, korefile), 'utf8');
@@ -86,6 +87,8 @@ async function loadProject(directory: string, korefile: string = 'korefile.js'):
 				'platform',
 				'GraphicsApi',
 				'graphics',
+				'Architecture',
+				'arch',
 				'AudioApi',
 				'audio',
 				'VrApi',
@@ -104,6 +107,8 @@ async function loadProject(directory: string, korefile: string = 'korefile.js'):
 				Project.platform,
 				GraphicsApi,
 				Options.graphicsApi,
+				Architecture,
+				Options.architecture,
 				AudioApi,
 				Options.audioApi,
 				VrApi,
