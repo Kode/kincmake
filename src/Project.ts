@@ -145,6 +145,7 @@ export class Project {
 	static root: string;
 	name: string;
 	version: string;
+	id: string;
 	debugDir: string;
 	basedir: string;
 	uuid: string;
