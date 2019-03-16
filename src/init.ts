@@ -1,18 +1,16 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
-export function run(name: string, from: string, projectfile: string) {
+export function run(name: string, from: string) {
+	const projectfile = 'korefile.js';
 	if (!fs.existsSync(path.join(from, projectfile))) {
 		fs.writeFileSync(path.join(from, projectfile),
-			'let project = new Project(\'New Project\', __dirname);\n'
+			'let project = new Project(\'New Project\');\n'
 			+ '\n'
 			+ 'project.addFile(\'Sources/**\');\n'
 			+ 'project.setDebugDir(\'Deployment\');\n'
 			+ '\n'
-			+ 'Project.createProject(\'Kore\', __dirname).then((subproject) => {\n'
-			+ '\tproject.addSubProject(subproject);\n'
-			+ '\tresolve(project);\n'
-			+ '});\n',
+			+ 'resolve(project);\n',
 		{ encoding: 'utf8' });
 	}
 

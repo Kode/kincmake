@@ -2,17 +2,15 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const fs = require("fs");
 const path = require("path");
-function run(name, from, projectfile) {
+function run(name, from) {
+    const projectfile = 'korefile.js';
     if (!fs.existsSync(path.join(from, projectfile))) {
-        fs.writeFileSync(path.join(from, projectfile), 'let project = new Project(\'New Project\', __dirname);\n'
+        fs.writeFileSync(path.join(from, projectfile), 'let project = new Project(\'New Project\');\n'
             + '\n'
             + 'project.addFile(\'Sources/**\');\n'
             + 'project.setDebugDir(\'Deployment\');\n'
             + '\n'
-            + 'Project.createProject(\'Kore\', __dirname).then((subproject) => {\n'
-            + '\tproject.addSubProject(subproject);\n'
-            + '\tresolve(project);\n'
-            + '});\n', { encoding: 'utf8' });
+            + 'resolve(project);\n', { encoding: 'utf8' });
     }
     if (!fs.existsSync(path.join(from, 'Sources')))
         fs.mkdirSync(path.join(from, 'Sources'));
