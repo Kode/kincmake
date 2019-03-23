@@ -414,21 +414,9 @@ async function run(options, loglog) {
             let vsvars = null;
             const bits = dothemath ? '64' : '32';
             switch (options.visualstudio) {
-                case VisualStudioVersion_1.VisualStudioVersion.VS2017:
-                    const vspath = child_process.execFileSync(path.join(__dirname, '..', 'Data', 'windows', 'vswhere.exe'), ['-latest', '-property', 'installationPath'], { encoding: 'utf8' });
-                    const varspath = path.join(vspath.trim(), 'VC', 'Auxiliary', 'Build', 'vcvars' + bits + '.bat');
-                    if (fs.existsSync(varspath)) {
-                        vsvars = varspath;
-                    }
-                    break;
-                case VisualStudioVersion_1.VisualStudioVersion.VS2015:
-                    if (process.env.VS140COMNTOOLS) {
-                        vsvars = process.env.VS140COMNTOOLS + '\\vsvars' + bits + '.bat';
-                    }
-                    break;
-                case VisualStudioVersion_1.VisualStudioVersion.VS2013:
-                    if (process.env.VS120COMNTOOLS) {
-                        vsvars = process.env.VS120COMNTOOLS + '\\vsvars' + bits + '.bat';
+                case VisualStudioVersion_1.VisualStudioVersion.VS2010:
+                    if (process.env.VS100COMNTOOLS) {
+                        vsvars = process.env.VS100COMNTOOLS + '\\vsvars' + bits + '.bat';
                     }
                     break;
                 case VisualStudioVersion_1.VisualStudioVersion.VS2012:
@@ -436,9 +424,21 @@ async function run(options, loglog) {
                         vsvars = process.env.VS110COMNTOOLS + '\\vsvars' + bits + '.bat';
                     }
                     break;
-                case VisualStudioVersion_1.VisualStudioVersion.VS2010:
-                    if (process.env.VS100COMNTOOLS) {
-                        vsvars = process.env.VS100COMNTOOLS + '\\vsvars' + bits + '.bat';
+                case VisualStudioVersion_1.VisualStudioVersion.VS2013:
+                    if (process.env.VS120COMNTOOLS) {
+                        vsvars = process.env.VS120COMNTOOLS + '\\vsvars' + bits + '.bat';
+                    }
+                    break;
+                case VisualStudioVersion_1.VisualStudioVersion.VS2015:
+                    if (process.env.VS140COMNTOOLS) {
+                        vsvars = process.env.VS140COMNTOOLS + '\\vsvars' + bits + '.bat';
+                    }
+                    break;
+                default:
+                    const vspath = child_process.execFileSync(path.join(__dirname, '..', 'Data', 'windows', 'vswhere.exe'), ['-latest', '-property', 'installationPath'], { encoding: 'utf8' });
+                    const varspath = path.join(vspath.trim(), 'VC', 'Auxiliary', 'Build', 'vcvars' + bits + '.bat');
+                    if (fs.existsSync(varspath)) {
+                        vsvars = varspath;
                     }
                     break;
             }
@@ -462,7 +462,7 @@ async function run(options, loglog) {
         }
         else {
             log.info('--compile not yet implemented for this platform');
-            return solutionName;
+            process.exit(1);
         }
     }
     return solutionName;
