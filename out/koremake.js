@@ -149,8 +149,7 @@ let options = [
         full: 'onlyshaders',
         value: false,
         description: 'Compile only shaders'
-    },
-    {}
+    }
 ];
 let parsedOptions = {};
 function printHelp() {

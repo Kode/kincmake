@@ -87,7 +87,7 @@ class VisualStudioExporter extends Exporter_1.Exporter {
             return;
         this.writeFile(path.resolve(to, project.getName() + '.vcxproj.user'));
         this.p('<?xml version="1.0" encoding="utf-8"?>');
-        this.p('<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">');
+        this.p('<Project ToolsVersion="' + this.toolsVersion() + '" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">');
         this.p('<PropertyGroup>', 1);
         if (platform === Platform_1.Platform.Windows) {
             this.p('<LocalDebuggerWorkingDirectory>' + this.getDebugDir(from, project) + '</LocalDebuggerWorkingDirectory>', 2);
@@ -160,7 +160,13 @@ class VisualStudioExporter extends Exporter_1.Exporter {
     async exportSolution(project, from, to, platform, vrApi, options) {
         this.exportCLion(project, from, to, platform, vrApi, options);
         this.writeFile(path.resolve(to, project.getName() + '.sln'));
-        if (Options_1.Options.visualStudioVersion === VisualStudioVersion_1.VisualStudioVersion.VS2017) {
+        if (Options_1.Options.visualStudioVersion === VisualStudioVersion_1.VisualStudioVersion.VS2019) {
+            this.p('Microsoft Visual Studio Solution File, Format Version 12.00');
+            this.p('# Visual Studio Version 16');
+            this.p('VisualStudioVersion = 16.0.28714.193');
+            this.p('MinimumVisualStudioVersion = 10.0.40219.1');
+        }
+        else if (Options_1.Options.visualStudioVersion === VisualStudioVersion_1.VisualStudioVersion.VS2017) {
             this.p('Microsoft Visual Studio Solution File, Format Version 12.00');
             this.p('# Visual Studio 15');
             this.p('VisualStudioVersion = 15.0.26228.4');
@@ -290,7 +296,7 @@ class VisualStudioExporter extends Exporter_1.Exporter {
             this.exportFilters(from, to, proj, platform);
         this.writeFile(path.resolve(to, project.getName() + '.vcxproj.filters'));
         this.p('<?xml version="1.0" encoding="utf-8"?>');
-        this.p('<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">');
+        this.p('<Project ToolsVersion="' + this.toolsVersion() + '" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">');
         // sort(project.getFiles());
         let lastdir = '';
         let dirs = [];
@@ -437,18 +443,31 @@ class VisualStudioExporter extends Exporter_1.Exporter {
         this.p('<CharacterSet>MultiByte</CharacterSet>', 2);
         this.p('</PropertyGroup>', 1);
     }
+    getPlatformToolset() {
+        switch (Options_1.Options.visualStudioVersion) {
+            case VisualStudioVersion_1.VisualStudioVersion.VS2010:
+                return 'v100';
+            case VisualStudioVersion_1.VisualStudioVersion.VS2012:
+                return 'v110';
+            case VisualStudioVersion_1.VisualStudioVersion.VS2013:
+                return 'v120';
+            case VisualStudioVersion_1.VisualStudioVersion.VS2015:
+                return 'v140';
+            case VisualStudioVersion_1.VisualStudioVersion.VS2017:
+                return 'v141';
+            case VisualStudioVersion_1.VisualStudioVersion.VS2019:
+                return 'v142';
+            default:
+                throw 'Unknown Visual Studio version';
+        }
+    }
     addWin8PropertyGroup(debug, platform) {
         this.p('<PropertyGroup Condition="\'$(Configuration)|$(Platform)\'==\'' + (debug ? 'Debug' : 'Release') + '|' + platform + '\'" Label="Configuration">', 1);
         this.p('<ConfigurationType>Application</ConfigurationType>', 2);
         this.p('<UseDebugLibraries>' + (debug ? 'true' : 'false') + '</UseDebugLibraries>', 2);
         if (!debug)
             this.p('<WholeProgramOptimization>true</WholeProgramOptimization>', 2);
-        if (Options_1.Options.visualStudioVersion === VisualStudioVersion_1.VisualStudioVersion.VS2017) {
-            this.p('<PlatformToolset>v141</PlatformToolset>', 2);
-        }
-        else {
-            this.p('<PlatformToolset>v140</PlatformToolset>', 2);
-        }
+        this.p('<PlatformToolset>' + this.getPlatformToolset() + '</PlatformToolset>', 2);
         if (!debug)
             this.p('<UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>', 2);
         this.p('</PropertyGroup>', 1);
@@ -457,18 +476,7 @@ class VisualStudioExporter extends Exporter_1.Exporter {
         this.p('<PropertyGroup Condition="\'$(Configuration)\'==\'' + config + '\'" Label="Configuration">', indent);
         this.p('<ConfigurationType>Application</ConfigurationType>', indent + 1);
         this.p('<UseDebugLibraries>' + (config === 'Release' ? 'false' : 'true') + '</UseDebugLibraries>', indent + 1);
-        if (Options_1.Options.visualStudioVersion === VisualStudioVersion_1.VisualStudioVersion.VS2017) {
-            this.p('<PlatformToolset>v141</PlatformToolset>', indent + 1);
-        }
-        else if (Options_1.Options.visualStudioVersion === VisualStudioVersion_1.VisualStudioVersion.VS2015) {
-            this.p('<PlatformToolset>v140</PlatformToolset>', indent + 1);
-        }
-        else if (Options_1.Options.visualStudioVersion === VisualStudioVersion_1.VisualStudioVersion.VS2013) {
-            this.p('<PlatformToolset>v120</PlatformToolset>', indent + 1);
-        }
-        else if (Options_1.Options.visualStudioVersion === VisualStudioVersion_1.VisualStudioVersion.VS2012) {
-            this.p('<PlatformToolset>v110</PlatformToolset>', indent + 1);
-        }
+        this.p('<PlatformToolset>' + this.getPlatformToolset() + '</PlatformToolset>', indent + 1);
         this.p('<PreferredToolArchitecture>x64</PreferredToolArchitecture>', indent + 1);
         if (config === 'Release') {
             this.p('<WholeProgramOptimization>true</WholeProgramOptimization>', indent + 1);
@@ -566,14 +574,17 @@ class VisualStudioExporter extends Exporter_1.Exporter {
     // }
     toolsVersion() {
         switch (Options_1.Options.visualStudioVersion) {
-            case VisualStudioVersion_1.VisualStudioVersion.VS2017:
-                return '15.0';
-            case VisualStudioVersion_1.VisualStudioVersion.VS2015:
-                return '14.0';
+            case VisualStudioVersion_1.VisualStudioVersion.VS2010:
+            case VisualStudioVersion_1.VisualStudioVersion.VS2012:
+                return '4.0';
             case VisualStudioVersion_1.VisualStudioVersion.VS2013:
                 return '12.0';
+            case VisualStudioVersion_1.VisualStudioVersion.VS2015:
+                return '14.0';
+            case VisualStudioVersion_1.VisualStudioVersion.VS2017:
+                return '15.0';
             default:
-                return '4.0';
+                return 'Current';
         }
     }
     findWindowsSdk() {
@@ -638,9 +649,11 @@ class VisualStudioExporter extends Exporter_1.Exporter {
         if (foundVersion) {
             windowsTargetVersion = foundVersion;
         }
-        if (Options_1.Options.visualStudioVersion === VisualStudioVersion_1.VisualStudioVersion.VS2017) {
+        if (Options_1.Options.visualStudioVersion === VisualStudioVersion_1.VisualStudioVersion.VS2019) {
+            this.p('<VCProjectVersion>16.0</VCProjectVersion>', indent);
+        }
+        else if (Options_1.Options.visualStudioVersion === VisualStudioVersion_1.VisualStudioVersion.VS2017) {
             this.p('<VCProjectVersion>15.0</VCProjectVersion>', indent);
-            this.p('<WindowsTargetPlatformVersion>' + windowsTargetVersion + '</WindowsTargetPlatformVersion>', indent);
         }
         if (platform === Platform_1.Platform.WindowsApp) {
             this.p('<DefaultLanguage>en-US</DefaultLanguage>', indent);
@@ -653,8 +666,11 @@ class VisualStudioExporter extends Exporter_1.Exporter {
             this.p('<ApplicationTypeRevision>10.0</ApplicationTypeRevision>', indent);
             this.p('<EnableDotNetNativeCompatibleProfile>true</EnableDotNetNativeCompatibleProfile>', indent);
         }
-        else if (Options_1.Options.graphicsApi === GraphicsApi_1.GraphicsApi.Direct3D12) {
+        if (Options_1.Options.graphicsApi === GraphicsApi_1.GraphicsApi.Direct3D12 || platform === Platform_1.Platform.WindowsApp || Options_1.Options.visualStudioVersion === VisualStudioVersion_1.VisualStudioVersion.VS2017) {
             this.p('<WindowsTargetPlatformVersion>' + windowsTargetVersion + '</WindowsTargetPlatformVersion>', indent);
+        }
+        else if (Options_1.Options.visualStudioVersion === VisualStudioVersion_1.VisualStudioVersion.VS2019) {
+            this.p('<WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>', indent);
         }
     }
     customItemGroups(indent) {
@@ -674,7 +690,8 @@ class VisualStudioExporter extends Exporter_1.Exporter {
             await this.exportProject(from, to, proj, platform, cmd, noshaders);
         this.writeFile(path.resolve(to, project.getName() + '.vcxproj'));
         this.p('<?xml version="1.0" encoding="utf-8"?>');
-        this.p('<Project DefaultTargets="Build" ToolsVersion="' + this.toolsVersion() + '" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">');
+        const toolsVersion = this.toolsVersion() === 'Current' ? '' : 'ToolsVersion="' + this.toolsVersion() + '" ';
+        this.p('<Project DefaultTargets="Build" ' + toolsVersion + 'xmlns="http://schemas.microsoft.com/developer/msbuild/2003">');
         this.p('<ItemGroup Label="ProjectConfigurations">', 1);
         for (let system of this.getSystems(platform)) {
             for (let config of this.getConfigs(platform)) {
