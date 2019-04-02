@@ -15,7 +15,7 @@ export let Options = {
 	vrApi: VrApi.None,
 	rayTraceApi: RayTraceApi.None,
 	compiler: Compiler.Default,
-	visualStudioVersion: VisualStudioVersion.VS2017,
+	visualStudioVersion: VisualStudioVersion.VS2019,
 	compile: false,
 	run: false
 };

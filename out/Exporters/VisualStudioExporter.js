@@ -163,7 +163,7 @@ class VisualStudioExporter extends Exporter_1.Exporter {
         if (Options_1.Options.visualStudioVersion === VisualStudioVersion_1.VisualStudioVersion.VS2019) {
             this.p('Microsoft Visual Studio Solution File, Format Version 12.00');
             this.p('# Visual Studio Version 16');
-            this.p('VisualStudioVersion = 16.0.28714.193');
+            this.p('VisualStudioVersion = 16.0.28729.10');
             this.p('MinimumVisualStudioVersion = 10.0.40219.1');
         }
         else if (Options_1.Options.visualStudioVersion === VisualStudioVersion_1.VisualStudioVersion.VS2017) {
