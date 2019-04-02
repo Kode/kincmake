@@ -88,7 +88,7 @@ let options = [
         short: 'v',
         description: 'Version of Visual Studio to use',
         value: true,
-        default: VisualStudioVersion_1.VisualStudioVersion.VS2017
+        default: VisualStudioVersion_1.VisualStudioVersion.VS2019
     },
     {
         full: 'compile',
