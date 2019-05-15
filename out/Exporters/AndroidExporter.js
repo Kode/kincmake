@@ -16,6 +16,7 @@ class AndroidExporter extends Exporter_1.Exporter {
         this.safename = safename;
         let targetOptions = {
             package: 'tech.kode.kore',
+            installLocation: "internalOnly",
             versionCode: 1,
             versionName: '1.0',
             screenOrientation: 'sensor',
@@ -32,6 +33,8 @@ class AndroidExporter extends Exporter_1.Exporter {
             let userOptions = project.targetOptions.android;
             if (userOptions.package != null)
                 targetOptions.package = userOptions.package;
+            if (userOptions.installLocation != null)
+                targetOptions.installLocation = userOptions.installLocation;
             if (userOptions.versionCode != null)
                 targetOptions.versionCode = userOptions.versionCode;
             if (userOptions.versionName != null)
@@ -142,6 +145,7 @@ class AndroidExporter extends Exporter_1.Exporter {
         fs.ensureDirSync(path.join(outdir, 'app', 'src', 'main'));
         let manifest = fs.readFileSync(path.join(indir, 'main', 'AndroidManifest.xml'), { encoding: 'utf8' });
         manifest = manifest.replace(/{package}/g, targetOptions.package);
+        manifest = manifest.replace(/{installLocation}/g, targetOptions.installLocation);
         manifest = manifest.replace(/{versionCode}/g, targetOptions.versionCode.toString());
         manifest = manifest.replace(/{versionName}/g, targetOptions.versionName);
         manifest = manifest.replace(/{screenOrientation}/g, targetOptions.screenOrientation);
