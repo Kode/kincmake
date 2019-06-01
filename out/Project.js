@@ -51,7 +51,7 @@ process.on('exit', (code) => {
 let scriptdir = '.';
 // let lastScriptDir = '.';
 let koreDir = '.';
-async function loadProject(directory, korefile = 'korefile.js') {
+async function loadProject(directory, korefile = 'kincfile.js') {
     return new Promise((resolve, reject) => {
         projectInProgress += 1;
         let resolver = async (project) => {

@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 export function run(name: string, from: string) {
-	const projectfile = 'korefile.js';
+	const projectfile = 'kincfile.js';
 	if (!fs.existsSync(path.join(from, projectfile))) {
 		fs.writeFileSync(path.join(from, projectfile),
 			'let project = new Project(\'New Project\');\n'

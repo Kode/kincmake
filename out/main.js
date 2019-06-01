@@ -205,7 +205,7 @@ async function compileShader(projectDir, type, from, to, temp, platform, builddi
     });
 }
 async function exportKoremakeProject(from, to, platform, korefile, options) {
-    log.info('korefile found.');
+    log.info('kincfile found.');
     if (options.onlyshaders) {
         log.info('Only compiling shaders.');
     }
@@ -301,8 +301,14 @@ async function exportProject(from, to, platform, korefile, options) {
     if (isKoremakeProject(from, korefile)) {
         return exportKoremakeProject(from, to, platform, korefile, options);
     }
+    else if (isKoremakeProject(from, 'kincfile.js')) {
+        return exportKoremakeProject(from, to, platform, 'kincfile.js', options);
+    }
+    else if (isKoremakeProject(from, 'korefile.js')) {
+        return exportKoremakeProject(from, to, platform, 'korefile.js', options);
+    }
     else {
-        throw 'korefile not found.';
+        throw 'kincfile not found.';
     }
 }
 function compileProject(make, project, solutionName, options, dothemath) {
@@ -386,7 +392,7 @@ async function run(options, loglog) {
     options.buildPath = options.debug ? 'Debug' : 'Release';
     let project = null;
     try {
-        project = await exportProject(options.from, options.to, options.target, options.korefile, options);
+        project = await exportProject(options.from, options.to, options.target, options.kincfile, options);
     }
     catch (error) {
         log.error(error);

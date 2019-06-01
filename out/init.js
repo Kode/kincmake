@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const fs = require("fs");
 const path = require("path");
 function run(name, from) {
-    const projectfile = 'korefile.js';
+    const projectfile = 'kincfile.js';
     if (!fs.existsSync(path.join(from, projectfile))) {
         fs.writeFileSync(path.join(from, projectfile), 'let project = new Project(\'New Project\');\n'
             + '\n'

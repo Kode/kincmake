@@ -222,7 +222,7 @@ async function compileShader(projectDir: string, type: string, from: string, to:
 }
 
 async function exportKoremakeProject(from: string, to: string, platform: string, korefile: string, options: any) {
-	log.info('korefile found.');
+	log.info('kincfile found.');
 	if (options.onlyshaders) {
 		log.info('Only compiling shaders.');
 	}
@@ -324,8 +324,14 @@ async function exportProject(from: string, to: string, platform: string, korefil
 	if (isKoremakeProject(from, korefile)) {
 		return exportKoremakeProject(from, to, platform, korefile, options);
 	}
+	else if (isKoremakeProject(from, 'kincfile.js')) {
+		return exportKoremakeProject(from, to, platform, 'kincfile.js', options);
+	} 
+	else if (isKoremakeProject(from, 'korefile.js')) {
+		return exportKoremakeProject(from, to, platform, 'korefile.js', options);
+	} 
 	else {
-		throw 'korefile not found.';
+		throw 'kincfile not found.';
 	}
 }
 
@@ -426,7 +432,7 @@ export async function run(options: any, loglog: any): Promise<string> {
 
 	let project: Project = null;
 	try {
-		project = await exportProject(options.from, options.to, options.target, options.korefile, options);
+		project = await exportProject(options.from, options.to, options.target, options.kincfile, options);
 	}
 	catch (error) {
 		log.error(error);

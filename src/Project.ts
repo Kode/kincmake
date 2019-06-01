@@ -53,7 +53,7 @@ let scriptdir = '.';
 // let lastScriptDir = '.';
 let koreDir = '.';
 
-async function loadProject(directory: string, korefile: string = 'korefile.js'): Promise<Project> {
+async function loadProject(directory: string, korefile: string = 'kincfile.js'): Promise<Project> {
 	return new Promise<Project>((resolve, reject) => {
 		projectInProgress += 1;
 		let resolver = async (project: Project) => {

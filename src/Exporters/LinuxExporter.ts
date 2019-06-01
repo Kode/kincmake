@@ -98,7 +98,7 @@ export class LinuxExporter extends Exporter {
 		this.p('DEF=' + defline);
 		this.p();
 
-		let cline = '';
+		let cline = '-std=c99';
 		for (let flag of project.cFlags) {
 			cline += flag + ' ';
 		} 

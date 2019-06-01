@@ -135,10 +135,10 @@ let options = [
 		default: 'Project'
 	},
 	{
-		full: 'korefile',
+		full: 'kincfile',
 		value: true,
-		description: 'Name of your korefile, defaults to "korefile.js"',
-		default: 'korefile.js'
+		description: 'Name of your kincfile, defaults to "kincfile.js"',
+		default: 'kincfile.js'
 	},
 	{
 		full: 'compiler',
@@ -158,7 +158,7 @@ let parsedOptions: any = {
 };
 
 function printHelp() {
-	console.log('khamake options:\n');
+	console.log('kincmake options:\n');
 	for (let o in options) {
 		let option: any = options[o];
 		if (option.hidden) continue;
