@@ -7,12 +7,17 @@ const Platform_1 = require("../Platform");
 const Options_1 = require("../Options");
 const fs = require("fs-extra");
 const path = require("path");
-const uuid = require('uuid');
+const uuidv4 = require('uuid/v4');
+const uuidv5 = require('uuid/v5');
 function contains(a, b) {
     return a.indexOf(b) !== -1;
 }
 function newId() {
-    return uuid.v4().toUpperCase();
+    return uuidv4().toUpperCase();
+}
+const MY_NAMESPACE = '1b671a64-40d5-491e-99b0-da01ff1f3341';
+function newPathId(path) {
+    return uuidv5(path, MY_NAMESPACE).toUpperCase();
 }
 function getDir(file) {
     if (file.file.indexOf('/') >= 0) {
@@ -26,7 +31,7 @@ function getDir(file) {
 class Directory {
     constructor(dirname) {
         this.dirname = dirname;
-        this.id = newId();
+        this.id = newPathId(dirname);
     }
     getName() {
         return this.dirname;
@@ -44,8 +49,8 @@ class File {
     constructor(filename, dir) {
         this.filename = filename;
         this.dir = dir;
-        this.buildid = newId();
-        this.fileid = newId();
+        this.buildid = newPathId(dir + filename + '_buildid');
+        this.fileid = newPathId(dir + filename + '_fileid');
     }
     getBuildId() {
         return this.buildid;
@@ -74,8 +79,8 @@ class File {
 class Framework {
     constructor(name) {
         this.name = name;
-        this.buildid = newId();
-        this.fileid = newId();
+        this.buildid = newPathId(name + '_buildid');
+        this.fileid = newPathId(name + '_fileid');
         this.localPath = null;
     }
     toString() {
@@ -234,25 +239,25 @@ class XCodeExporter extends Exporter_1.Exporter {
             if (userOptions.developmentTeam)
                 targetOptions.developmentTeam = userOptions.developmentTeam;
         }
-        const projectId = newId();
-        const appFileId = newId();
-        const frameworkBuildId = newId();
-        const sourceBuildId = newId();
-        const frameworksGroupId = newId();
-        const productsGroupId = newId();
-        const mainGroupId = newId();
-        const targetId = newId();
-        const nativeBuildConfigListId = newId();
-        const projectBuildConfigListId = newId();
-        const debugId = newId();
-        const releaseId = newId();
-        const nativeDebugId = newId();
-        const nativeReleaseId = newId();
-        const debugDirFileId = newId();
-        const debugDirBuildId = newId();
-        const resourcesBuildId = newId();
-        const iconFileId = newId();
-        const iconBuildId = newId();
+        const projectId = newPathId("_projectId");
+        const appFileId = newPathId("_appFileId");
+        const frameworkBuildId = newPathId("_frameworkBuildId");
+        const sourceBuildId = newPathId("_sourceBuildId");
+        const frameworksGroupId = newPathId("_frameworksGroupId");
+        const productsGroupId = newPathId("_productsGroupId");
+        const mainGroupId = newPathId("_mainGroupId");
+        const targetId = newPathId("_targetId");
+        const nativeBuildConfigListId = newPathId("_nativeBuildConfigListId");
+        const projectBuildConfigListId = newPathId("_projectBuildConfigListId");
+        const debugId = newPathId("_debugId");
+        const releaseId = newPathId("_releaseId");
+        const nativeDebugId = newPathId("_nativeDebugId");
+        const nativeReleaseId = newPathId("_nativeReleaseId");
+        const debugDirFileId = newPathId("_debugDirFileId");
+        const debugDirBuildId = newPathId("_debugDirBuildId");
+        const resourcesBuildId = newPathId("_resourcesBuildId");
+        const iconFileId = newPathId("_iconFileId");
+        const iconBuildId = newPathId("_iconBuildId");
         // var iosIconFileIds = [];
         // var iosIconBuildIds = [];
         // for (var i = 0; i < iosIconNames.length; ++i) {
