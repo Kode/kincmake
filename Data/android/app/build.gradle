@@ -50,3 +50,5 @@ android {
         }
     }
 }
+
+dependencies {{dependencies}}

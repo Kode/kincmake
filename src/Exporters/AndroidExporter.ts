@@ -25,8 +25,18 @@ export class AndroidExporter extends Exporter {
 			versionName: '1.0',
 			screenOrientation: 'sensor',
 			permissions: new Array<string>(),
-			disableStickyImmersiveMode: false
+			disableStickyImmersiveMode: false,
+			dependencies: ""
 		};
+
+		if (project.targetOptions != null && project.targetOptions.android != null) {
+			const userOptions = project.targetOptions.android;
+			for (let key in userOptions) {
+				if (userOptions[key] != null) {
+					(targetOptions as any)[key] = userOptions[key];
+				}
+			}
+		}
 
 		let cflags = '';
 		for (let flag of project.cFlags)
@@ -34,17 +44,6 @@ export class AndroidExporter extends Exporter {
 		let cppflags = '';
 		for (let flag of project.cppFlags)
 			cppflags += flag + ' ';
-
-		if (project.targetOptions != null && project.targetOptions.android != null) {
-			let userOptions = project.targetOptions.android;
-			if (userOptions.package != null) targetOptions.package = userOptions.package;
-			if (userOptions.installLocation != null) targetOptions.installLocation = userOptions.installLocation;
-			if (userOptions.versionCode != null) targetOptions.versionCode = userOptions.versionCode;
-			if (userOptions.versionName != null) targetOptions.versionName = userOptions.versionName;
-			if (userOptions.screenOrientation != null) targetOptions.screenOrientation = userOptions.screenOrientation;
-			if (userOptions.permissions != null) targetOptions.permissions = userOptions.permissions;
-			if (userOptions.disableStickyImmersiveMode != null) targetOptions.disableStickyImmersiveMode = userOptions.disableStickyImmersiveMode;
-		}
 
 		const indir = path.join(__dirname, '..', '..', 'Data', 'android');
 		const outdir = path.join(to.toString(), safename);
@@ -89,6 +88,7 @@ export class AndroidExporter extends Exporter {
 		}
 		javasources += '\'' + path.relative(path.join(outdir, 'app'), path.join(Project.koreDir.toString(), 'Backends', 'System', 'Android', 'Java-Sources')).replace(/\\/g, '/') + '\'';
 		gradle = gradle.replace(/{javasources}/g, javasources);
+		gradle = gradle.replace(/{dependencies}/g, targetOptions.dependencies);
 
 		fs.writeFileSync(path.join(outdir, 'app', 'build.gradle'), gradle, {encoding: 'utf8'});
 
