@@ -212,6 +212,21 @@ export class Project {
 			}
 			let subbasedir = sub.basedir;
 
+			for (let tkey of Object.keys(sub.targetOptions)) {
+				const target = sub.targetOptions[tkey];
+				for (let key of Object.keys(target)) {
+					const options = this.targetOptions[tkey];
+					const option = target[key];
+					if (options[key] == null) options[key] = option;
+					// push library properties to current array instead
+					else if (Array.isArray(options[key]) && Array.isArray(option)) {
+						for (let value of option) {
+							if (!options[key].includes(value)) options[key].push(value);
+						}
+					}
+				}
+			}
+
 			for (let d of sub.defines) if (!containsDefine(this.defines, d)) this.defines.push(d);
 			for (let file of sub.files) {
 				let absolute = file.file;
