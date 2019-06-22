@@ -216,8 +216,6 @@ class VisualStudioExporter extends Exporter_1.Exporter {
         this.exportUserFile(from, to, project, platform);
         if (platform === Platform_1.Platform.WindowsApp) {
             this.exportManifest(to, project);
-            const indir = path.join(__dirname, '..', '..', 'Data', 'windowsapp');
-            fs.copySync(path.join(indir, 'TemporaryKey.pfx'), path.join(to, 'TemporaryKey.pfx'));
             const white = 0xffffffff;
             Icon.exportPng(project.icon, path.resolve(to, 'Logo.scale-100.png'), 150, 150, white, from);
             Icon.exportPng(project.icon, path.resolve(to, 'SmallLogo.scale-100.png'), 44, 44, white, from);
@@ -731,15 +729,7 @@ class VisualStudioExporter extends Exporter_1.Exporter {
         this.extensionSettings(2);
         this.p('</ImportGroup>', 1);
         this.additionalImportGroups(1);
-        if (platform === Platform_1.Platform.WindowsApp) {
-            this.p('<PropertyGroup Label="UserMacros">', 1);
-            this.p('<PackageCertificateThumbprint>70D2DCD9F41CDDD92BA2862FF58A54240AFD2A23</PackageCertificateThumbprint>', 2);
-            this.p('<PackageCertificateKeyFile>TemporaryKey.pfx</PackageCertificateKeyFile>', 2);
-            this.p('</PropertyGroup>', 1);
-        }
-        else {
-            this.p('<PropertyGroup Label="UserMacros" />', 1);
-        }
+        this.p('<PropertyGroup Label="UserMacros" />', 1);
         if (platform === Platform_1.Platform.WindowsApp) {
             const configurations = ['Debug', 'Release'];
             for (let configuration of configurations) {
@@ -895,9 +885,6 @@ class VisualStudioExporter extends Exporter_1.Exporter {
             this.p('</ItemGroup>', 1);
             this.p('<ItemGroup>', 1);
             this.p('<AppxManifest Include="Package.appxmanifest" />', 2);
-            this.p('</ItemGroup>', 1);
-            this.p('<ItemGroup>', 1);
-            this.p('<None Include="TemporaryKey.pfx" />', 2);
             this.p('</ItemGroup>', 1);
         }
         if (platform === Platform_1.Platform.WindowsApp || platform === Platform_1.Platform.XboxOne) {

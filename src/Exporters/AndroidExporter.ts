@@ -20,7 +20,7 @@ export class AndroidExporter extends Exporter {
 		this.safename = safename;
 		let targetOptions = {
 			package: 'tech.kode.kore',
-			installLocation: "internalOnly",
+			installLocation: 'internalOnly',
 			versionCode: 1,
 			versionName: '1.0',
 			screenOrientation: 'sensor',
