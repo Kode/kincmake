@@ -586,6 +586,7 @@ class VisualStudioExporter extends Exporter_1.Exporter {
         }
     }
     findWindowsSdk() {
+        const errorMessage = 'Could not find a Windows SDK, make sure Visual Studio is installed with C/C++ support.';
         return new Promise((resolve, reject) => {
             try {
                 const Registry = require('winreg');
@@ -593,6 +594,8 @@ class VisualStudioExporter extends Exporter_1.Exporter {
                 regKey.keys((err, items) => {
                     if (err) {
                         log.error('Error while reading the registry: ' + err);
+                        log.error(errorMessage);
+                        resolve(null);
                     }
                     else {
                         let best = [0, 0, 0, 0];
@@ -637,6 +640,7 @@ class VisualStudioExporter extends Exporter_1.Exporter {
             }
             catch (err) {
                 log.error('Error while trying to figure out the Windows SDK version: ' + err);
+                log.error(errorMessage);
                 resolve(null);
             }
         });

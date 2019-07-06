@@ -233,15 +233,7 @@ for (let i = 2; i < args.length; ++i) {
 if (parsedOptions.run) {
     parsedOptions.compile = true;
 }
-if (parsedOptions.init) {
-    console.log('Initializing Kore project.\n');
-    require('./init').run(parsedOptions.name, parsedOptions.from, parsedOptions.projectfile);
-}
-else if (parsedOptions.update) {
-    console.log('Updating everything...');
-    require('child_process').spawnSync('git', ['submodule', 'foreach', '--recursive', 'git', 'pull', 'origin', 'master'], { stdio: 'inherit', stderr: 'inherit' });
-}
-else {
+async function runKincmake() {
     let logInfo = function (text, newline) {
         if (newline) {
             console.log(text);
@@ -258,9 +250,18 @@ else {
             process.stderr.write(text);
         }
     };
-    require('./main.js').run(parsedOptions, {
-        info: logInfo,
-        error: logError
-    }, function () { });
+    await require('./main.js').run(parsedOptions, { info: logInfo, error: logError });
+    // console.log('Done.'); // TODO: Clean up async things so we actually end here.
+}
+if (parsedOptions.init) {
+    console.log('Initializing Kore project.\n');
+    require('./init').run(parsedOptions.name, parsedOptions.from, parsedOptions.projectfile);
+}
+else if (parsedOptions.update) {
+    console.log('Updating everything...');
+    require('child_process').spawnSync('git', ['submodule', 'foreach', '--recursive', 'git', 'pull', 'origin', 'master'], { stdio: 'inherit', stderr: 'inherit' });
+}
+else {
+    runKincmake();
 }
 //# sourceMappingURL=koremake.js.map
