@@ -9,17 +9,17 @@ import * as os from 'os';
 import * as path from 'path';
 
 interface TargetOptions {
-	package: string,
-	installLocation: string,
-	versionCode: number,
-	versionName: string,
-	screenOrientation: string,
-	permissions: string[],
-	disableStickyImmersiveMode: boolean,
-	customFilesPath?: string,
-	buildGradlePath: string,
-	globalBuildGradlePath: string,
-	proguardRulesPath: string,
+	package: string;
+	installLocation: string;
+	versionCode: number;
+	versionName: string;
+	screenOrientation: string;
+	permissions: string[];
+	disableStickyImmersiveMode: boolean;
+	customFilesPath?: string;
+	buildGradlePath: string;
+	globalBuildGradlePath: string;
+	proguardRulesPath: string;
 }
 
 export class AndroidExporter extends Exporter {
@@ -59,7 +59,7 @@ export class AndroidExporter extends Exporter {
 					case 'globalBuildGradlePath':
 					case 'proguardRulesPath':
 						// fix path slashes and normalize
-						const p: string = userOptions[key].split("/").join(path.sep);
+						const p: string = userOptions[key].split('/').join(path.sep);
 						(targetOptions as any)[key] = path.join(from, p);
 						break;
 					default:
@@ -106,7 +106,7 @@ export class AndroidExporter extends Exporter {
 
 		if (targetOptions.customFilesPath != null) {
 			const dir = targetOptions.customFilesPath;
-			if (!fs.existsSync(dir)) throw dir + " folder doesn't exist";
+			if (!fs.existsSync(dir)) throw dir + ' folder does not exist';
 			fs.copySync(dir, outdir);
 		}
 
@@ -226,7 +226,7 @@ export class AndroidExporter extends Exporter {
 	exportIcons(icon: string, outdir: string, from: string, to: string) {
 		const folders = ['mipmap-mdpi', 'mipmap-hdpi', 'mipmap-xhdpi', 'mipmap-xxhdpi', 'mipmap-xxxhdpi'];
 		const dpis = [48, 72, 96, 144, 192];
-		for (var i = 0; i < dpis.length; i++) {
+		for (let i = 0; i < dpis.length; ++i) {
 			const folder = folders[i];
 			const dpi = dpis[i];
 			fs.ensureDirSync(path.join(outdir, 'app', 'src', 'main', 'res', folder));
