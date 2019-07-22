@@ -110,7 +110,10 @@ class Project {
         this.c11 = false;
         this.kore = true;
         this.targetOptions = {
-            android: {}
+            android: {},
+            xboxOne: {},
+            playStation4: {},
+            switch: {}
         };
         this.rotated = false;
         this.cmd = false;

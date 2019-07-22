@@ -40,7 +40,7 @@ class AndroidExporter extends Exporter_1.Exporter {
                     case 'globalBuildGradlePath':
                     case 'proguardRulesPath':
                         // fix path slashes and normalize
-                        const p = userOptions[key].split("/").join(path.sep);
+                        const p = userOptions[key].split('/').join(path.sep);
                         targetOptions[key] = path.join(from, p);
                         break;
                     default:
@@ -76,7 +76,7 @@ class AndroidExporter extends Exporter_1.Exporter {
         if (targetOptions.customFilesPath != null) {
             const dir = targetOptions.customFilesPath;
             if (!fs.existsSync(dir))
-                throw dir + " folder doesn't exist";
+                throw dir + ' folder does not exist';
             fs.copySync(dir, outdir);
         }
         if (project.getDebugDir().length > 0)
@@ -193,7 +193,7 @@ class AndroidExporter extends Exporter_1.Exporter {
     exportIcons(icon, outdir, from, to) {
         const folders = ['mipmap-mdpi', 'mipmap-hdpi', 'mipmap-xhdpi', 'mipmap-xxhdpi', 'mipmap-xxxhdpi'];
         const dpis = [48, 72, 96, 144, 192];
-        for (var i = 0; i < dpis.length; i++) {
+        for (let i = 0; i < dpis.length; ++i) {
             const folder = folders[i];
             const dpi = dpis[i];
             fs.ensureDirSync(path.join(outdir, 'app', 'src', 'main', 'res', folder));
