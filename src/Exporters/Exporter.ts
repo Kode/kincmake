@@ -35,22 +35,22 @@ export abstract class Exporter {
 	abstract async exportSolution(project: Project, from: string, to: string, platform: string, vrApi: any, options: any): Promise<void>;
 
 	exportCLion(project: Project, from: string, to: string, platform: string, vrApi: any, options: any) {
-		let name = project.getName().replace(/ /g, '_');
+		let name = project.getSafeName();
 
 		const indir = path.join(__dirname, '..', '..', 'Data', 'linux');
-		fs.ensureDirSync(path.resolve(to, project.getName(), '.idea'));
-		
+		fs.ensureDirSync(path.resolve(to, name, '.idea'));
+
 		let misc = fs.readFileSync(path.join(indir, 'idea', 'misc.xml'), 'utf8');
 		misc = misc.replace(/{root}/g, path.resolve(from));
-		fs.writeFileSync(path.join(to, project.getName(), '.idea', 'misc.xml'), misc, 'utf8');
+		fs.writeFileSync(path.join(to, name, '.idea', 'misc.xml'), misc, 'utf8');
 
 		let workspace = fs.readFileSync(path.join(indir, 'idea', 'workspace.xml'), 'utf8');
 		workspace = workspace.replace(/{workingdir}/g, path.resolve(project.getDebugDir()));
-		workspace = workspace.replace(/{project}/g, project.getName());
+		workspace = workspace.replace(/{project}/g, name);
 		workspace = workspace.replace(/{target}/g, name);
-		fs.writeFileSync(path.join(to, project.getName(), '.idea', 'workspace.xml'), workspace, 'utf8');
+		fs.writeFileSync(path.join(to, name, '.idea', 'workspace.xml'), workspace, 'utf8');
 
-		this.writeFile(path.resolve(to, project.getName(), 'CMakeLists.txt'));
+		this.writeFile(path.resolve(to, name, 'CMakeLists.txt'));
 
 		this.p('cmake_minimum_required(VERSION 3.10)');
 		this.p('project(' + name + ')');
@@ -60,9 +60,9 @@ export abstract class Exporter {
 		else {
 			this.p('set(CMAKE_CXX_STANDARD 98)');
 		}
-		
+
 		this.p('set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread -static-libgcc -static-libstdc++")');
-		
+
 		let debugDefines = '';
 		for (const def of project.getDefines()) {
 			if (!def.config || def.config.toLowerCase() === 'debug') {

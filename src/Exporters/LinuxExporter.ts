@@ -17,11 +17,11 @@ export class LinuxExporter extends Exporter {
 		this.exportCodeBlocks(project, from, to, platform, vrApi, options);
 		this.exportCLion(project, from, to, platform, vrApi, options);
 	}
-	
+
 	exportMakefile(project: Project, from: string, to: string, platform: string, vrApi: any, options: any) {
 		const cCompiler = Options.compiler === Compiler.Clang ? 'clang' : 'gcc';
 		const cppCompiler = Options.compiler === Compiler.Clang ? 'clang++' : 'g++';
-		
+
 		let objects: any = {};
 		let ofiles: any = {};
 		let outputPath = path.resolve(to, options.buildPath);
@@ -46,7 +46,7 @@ export class LinuxExporter extends Exporter {
 				}
 			}
 		}
-		
+
 		let gchfilelist = '';
 		let precompiledHeaders: string[] = [];
 		for (let file of project.getFiles()) {
@@ -67,12 +67,12 @@ export class LinuxExporter extends Exporter {
 				gchfilelist += path.basename(file.file) + '.gch ';
 			}
 		}
-		
+
 		let ofilelist = '';
 		for (let o in objects) {
 			ofilelist += o + '.o ';
 		}
-		
+
 		this.writeFile(path.resolve(outputPath, 'makefile'));
 
 		let incline = '-I./ '; // local directory to pick up the precompiled header hxcpp.h.gch
@@ -101,7 +101,7 @@ export class LinuxExporter extends Exporter {
 		let cline = '-std=c99 ';
 		for (let flag of project.cFlags) {
 			cline += flag + ' ';
-		} 
+		}
 		this.p('CFLAGS=' + cline);
 
 		let cppline = '';
@@ -114,15 +114,15 @@ export class LinuxExporter extends Exporter {
 		if (!options.debug) optimization = '-O2';
 		else optimization = '-g';
 
-		this.p(project.getName() + ': ' + gchfilelist + ofilelist);
-		
+		this.p(project.getSafeName() + ': ' + gchfilelist + ofilelist);
+
 		let cpp = '';
 		if (project.cpp11 && options.compiler !== Compiler.Clang) {
 			cpp = '-std=c++11';
 		}
 
-		this.p('\t' + cppCompiler + ' ' + cpp + ' ' + optimization + ' ' + ofilelist + ' -o "' + project.getName() + '" $(LIB)');
-		
+		this.p('\t' + cppCompiler + ' ' + cpp + ' ' + optimization + ' ' + ofilelist + ' -o "' + project.getSafeName() + '" $(LIB)');
+
 		for (let file of project.getFiles()) {
 			let precompiledHeader: string = null;
 			for (let header of precompiledHeaders) {
@@ -145,7 +145,7 @@ export class LinuxExporter extends Exporter {
 				let name = ofiles[file];
 				let realfile = path.relative(outputPath, path.resolve(from, file));
 				this.p(name + '.o: ' + realfile);
-				
+
 				let compiler = cppCompiler;
 				let flags = '$(CPPFLAGS)';
 				if (file.endsWith('.c')) {
@@ -155,8 +155,8 @@ export class LinuxExporter extends Exporter {
 				else if (file.endsWith('.s') || file.endsWith('.S')) {
 					compiler = cCompiler;
 					flags = '';
-				} 
-				
+				}
+
 				this.p('\t' + compiler + ' ' + cpp + ' ' + optimization + ' $(INC) $(DEF) ' + flags + ' -c ' + realfile + ' -o ' + name + '.o $(LIB)');
 			}
 		}
@@ -168,7 +168,7 @@ export class LinuxExporter extends Exporter {
 	}
 
 	exportCodeBlocks(project: Project, from: string, to: string, platform: string, vrApi: any, options: any) {
-		this.writeFile(path.resolve(to, project.getName() + '.cbp'));
+		this.writeFile(path.resolve(to, project.getSafeName() + '.cbp'));
 		this.p('<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>');
 		this.p('<CodeBlocks_project_file>');
 		this.p('<FileVersion major="1" minor="6" />', 1);
@@ -178,7 +178,7 @@ export class LinuxExporter extends Exporter {
 		this.p('<Option compiler="gcc" />', 2);
 		this.p('<Build>', 2);
 		this.p('<Target title="Debug">', 3);
-		this.p('<Option output="bin/Debug/' + project.getName() + '" prefix_auto="1" extension_auto="1" />', 4);
+		this.p('<Option output="bin/Debug/' + project.getSafeName() + '" prefix_auto="1" extension_auto="1" />', 4);
 		if (project.getDebugDir().length > 0) this.p('<Option working_dir="' + path.resolve(from, project.getDebugDir()) + '" />', 4);
 		this.p('<Option object_output="obj/Debug/" />', 4);
 		this.p('<Option type="1" />', 4);
@@ -191,7 +191,7 @@ export class LinuxExporter extends Exporter {
 		this.p('</Compiler>', 4);
 		this.p('</Target>', 3);
 		this.p('<Target title="Release">', 3);
-		this.p('<Option output="bin/Release/' + project.getName() + '" prefix_auto="1" extension_auto="1" />', 4);
+		this.p('<Option output="bin/Release/' + project.getSafeName() + '" prefix_auto="1" extension_auto="1" />', 4);
 		if (project.getDebugDir().length > 0) this.p('<Option working_dir="' + path.resolve(from, project.getDebugDir()) + '" />', 4);
 		this.p('<Option object_output="obj/Release/" />', 4);
 		this.p('<Option type="0" />', 4);
@@ -231,7 +231,7 @@ export class LinuxExporter extends Exporter {
 			this.p('<Add directory="/opt/vc/lib" />', 3);
 		}
 		this.p('</Linker>', 2);
-		
+
 		let precompiledHeaders: string[] = [];
 		for (let file of project.getFiles()) {
 			if (file.options && file.options.pch && precompiledHeaders.indexOf(file.options.pch) < 0) {
@@ -246,7 +246,7 @@ export class LinuxExporter extends Exporter {
 					break;
 				}
 			}
-			
+
 			if (file.file.endsWith('.c') || file.file.endsWith('.cc') || file.file.endsWith('.cpp')) {
 				this.p('<Unit filename="' + path.resolve(from, file.file) + '">', 2);
 				this.p('<Option compilerVar="CC" />', 3);

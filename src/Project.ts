@@ -144,6 +144,7 @@ export class Project {
 	static koreDir: string;
 	static root: string;
 	name: string;
+	safeName: string;
 	version: string;
 	id: string;
 	debugDir: string;
@@ -172,6 +173,7 @@ export class Project {
 
 	constructor(name: string) {
 		this.name = name;
+		this.safeName = name.replace(/[^A-z0-9\-\_]/g, '-');;
 		this.version = '1.0';
 		this.debugDir = '';
 		this.basedir = scriptdir;
@@ -281,6 +283,10 @@ export class Project {
 
 	getName() {
 		return this.name;
+	}
+
+	getSafeName() {
+		return this.safeName;
 	}
 
 	getUuid() {

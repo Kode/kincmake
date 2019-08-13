@@ -121,20 +121,20 @@ class XCodeExporter extends Exporter_1.Exporter {
         super();
     }
     exportWorkspace(to, project) {
-        const dir = path.resolve(to, project.getName() + '.xcodeproj', 'project.xcworkspace');
+        const dir = path.resolve(to, project.getSafeName() + '.xcodeproj', 'project.xcworkspace');
         fs.ensureDirSync(dir);
-        this.writeFile(path.resolve(to, project.getName() + '.xcodeproj', 'project.xcworkspace', 'contents.xcworkspacedata'));
+        this.writeFile(path.resolve(to, project.getSafeName() + '.xcodeproj', 'project.xcworkspace', 'contents.xcworkspacedata'));
         this.p('<?xml version="1.0" encoding="UTF-8"?>');
         this.p('<Workspace');
         this.p('version = "1.0">');
         this.p('<FileRef');
-        this.p('location = "self:' + project.getName() + '.xcodeproj">');
+        this.p('location = "self:' + project.getSafeName() + '.xcodeproj">');
         this.p('</FileRef>');
         this.p('</Workspace>');
         this.closeFile();
     }
     async exportSolution(project, from, to, platform) {
-        const xdir = path.resolve(to, project.getName() + '.xcodeproj');
+        const xdir = path.resolve(to, project.getSafeName() + '.xcodeproj');
         fs.ensureDirSync(xdir);
         this.exportWorkspace(to, project);
         let icons = [];
@@ -264,7 +264,7 @@ class XCodeExporter extends Exporter_1.Exporter {
         //     iosIconFileIds.push(newId());
         //     iosIconBuildIds.push(newId());
         // }
-        this.writeFile(path.resolve(to, project.getName() + '.xcodeproj', 'project.pbxproj'));
+        this.writeFile(path.resolve(to, project.getSafeName() + '.xcodeproj', 'project.pbxproj'));
         this.p('// !$*UTF8*$!');
         this.p('{');
         this.p('archiveVersion = 1;', 1);
@@ -287,7 +287,7 @@ class XCodeExporter extends Exporter_1.Exporter {
         this.p('/* End PBXBuildFile section */');
         this.p();
         this.p('/* Begin PBXFileReference section */');
-        this.p(appFileId + ' /* ' + project.getName() + '.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "' + project.getName() + '.app"; sourceTree = BUILT_PRODUCTS_DIR; };', 2);
+        this.p(appFileId + ' /* ' + project.getSafeName() + '.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "' + project.getSafeName() + '.app"; sourceTree = BUILT_PRODUCTS_DIR; };', 2);
         for (let framework of frameworks) {
             if (framework.toString().endsWith('.framework')) {
                 // Local framework - a directory is specified
@@ -380,7 +380,7 @@ class XCodeExporter extends Exporter_1.Exporter {
         this.p(productsGroupId + ' /* Products */ = {', 2);
         this.p('isa = PBXGroup;', 3);
         this.p('children = (', 3);
-        this.p(appFileId + ' /* ' + project.getName() + '.app */,', 4);
+        this.p(appFileId + ' /* ' + project.getSafeName() + '.app */,', 4);
         this.p(');', 3);
         this.p('name = Products;', 3);
         this.p('sourceTree = "<group>";', 3);
@@ -424,9 +424,9 @@ class XCodeExporter extends Exporter_1.Exporter {
         this.p('/* End PBXGroup section */');
         this.p();
         this.p('/* Begin PBXNativeTarget section */');
-        this.p(targetId + ' /* ' + project.getName() + ' */ = {', 2);
+        this.p(targetId + ' /* ' + project.getSafeName() + ' */ = {', 2);
         this.p('isa = PBXNativeTarget;', 3);
-        this.p('buildConfigurationList = ' + nativeBuildConfigListId + ' /* Build configuration list for PBXNativeTarget "' + project.getName() + '" */;', 3);
+        this.p('buildConfigurationList = ' + nativeBuildConfigListId + ' /* Build configuration list for PBXNativeTarget "' + project.getSafeName() + '" */;', 3);
         this.p('buildPhases = (', 3);
         this.p(sourceBuildId + ' /* Sources */,', 4);
         this.p(frameworkBuildId + ' /* Frameworks */,', 4);
@@ -438,7 +438,7 @@ class XCodeExporter extends Exporter_1.Exporter {
         this.p(');', 3);
         this.p('name = "' + project.getName() + '";', 3);
         this.p('productName = "' + project.getName() + '";', 3);
-        this.p('productReference = ' + appFileId + ' /* ' + project.getName() + '.app */;', 3);
+        this.p('productReference = ' + appFileId + ' /* ' + project.getSafeName() + '.app */;', 3);
         this.p('productType = "com.apple.product-type.' + (project.isCmd() ? 'tool' : 'application') + '";', 3);
         this.p('};', 2);
         this.p('/* End PBXNativeTarget section */');
@@ -458,7 +458,7 @@ class XCodeExporter extends Exporter_1.Exporter {
         this.p('};', 5);
         this.p('};', 4);
         this.p('};', 3);
-        this.p('buildConfigurationList = ' + projectBuildConfigListId + ' /* Build configuration list for PBXProject "' + project.getName() + '" */;', 3);
+        this.p('buildConfigurationList = ' + projectBuildConfigListId + ' /* Build configuration list for PBXProject "' + project.getSafeName() + '" */;', 3);
         this.p('compatibilityVersion = "Xcode 3.2";', 3);
         this.p('developmentRegion = English;', 3);
         this.p('hasScannedForEncodings = 0;', 3);
@@ -471,7 +471,7 @@ class XCodeExporter extends Exporter_1.Exporter {
         this.p('projectDirPath = "";', 3);
         this.p('projectRoot = "";', 3);
         this.p('targets = (', 3);
-        this.p(targetId + ' /* ' + project.getName() + ' */,', 4);
+        this.p(targetId + ' /* ' + project.getSafeName() + ' */,', 4);
         this.p(');', 3);
         this.p('};', 2);
         this.p('/* End PBXProject section */');
@@ -801,7 +801,7 @@ class XCodeExporter extends Exporter_1.Exporter {
         this.p('/* End XCBuildConfiguration section */');
         this.p();
         this.p('/* Begin XCConfigurationList section */');
-        this.p(projectBuildConfigListId + ' /* Build configuration list for PBXProject "' + project.getName() + '" */ = {', 2);
+        this.p(projectBuildConfigListId + ' /* Build configuration list for PBXProject "' + project.getSafeName() + '" */ = {', 2);
         this.p('isa = XCConfigurationList;', 3);
         this.p('buildConfigurations = (', 3);
         this.p(debugId + ' /* Debug */,', 4);
@@ -810,7 +810,7 @@ class XCodeExporter extends Exporter_1.Exporter {
         this.p('defaultConfigurationIsVisible = 0;', 3);
         this.p('defaultConfigurationName = Release;', 3);
         this.p('};', 2);
-        this.p(nativeBuildConfigListId + ' /* Build configuration list for PBXNativeTarget "' + project.getName() + '" */ = {', 2);
+        this.p(nativeBuildConfigListId + ' /* Build configuration list for PBXNativeTarget "' + project.getSafeName() + '" */ = {', 2);
         this.p('isa = XCConfigurationList;', 3);
         this.p('buildConfigurations = (', 3);
         this.p(nativeDebugId + ' /* Debug */,', 4);

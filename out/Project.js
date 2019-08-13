@@ -92,6 +92,8 @@ class Project {
         this.cppFlags = [];
         this.icon = null;
         this.name = name;
+        this.safeName = name.replace(/[^A-z0-9\-\_]/g, '-');
+        ;
         this.version = '1.0';
         this.debugDir = '';
         this.basedir = scriptdir;
@@ -210,6 +212,9 @@ class Project {
     }
     getName() {
         return this.name;
+    }
+    getSafeName() {
+        return this.safeName;
     }
     getUuid() {
         return this.uuid;

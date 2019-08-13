@@ -326,10 +326,10 @@ async function exportProject(from: string, to: string, platform: string, korefil
 	}
 	else if (isKoremakeProject(from, 'kincfile.js')) {
 		return exportKoremakeProject(from, to, platform, 'kincfile.js', options);
-	} 
+	}
 	else if (isKoremakeProject(from, 'korefile.js')) {
 		return exportKoremakeProject(from, to, platform, 'korefile.js', options);
-	} 
+	}
 	else {
 		throw 'kincfile not found.';
 	}
@@ -438,7 +438,7 @@ export async function run(options: any, loglog: any): Promise<string> {
 		log.error(error);
 		return '';
 	}
-	let solutionName = project.getName();
+	let solutionName = project.getSafeName();
 	if (options.onlyshaders) {
 		return solutionName;
 	}

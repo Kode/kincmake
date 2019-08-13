@@ -398,7 +398,7 @@ async function run(options, loglog) {
         log.error(error);
         return '';
     }
-    let solutionName = project.getName();
+    let solutionName = project.getSafeName();
     if (options.onlyshaders) {
         return solutionName;
     }

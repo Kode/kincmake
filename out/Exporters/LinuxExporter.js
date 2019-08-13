@@ -102,12 +102,12 @@ class LinuxExporter extends Exporter_1.Exporter {
             optimization = '-O2';
         else
             optimization = '-g';
-        this.p(project.getName() + ': ' + gchfilelist + ofilelist);
+        this.p(project.getSafeName() + ': ' + gchfilelist + ofilelist);
         let cpp = '';
         if (project.cpp11 && options.compiler !== Compiler_1.Compiler.Clang) {
             cpp = '-std=c++11';
         }
-        this.p('\t' + cppCompiler + ' ' + cpp + ' ' + optimization + ' ' + ofilelist + ' -o "' + project.getName() + '" $(LIB)');
+        this.p('\t' + cppCompiler + ' ' + cpp + ' ' + optimization + ' ' + ofilelist + ' -o "' + project.getSafeName() + '" $(LIB)');
         for (let file of project.getFiles()) {
             let precompiledHeader = null;
             for (let header of precompiledHeaders) {
@@ -147,7 +147,7 @@ class LinuxExporter extends Exporter_1.Exporter {
         this.closeFile();
     }
     exportCodeBlocks(project, from, to, platform, vrApi, options) {
-        this.writeFile(path.resolve(to, project.getName() + '.cbp'));
+        this.writeFile(path.resolve(to, project.getSafeName() + '.cbp'));
         this.p('<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>');
         this.p('<CodeBlocks_project_file>');
         this.p('<FileVersion major="1" minor="6" />', 1);
@@ -157,7 +157,7 @@ class LinuxExporter extends Exporter_1.Exporter {
         this.p('<Option compiler="gcc" />', 2);
         this.p('<Build>', 2);
         this.p('<Target title="Debug">', 3);
-        this.p('<Option output="bin/Debug/' + project.getName() + '" prefix_auto="1" extension_auto="1" />', 4);
+        this.p('<Option output="bin/Debug/' + project.getSafeName() + '" prefix_auto="1" extension_auto="1" />', 4);
         if (project.getDebugDir().length > 0)
             this.p('<Option working_dir="' + path.resolve(from, project.getDebugDir()) + '" />', 4);
         this.p('<Option object_output="obj/Debug/" />', 4);
@@ -171,7 +171,7 @@ class LinuxExporter extends Exporter_1.Exporter {
         this.p('</Compiler>', 4);
         this.p('</Target>', 3);
         this.p('<Target title="Release">', 3);
-        this.p('<Option output="bin/Release/' + project.getName() + '" prefix_auto="1" extension_auto="1" />', 4);
+        this.p('<Option output="bin/Release/' + project.getSafeName() + '" prefix_auto="1" extension_auto="1" />', 4);
         if (project.getDebugDir().length > 0)
             this.p('<Option working_dir="' + path.resolve(from, project.getDebugDir()) + '" />', 4);
         this.p('<Option object_output="obj/Release/" />', 4);
