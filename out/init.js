@@ -20,7 +20,7 @@ function run(name, from) {
     if (!fs.existsSync(path.join(from, 'Sources', 'main.cpp'))) {
         let mainsource = '#include <Kore/pch.h>\n\n'
             + '\n'
-            + 'int kore(int argc, char** argv) {\n'
+            + 'int kickstart(int argc, char** argv) {\n'
             + '\treturn 0;\n'
             + '}\n';
         fs.writeFileSync(path.join(from, 'Sources', 'main.cpp'), mainsource, { encoding: 'utf8' });
