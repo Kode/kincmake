@@ -312,6 +312,7 @@ async function exportProject(from, to, platform, korefile, options) {
     }
 }
 function compileProject(make, project, solutionName, options, dothemath) {
+    const startDate = new Date();
     return new Promise((resolve, reject) => {
         make.stdout.on('data', function (data) {
             log.info(data.toString(), false);
@@ -320,6 +321,10 @@ function compileProject(make, project, solutionName, options, dothemath) {
             log.error(data.toString(), false);
         });
         make.on('close', function (code) {
+            const time = (new Date().getTime() - startDate.getTime()) / 1000;
+            const min = Math.floor(time / 60);
+            const sec = Math.floor(time - min * 60);
+            log.info(`Build time: ${min}m ${sec}s`);
             if (code === 0) {
                 if ((options.customTarget && options.customTarget.baseTarget === Platform_1.Platform.Linux) || options.target === Platform_1.Platform.Linux) {
                     fs.copySync(path.resolve(path.join(options.to.toString(), options.buildPath), solutionName), path.resolve(options.from.toString(), project.getDebugDir(), solutionName), { overwrite: true });
