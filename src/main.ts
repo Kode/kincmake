@@ -336,6 +336,7 @@ async function exportProject(from: string, to: string, platform: string, korefil
 }
 
 function compileProject(make: child_process.ChildProcess, project: Project, solutionName: string, options: any, dothemath: boolean): Promise<void> {
+	const startDate = new Date();
 	return new Promise<void>((resolve, reject) => {
 		make.stdout.on('data', function (data: any) {
 			log.info(data.toString(), false);
@@ -346,6 +347,10 @@ function compileProject(make: child_process.ChildProcess, project: Project, solu
 		});
 
 		make.on('close', function (code: number) {
+			const time = (new Date().getTime() - startDate.getTime()) / 1000;
+			const min = Math.floor(time / 60);
+			const sec = Math.floor(time - min * 60);
+			log.info(`Build time: ${min}m ${sec}s`);
 			if (code === 0) {
 				if ((options.customTarget && options.customTarget.baseTarget === Platform.Linux) || options.target === Platform.Linux) {
 					fs.copySync(path.resolve(path.join(options.to.toString(), options.buildPath), solutionName), path.resolve(options.from.toString(), project.getDebugDir(), solutionName), { overwrite: true });
