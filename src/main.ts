@@ -267,7 +267,7 @@ async function exportKoremakeProject(from: string, to: string, platform: string,
 				log.info('Compiling shader ' + (shaderIndex + 1) + ' of ' + shaderCount + ' (' + parsedFile.name + ').');
 
 				++shaderIndex;
-				await compileShader(from, shaderLang(platform), file.file, path.join(project.getDebugDir(), outfile), 'build', platform, 'build');
+				await compileShader(from, shaderLang(platform), file.file, path.join(project.getDebugDir(), outfile), options.to, platform, options.to);
 			}
 		}
 	}
