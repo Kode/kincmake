@@ -85,7 +85,7 @@ class VisualStudioExporter extends Exporter_1.Exporter {
     exportUserFile(from, to, project, platform) {
         if (project.getDebugDir() === '')
             return;
-        this.writeFile(path.resolve(to, project.getName() + '.vcxproj.user'));
+        this.writeFile(path.resolve(to, project.getSafeName() + '.vcxproj.user'));
         this.p('<?xml version="1.0" encoding="utf-8"?>');
         this.p('<Project ToolsVersion="' + this.toolsVersion() + '" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">');
         this.p('<PropertyGroup>', 1);
@@ -105,7 +105,7 @@ class VisualStudioExporter extends Exporter_1.Exporter {
     userPropertyGroup(debugDir, indent) {
     }
     writeProjectDeclarations(project, solutionUuid) {
-        this.p('Project("{' + solutionUuid.toUpperCase() + '}") = "' + project.getName() + '", "' + project.getName() + '.vcxproj", "{' + project.getUuid().toString().toUpperCase() + '}"');
+        this.p('Project("{' + solutionUuid.toUpperCase() + '}") = "' + project.getSafeName() + '", "' + project.getSafeName() + '.vcxproj", "{' + project.getUuid().toString().toUpperCase() + '}"');
         if (project.getSubProjects().length > 0) {
             this.p('ProjectSection(ProjectDependencies) = postProject', 1);
             for (let proj of project.getSubProjects()) {
@@ -159,7 +159,7 @@ class VisualStudioExporter extends Exporter_1.Exporter {
     }
     async exportSolution(project, from, to, platform, vrApi, options) {
         this.exportCLion(project, from, to, platform, vrApi, options);
-        this.writeFile(path.resolve(to, project.getName() + '.sln'));
+        this.writeFile(path.resolve(to, project.getSafeName() + '.sln'));
         if (Options_1.Options.visualStudioVersion === VisualStudioVersion_1.VisualStudioVersion.VS2019) {
             this.p('Microsoft Visual Studio Solution File, Format Version 12.00');
             this.p('# Visual Studio Version 16');
@@ -253,7 +253,7 @@ class VisualStudioExporter extends Exporter_1.Exporter {
         this.p('<Resource Language="x-generate"/>', 2);
         this.p('</Resources>', 1);
         this.p('<Applications>', 1);
-        this.p('<Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="' + project.getName() + '.App">', 2);
+        this.p('<Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="' + project.getSafeName() + '.App">', 2);
         this.p('<uap:VisualElements DisplayName="' + project.getName() + '" Square150x150Logo="Logo.png" Square44x44Logo="SmallLogo.png" Description="' + project.getName() + '" BackgroundColor="#464646">', 3);
         this.p('<uap:SplashScreen Image="SplashScreen.png" />', 4);
         this.p('</uap:VisualElements>', 3);
@@ -292,7 +292,7 @@ class VisualStudioExporter extends Exporter_1.Exporter {
     exportFilters(from, to, project, platform) {
         for (let proj of project.getSubProjects())
             this.exportFilters(from, to, proj, platform);
-        this.writeFile(path.resolve(to, project.getName() + '.vcxproj.filters'));
+        this.writeFile(path.resolve(to, project.getSafeName() + '.vcxproj.filters'));
         this.p('<?xml version="1.0" encoding="utf-8"?>');
         this.p('<Project ToolsVersion="' + this.toolsVersion() + '" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">');
         // sort(project.getFiles());
@@ -690,7 +690,7 @@ class VisualStudioExporter extends Exporter_1.Exporter {
     async exportProject(from, to, project, platform, cmd, noshaders) {
         for (let proj of project.getSubProjects())
             await this.exportProject(from, to, proj, platform, cmd, noshaders);
-        this.writeFile(path.resolve(to, project.getName() + '.vcxproj'));
+        this.writeFile(path.resolve(to, project.getSafeName() + '.vcxproj'));
         this.p('<?xml version="1.0" encoding="utf-8"?>');
         const toolsVersion = this.toolsVersion() === 'Current' ? '' : 'ToolsVersion="' + this.toolsVersion() + '" ';
         this.p('<Project DefaultTargets="Build" ' + toolsVersion + 'xmlns="http://schemas.microsoft.com/developer/msbuild/2003">');
@@ -795,7 +795,7 @@ class VisualStudioExporter extends Exporter_1.Exporter {
             incstring = incstring.substr(0, incstring.length - 1);
         let debuglibs = '';
         for (let proj of project.getSubProjects())
-            debuglibs += 'Debug\\' + proj.getName() + '.lib;';
+            debuglibs += 'Debug\\' + proj.getSafeName() + '.lib;';
         for (let lib of project.getLibs()) {
             if (fs.existsSync(path.resolve(from, lib + '.lib')))
                 debuglibs += path.resolve(from, lib) + '.lib;';
@@ -804,7 +804,7 @@ class VisualStudioExporter extends Exporter_1.Exporter {
         }
         let releaselibs = '';
         for (let proj of project.getSubProjects())
-            releaselibs += 'Release\\' + proj.getName() + '.lib;';
+            releaselibs += 'Release\\' + proj.getSafeName() + '.lib;';
         for (let lib of project.getLibs()) {
             if (fs.existsSync(path.resolve(from, lib + '.lib')))
                 releaselibs += path.resolve(from, lib) + '.lib;';

@@ -12,10 +12,9 @@ class AndroidExporter extends Exporter_1.Exporter {
         super();
     }
     async exportSolution(project, from, to, platform, vr) {
-        const safename = project.getName().replace(/ /g, '-');
-        this.safename = safename;
+        this.safeName = project.getSafeName();
         const indir = path.join(__dirname, '..', '..', 'Data', 'android');
-        const outdir = path.join(to.toString(), safename);
+        const outdir = path.join(to.toString(), this.safeName);
         const targetOptions = {
             package: 'tech.kode.kore',
             installLocation: 'internalOnly',
@@ -80,7 +79,7 @@ class AndroidExporter extends Exporter_1.Exporter {
             fs.copySync(dir, outdir);
         }
         if (project.getDebugDir().length > 0)
-            fs.copySync(path.resolve(from, project.getDebugDir()), path.resolve(to, safename, 'app', 'src', 'main', 'assets'));
+            fs.copySync(path.resolve(from, project.getDebugDir()), path.resolve(to, this.safeName, 'app', 'src', 'main', 'assets'));
     }
     writeAppGradle(project, outdir, from, targetOptions) {
         let cflags = '';
@@ -197,7 +196,7 @@ class AndroidExporter extends Exporter_1.Exporter {
             const folder = folders[i];
             const dpi = dpis[i];
             fs.ensureDirSync(path.join(outdir, 'app', 'src', 'main', 'res', folder));
-            Icon.exportPng(icon, path.resolve(to, this.safename, 'app', 'src', 'main', 'res', folder, 'ic_launcher.png'), dpi, dpi, undefined, from);
+            Icon.exportPng(icon, path.resolve(to, this.safeName, 'app', 'src', 'main', 'res', folder, 'ic_launcher.png'), dpi, dpi, undefined, from);
         }
     }
 }

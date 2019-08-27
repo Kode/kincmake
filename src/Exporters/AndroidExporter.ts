@@ -23,17 +23,16 @@ interface TargetOptions {
 }
 
 export class AndroidExporter extends Exporter {
-	safename: string;
+	safeName: string;
 
 	constructor() {
 		super();
 	}
 
 	async exportSolution(project: Project, from: string, to: string, platform: string, vr: any) {
-		const safename = project.getName().replace(/ /g, '-');
-		this.safename = safename;
+		this.safeName = project.getSafeName();
 		const indir = path.join(__dirname, '..', '..', 'Data', 'android');
-		const outdir = path.join(to.toString(), safename);
+		const outdir = path.join(to.toString(), this.safeName);
 
 		const targetOptions: TargetOptions = {
 			package: 'tech.kode.kore',
@@ -110,7 +109,7 @@ export class AndroidExporter extends Exporter {
 			fs.copySync(dir, outdir);
 		}
 
-		if (project.getDebugDir().length > 0) fs.copySync(path.resolve(from, project.getDebugDir()), path.resolve(to, safename, 'app', 'src', 'main', 'assets'));
+		if (project.getDebugDir().length > 0) fs.copySync(path.resolve(from, project.getDebugDir()), path.resolve(to, this.safeName, 'app', 'src', 'main', 'assets'));
 	}
 
 	writeAppGradle(project: Project, outdir: string, from: string, targetOptions: TargetOptions) {
@@ -230,7 +229,7 @@ export class AndroidExporter extends Exporter {
 			const folder = folders[i];
 			const dpi = dpis[i];
 			fs.ensureDirSync(path.join(outdir, 'app', 'src', 'main', 'res', folder));
-			Icon.exportPng(icon, path.resolve(to, this.safename, 'app', 'src', 'main', 'res', folder, 'ic_launcher.png'), dpi, dpi, undefined, from);
+			Icon.exportPng(icon, path.resolve(to, this.safeName, 'app', 'src', 'main', 'res', folder, 'ic_launcher.png'), dpi, dpi, undefined, from);
 		}
 	}
 }

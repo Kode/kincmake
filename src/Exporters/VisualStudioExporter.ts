@@ -83,7 +83,7 @@ export class VisualStudioExporter extends Exporter {
 	exportUserFile(from: string, to: string, project: Project, platform: string) {
 		if (project.getDebugDir() === '') return;
 
-		this.writeFile(path.resolve(to, project.getName() + '.vcxproj.user'));
+		this.writeFile(path.resolve(to, project.getSafeName() + '.vcxproj.user'));
 
 		this.p('<?xml version="1.0" encoding="utf-8"?>');
 		this.p('<Project ToolsVersion="' + this.toolsVersion() + '" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">');
@@ -108,7 +108,7 @@ export class VisualStudioExporter extends Exporter {
 	}
 
 	writeProjectDeclarations(project: Project, solutionUuid: string) {
-		this.p('Project("{' + solutionUuid.toUpperCase() + '}") = "' + project.getName() + '", "' + project.getName() + '.vcxproj", "{' + project.getUuid().toString().toUpperCase() + '}"');
+		this.p('Project("{' + solutionUuid.toUpperCase() + '}") = "' + project.getSafeName() + '", "' + project.getSafeName() + '.vcxproj", "{' + project.getUuid().toString().toUpperCase() + '}"');
 		if (project.getSubProjects().length > 0) {
 			this.p('ProjectSection(ProjectDependencies) = postProject', 1);
 			for (let proj of project.getSubProjects()) {
@@ -167,7 +167,7 @@ export class VisualStudioExporter extends Exporter {
 	async exportSolution(project: Project, from: string, to: string, platform: string, vrApi: any, options: any) {
 		this.exportCLion(project, from, to, platform, vrApi, options);
 
-		this.writeFile(path.resolve(to, project.getName() + '.sln'));
+		this.writeFile(path.resolve(to, project.getSafeName() + '.sln'));
 
 		if (Options.visualStudioVersion === VisualStudioVersion.VS2019) {
 			this.p('Microsoft Visual Studio Solution File, Format Version 12.00');
@@ -270,7 +270,7 @@ export class VisualStudioExporter extends Exporter {
 		this.p('<Resource Language="x-generate"/>', 2);
 		this.p('</Resources>', 1);
 		this.p('<Applications>', 1);
-		this.p('<Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="' + project.getName() + '.App">', 2);
+		this.p('<Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="' + project.getSafeName() + '.App">', 2);
 		this.p('<uap:VisualElements DisplayName="' + project.getName() + '" Square150x150Logo="Logo.png" Square44x44Logo="SmallLogo.png" Description="' + project.getName() + '" BackgroundColor="#464646">', 3);
 		this.p('<uap:SplashScreen Image="SplashScreen.png" />', 4);
 		this.p('</uap:VisualElements>', 3);
@@ -310,7 +310,7 @@ export class VisualStudioExporter extends Exporter {
 	exportFilters(from: string, to: string, project: Project, platform: string) {
 		for (let proj of project.getSubProjects()) this.exportFilters(from, to, proj, platform);
 
-		this.writeFile(path.resolve(to, project.getName() + '.vcxproj.filters'));
+		this.writeFile(path.resolve(to, project.getSafeName() + '.vcxproj.filters'));
 
 		this.p('<?xml version="1.0" encoding="utf-8"?>');
 		this.p('<Project ToolsVersion="' + this.toolsVersion() + '" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">');
@@ -580,7 +580,7 @@ export class VisualStudioExporter extends Exporter {
 				if (fs.existsSync(path.resolve(from, lib + '.lib'))) libs += path.resolve(from, lib) + '.lib;';
 				else libs += lib + '.lib;';
 			}
-	
+
 			this.p('<AdditionalDependencies>' + libs + 'kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>', indent + 2);
 			if (project.stackSize) {
 				this.p('<StackReserveSize>' + project.stackSize + '</StackReserveSize>', indent + 2);
@@ -626,7 +626,7 @@ export class VisualStudioExporter extends Exporter {
 			try {
 				const Registry = require('winreg');
 				const regKey = new Registry({ hive: Registry.HKLM, key: '\\SOFTWARE\\Microsoft\\Windows Kits\\Installed Roots' });
-				
+
 				regKey.keys((err: any, items: any[]) => {
 					if (err) {
 						log.error('Error while reading the registry: ' + err);
@@ -708,7 +708,7 @@ export class VisualStudioExporter extends Exporter {
 			this.p('<ApplicationTypeRevision>10.0</ApplicationTypeRevision>', indent);
 			this.p('<EnableDotNetNativeCompatibleProfile>true</EnableDotNetNativeCompatibleProfile>', indent);
 		}
-		
+
 		if (Options.graphicsApi === GraphicsApi.Direct3D12 || platform === Platform.WindowsApp || Options.visualStudioVersion === VisualStudioVersion.VS2017) {
 			this.p('<WindowsTargetPlatformVersion>' + windowsTargetVersion + '</WindowsTargetPlatformVersion>', indent);
 		}
@@ -740,10 +740,10 @@ export class VisualStudioExporter extends Exporter {
 	async exportProject(from: string, to: string, project: Project, platform: string, cmd: boolean, noshaders: boolean) {
 		for (let proj of project.getSubProjects()) await this.exportProject(from, to, proj, platform, cmd, noshaders);
 
-		this.writeFile(path.resolve(to, project.getName() + '.vcxproj'));
+		this.writeFile(path.resolve(to, project.getSafeName() + '.vcxproj'));
 
 		this.p('<?xml version="1.0" encoding="utf-8"?>');
-		
+
 		const toolsVersion = this.toolsVersion() === 'Current' ? '' : 'ToolsVersion="' + this.toolsVersion() + '" ';
 		this.p('<Project DefaultTargets="Build" ' + toolsVersion + 'xmlns="http://schemas.microsoft.com/developer/msbuild/2003">');
 		this.p('<ItemGroup Label="ProjectConfigurations">', 1);
@@ -852,14 +852,14 @@ export class VisualStudioExporter extends Exporter {
 		if (incstring.length > 0) incstring = incstring.substr(0, incstring.length - 1);
 
 		let debuglibs = '';
-		for (let proj of project.getSubProjects()) debuglibs += 'Debug\\' + proj.getName() + '.lib;';
+		for (let proj of project.getSubProjects()) debuglibs += 'Debug\\' + proj.getSafeName() + '.lib;';
 		for (let lib of project.getLibs()) {
 			if (fs.existsSync(path.resolve(from, lib + '.lib'))) debuglibs += path.resolve(from, lib) + '.lib;';
 			else debuglibs += lib + '.lib;';
 		}
 
 		let releaselibs = '';
-		for (let proj of project.getSubProjects()) releaselibs += 'Release\\' + proj.getName() + '.lib;';
+		for (let proj of project.getSubProjects()) releaselibs += 'Release\\' + proj.getSafeName() + '.lib;';
 		for (let lib of project.getLibs()) {
 			if (fs.existsSync(path.resolve(from, lib + '.lib'))) releaselibs += path.resolve(from, lib) + '.lib;';
 			else releaselibs += lib + '.lib;';
@@ -887,16 +887,16 @@ export class VisualStudioExporter extends Exporter {
 			for (let config of configs) {
 				let libdir = '';
 				let archDefine = '';
-				switch (config.system) { 
-					case 'ARM': { 
+				switch (config.system) {
+					case 'ARM': {
 						libdir = '\\arm';
-						break; 
-					} 
-					case 'x64': { 
+						break;
+					}
+					case 'x64': {
 						libdir = '\\amd64';
 						archDefine = 'SYS_64;';
-						break; 
-					} 
+						break;
+					}
 				}
 				this.p('<ItemDefinitionGroup Condition="\'$(Configuration)|$(Platform)\'==\'' + config.config + '|' + config.system + '\'">', 1);
 				this.p('<Link>', 2);
