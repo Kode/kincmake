@@ -16,6 +16,7 @@ interface TargetOptions {
 	screenOrientation: string;
 	permissions: string[];
 	disableStickyImmersiveMode: boolean;
+	metadata: string[];
 	customFilesPath?: string;
 	buildGradlePath: string;
 	globalBuildGradlePath: string;
@@ -42,6 +43,7 @@ export class AndroidExporter extends Exporter {
 			screenOrientation: 'sensor',
 			permissions: new Array<string>(),
 			disableStickyImmersiveMode: false,
+			metadata: new Array<string>(),
 			customFilesPath: null,
 			buildGradlePath: path.join(indir, 'app', 'build.gradle'),
 			globalBuildGradlePath: path.join(indir, 'build.gradle'),
@@ -217,7 +219,11 @@ export class AndroidExporter extends Exporter {
 		manifest = manifest.replace(/{versionName}/g, targetOptions.versionName);
 		manifest = manifest.replace(/{screenOrientation}/g, targetOptions.screenOrientation);
 		manifest = manifest.replace(/{permissions}/g, targetOptions.permissions.map((p) => { return '\n\t<uses-permission android:name="' + p + '"/>'; }).join(''));
-		manifest = manifest.replace(/{metadata}/g, targetOptions.disableStickyImmersiveMode ? '\n\t\t<meta-data android:name="disableStickyImmersiveMode" android:value="true"/>' : '');
+		let metadata = targetOptions.disableStickyImmersiveMode ? '\n\t\t<meta-data android:name="disableStickyImmersiveMode" android:value="true"/>' : '';
+		for (const meta of targetOptions.metadata) {
+			metadata += '\n\t\t' + meta;
+		}
+		manifest = manifest.replace(/{metadata}/g, metadata);
 		fs.ensureDirSync(path.join(outdir, 'app', 'src', 'main'));
 		fs.writeFileSync(path.join(outdir, 'app', 'src', 'main', 'AndroidManifest.xml'), manifest);
 	}
