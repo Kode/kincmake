@@ -254,7 +254,7 @@ async function runKincmake() {
     // console.log('Done.'); // TODO: Clean up async things so we actually end here.
 }
 if (parsedOptions.init) {
-    console.log('Initializing Kore project.\n');
+    console.log('Initializing Kinc project.\n');
     require('./init').run(parsedOptions.name, parsedOptions.from, parsedOptions.projectfile);
 }
 else if (parsedOptions.update) {
