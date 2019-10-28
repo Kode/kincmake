@@ -173,7 +173,7 @@ export class Project {
 
 	constructor(name: string) {
 		this.name = name;
-		this.safeName = name.replace(/[^A-z0-9\-\_]/g, '-');;
+		this.safeName = name.replace(/[^A-z0-9\-\_]/g, '-');
 		this.version = '1.0';
 		this.debugDir = '';
 		this.basedir = scriptdir;
