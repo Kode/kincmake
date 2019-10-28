@@ -17,13 +17,12 @@ function run(name, from) {
     let friendlyName = name;
     friendlyName = friendlyName.replace(/ /g, '_');
     friendlyName = friendlyName.replace(/-/g, '_');
-    if (!fs.existsSync(path.join(from, 'Sources', 'main.cpp'))) {
-        let mainsource = '#include <Kore/pch.h>\n\n'
-            + '\n'
+    if (!fs.existsSync(path.join(from, 'Sources', 'main.c'))) {
+        let mainsource = '#include <Kinc/pch.h>\n\n'
             + 'int kickstart(int argc, char** argv) {\n'
             + '\treturn 0;\n'
             + '}\n';
-        fs.writeFileSync(path.join(from, 'Sources', 'main.cpp'), mainsource, { encoding: 'utf8' });
+        fs.writeFileSync(path.join(from, 'Sources', 'main.c'), mainsource, { encoding: 'utf8' });
     }
 }
 exports.run = run;
