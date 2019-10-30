@@ -53,7 +53,9 @@ class AndroidExporter extends Exporter_1.Exporter {
         fs.copySync(path.join(indir, 'gradle.properties'), path.join(outdir, 'gradle.properties'));
         fs.copySync(path.join(indir, 'gradlew'), path.join(outdir, 'gradlew'));
         fs.copySync(path.join(indir, 'gradlew.bat'), path.join(outdir, 'gradlew.bat'));
-        fs.copySync(path.join(indir, 'settings.gradle'), path.join(outdir, 'settings.gradle'));
+        let settings = fs.readFileSync(path.join(indir, 'settings.gradle'), 'utf8');
+        settings = settings.replace(/{name}/g, project.getName());
+        fs.writeFileSync(path.join(outdir, 'settings.gradle'), settings);
         fs.copySync(path.join(indir, 'app', 'gitignore'), path.join(outdir, 'app', '.gitignore'));
         fs.copySync(targetOptions.proguardRulesPath, path.join(outdir, 'app', 'proguard-rules.pro'));
         this.writeAppGradle(project, outdir, from, targetOptions);
