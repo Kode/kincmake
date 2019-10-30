@@ -59,7 +59,7 @@ class AndroidExporter extends Exporter_1.Exporter {
         fs.copySync(path.join(indir, 'app', 'gitignore'), path.join(outdir, 'app', '.gitignore'));
         fs.copySync(targetOptions.proguardRulesPath, path.join(outdir, 'app', 'proguard-rules.pro'));
         this.writeAppGradle(project, outdir, from, targetOptions);
-        this.writeCMakeLists(project, indir, outdir, targetOptions);
+        this.writeCMakeLists(project, indir, outdir, from, targetOptions);
         fs.ensureDirSync(path.join(outdir, 'app', 'src'));
         // fs.emptyDirSync(path.join(outdir, 'app', 'src'));
         fs.ensureDirSync(path.join(outdir, 'app', 'src', 'main'));
@@ -132,7 +132,7 @@ class AndroidExporter extends Exporter_1.Exporter {
         gradle = gradle.replace(/{javasources}/g, javasources);
         fs.writeFileSync(path.join(outdir, 'app', 'build.gradle'), gradle);
     }
-    writeCMakeLists(project, indir, outdir, targetOptions) {
+    writeCMakeLists(project, indir, outdir, from, targetOptions) {
         let cmake = fs.readFileSync(path.join(indir, 'app', 'CMakeLists.txt'), 'utf8');
         let debugDefines = '';
         for (const def of project.getDefines()) {
@@ -157,7 +157,12 @@ class AndroidExporter extends Exporter_1.Exporter {
         for (let file of project.getFiles()) {
             if (file.file.endsWith('.c') || file.file.endsWith('.cc')
                 || file.file.endsWith('.cpp') || file.file.endsWith('.h')) {
-                files += '  "' + path.resolve(file.file).replace(/\\/g, '/') + '"\n';
+                if (path.isAbsolute(file.file)) {
+                    files += '  "' + path.resolve(file.file).replace(/\\/g, '/') + '"\n';
+                }
+                else {
+                    files += '  "' + path.resolve(path.join(from, file.file)).replace(/\\/g, '/') + '"\n';
+                }
             }
         }
         cmake = cmake.replace(/{files}/g, files);

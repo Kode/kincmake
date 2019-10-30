@@ -83,7 +83,7 @@ export class AndroidExporter extends Exporter {
 
 		this.writeAppGradle(project, outdir, from, targetOptions);
 
-		this.writeCMakeLists(project, indir, outdir, targetOptions);
+		this.writeCMakeLists(project, indir, outdir, from, targetOptions);
 
 		fs.ensureDirSync(path.join(outdir, 'app', 'src'));
 		// fs.emptyDirSync(path.join(outdir, 'app', 'src'));
@@ -159,7 +159,7 @@ export class AndroidExporter extends Exporter {
 		fs.writeFileSync(path.join(outdir, 'app', 'build.gradle'), gradle);
 	}
 
-	writeCMakeLists(project: Project, indir: string, outdir: string, targetOptions: TargetOptions) {
+	writeCMakeLists(project: Project, indir: string, outdir: string, from: string, targetOptions: TargetOptions) {
 		let cmake = fs.readFileSync(path.join(indir, 'app', 'CMakeLists.txt'), 'utf8');
 
 		let debugDefines = '';
@@ -188,7 +188,12 @@ export class AndroidExporter extends Exporter {
 		for (let file of project.getFiles()) {
 			if (file.file.endsWith('.c') || file.file.endsWith('.cc')
 					|| file.file.endsWith('.cpp') || file.file.endsWith('.h')) {
-				files += '  "' + path.resolve(file.file).replace(/\\/g, '/') + '"\n';
+				if (path.isAbsolute(file.file)) {
+					files += '  "' + path.resolve(file.file).replace(/\\/g, '/') + '"\n';
+				}
+				else {
+					files += '  "' + path.resolve(path.join(from, file.file)).replace(/\\/g, '/') + '"\n';
+				}
 			}
 		}
 		cmake = cmake.replace(/{files}/g, files);
