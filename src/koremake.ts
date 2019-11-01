@@ -150,6 +150,11 @@ let options = [
 		full: 'onlyshaders',
 		value: false,
 		description: 'Compile only shaders'
+	},
+	{
+		full: 'nosigning',
+		value: false,
+		description: 'Disable code signing for iOS'
 	}
 ];
 
