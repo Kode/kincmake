@@ -82,8 +82,8 @@ class EmscriptenExporter extends Exporter_1.Exporter {
         includes = '';
         includesArray = [];
         for (let inc in project.getIncludeDirs()) {
-            includes += '-I' + this.nicePath(from, to, path.join(from, project.getIncludeDirs()[inc])) + ' ';
-            includesArray.push('-I' + this.nicePath(from, to, path.join(from, project.getIncludeDirs()[inc])));
+            includes += '-I' + this.nicePath(from, to, project.getIncludeDirs()[inc]) + ' ';
+            includesArray.push('-I' + this.nicePath(from, to, project.getIncludeDirs()[inc]));
         }
         this.writeFile(path.resolve(to, 'makefile'));
         this.p();
@@ -118,7 +118,6 @@ class EmscriptenExporter extends Exporter_1.Exporter {
             }
             let lastpoint = filename.lastIndexOf('.');
             let oname = this.nicePath(from, to, filename.substr(0, lastpoint) + '.o');
-            oname = oname.replace(/..\//, '');
             this.p(oname + ': ' + this.nicePath(from, to, filename));
             this.p('emcc -O2 -c ' + this.nicePath(from, to, filename) + ' ' + includes + ' ' + defines + ' -o ' + oname, 1);
         }
