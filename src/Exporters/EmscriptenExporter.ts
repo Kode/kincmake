@@ -110,7 +110,6 @@ export class EmscriptenExporter extends Exporter {
 			if (!filename.endsWith('.cpp') && !filename.endsWith('.c')) continue;
 			let lastpoint = filename.lastIndexOf('.');
 			let oname = this.nicePath(from, to, filename.substr(0, lastpoint) + '.o');
-			oname = oname.replace(/..\//, '');
 			oline += ' ' + oname;
 		}
 		

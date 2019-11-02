@@ -94,7 +94,6 @@ class EmscriptenExporter extends Exporter_1.Exporter {
                 continue;
             let lastpoint = filename.lastIndexOf('.');
             let oname = this.nicePath(from, to, filename.substr(0, lastpoint) + '.o');
-            oname = oname.replace(/..\//, '');
             oline += ' ' + oname;
         }
         this.p('kore.html:' + oline);
