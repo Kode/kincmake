@@ -457,7 +457,10 @@ export async function run(options: any, loglog: any): Promise<string> {
 		if ((options.customTarget && options.customTarget.baseTarget === Platform.Linux) || options.target === Platform.Linux) {
 			make = child_process.spawn('make', ['-j', cpuCores.toString()], { cwd: path.join(options.to, options.buildPath) });
 		}
-		if ((options.customTarget && options.customTarget.baseTarget === Platform.Pi) || options.target === Platform.Pi) {
+		else if ((options.customTarget && options.customTarget.baseTarget === Platform.Pi) || options.target === Platform.Pi) {
+			make = child_process.spawn('make', [], { cwd: path.join(options.to, options.buildPath) });
+		}
+		else if ((options.customTarget && options.customTarget.baseTarget === Platform.HTML5) || options.target === Platform.HTML5) {
 			make = child_process.spawn('make', [], { cwd: path.join(options.to, options.buildPath) });
 		}
 		else if ((options.customTarget && (options.customTarget.baseTarget === Platform.OSX || options.customTarget.baseTarget === Platform.iOS)) || options.target === Platform.OSX || options.target === Platform.iOS) {

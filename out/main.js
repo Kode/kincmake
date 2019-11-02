@@ -414,7 +414,10 @@ async function run(options, loglog) {
         if ((options.customTarget && options.customTarget.baseTarget === Platform_1.Platform.Linux) || options.target === Platform_1.Platform.Linux) {
             make = child_process.spawn('make', ['-j', cpuCores.toString()], { cwd: path.join(options.to, options.buildPath) });
         }
-        if ((options.customTarget && options.customTarget.baseTarget === Platform_1.Platform.Pi) || options.target === Platform_1.Platform.Pi) {
+        else if ((options.customTarget && options.customTarget.baseTarget === Platform_1.Platform.Pi) || options.target === Platform_1.Platform.Pi) {
+            make = child_process.spawn('make', [], { cwd: path.join(options.to, options.buildPath) });
+        }
+        else if ((options.customTarget && options.customTarget.baseTarget === Platform_1.Platform.HTML5) || options.target === Platform_1.Platform.HTML5) {
             make = child_process.spawn('make', [], { cwd: path.join(options.to, options.buildPath) });
         }
         else if ((options.customTarget && (options.customTarget.baseTarget === Platform_1.Platform.OSX || options.customTarget.baseTarget === Platform_1.Platform.iOS)) || options.target === Platform_1.Platform.OSX || options.target === Platform_1.Platform.iOS) {
