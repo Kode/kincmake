@@ -146,12 +146,16 @@ class XCodeExporter extends Exporter_1.Exporter {
             }
         }
         if (platform === Platform_1.Platform.iOS) {
+            icons.push(new IconImage('iphone', 20, 2));
+            icons.push(new IconImage('iphone', 20, 3));
             icons.push(new IconImage('iphone', 29, 2));
             icons.push(new IconImage('iphone', 29, 3));
             icons.push(new IconImage('iphone', 40, 2));
             icons.push(new IconImage('iphone', 40, 3));
             icons.push(new IconImage('iphone', 60, 2));
             icons.push(new IconImage('iphone', 60, 3));
+            icons.push(new IconImage('ipad', 20, 1));
+            icons.push(new IconImage('ipad', 20, 2));
             icons.push(new IconImage('ipad', 29, 1));
             icons.push(new IconImage('ipad', 29, 2));
             icons.push(new IconImage('ipad', 40, 1));
