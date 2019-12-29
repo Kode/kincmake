@@ -48,3 +48,7 @@ export function exportIcns(icon: string, to: string, from: string) {
 export function exportPng(icon: string, to: string, width: number, height: number, background: number, from: string) {
 	run(findIcon(icon, from.toString()), to.toString(), width, height, 'png', background, function () { });
 }
+
+export function exportPng24(icon: string, to: string, width: number, height: number, background: number, from: string) {
+	run(findIcon(icon, from.toString()), to.toString(), width, height, 'png24', background, function () { });
+}

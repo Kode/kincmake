@@ -50,4 +50,8 @@ function exportPng(icon, to, width, height, background, from) {
     run(findIcon(icon, from.toString()), to.toString(), width, height, 'png', background, function () { });
 }
 exports.exportPng = exportPng;
+function exportPng24(icon, to, width, height, background, from) {
+    run(findIcon(icon, from.toString()), to.toString(), width, height, 'png24', background, function () { });
+}
+exports.exportPng24 = exportPng24;
 //# sourceMappingURL=Icon.js.map
