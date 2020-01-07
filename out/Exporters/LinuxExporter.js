@@ -73,7 +73,7 @@ class LinuxExporter extends Exporter_1.Exporter {
             incline += '-I' + inc + ' ';
         }
         this.p('INC=' + incline);
-        let libsline = '-static-libgcc -static-libstdc++ -pthread';
+        let libsline = '-static-libgcc -static-libstdc++ -static -pthread';
         for (let lib of project.getLibs()) {
             libsline += ' -l' + lib;
         }
@@ -204,6 +204,7 @@ class LinuxExporter extends Exporter_1.Exporter {
         this.p('<Add option="-pthread" />', 3);
         this.p('<Add option="-static-libgcc" />', 3);
         this.p('<Add option="-static-libstdc++" />', 3);
+        this.p('<Add option="-static" />', 3);
         this.p('<Add option="-Wl,-rpath,." />', 3);
         for (let lib of project.getLibs()) {
             this.p('<Add library="' + lib + '" />', 3);
