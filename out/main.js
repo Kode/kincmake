@@ -43,11 +43,15 @@ function fromPlatform(platform) {
         case Platform_1.Platform.tvOS:
             return 'tvOS';
         case Platform_1.Platform.PS4:
-            return 'PlayStation4';
+            return 'PlayStation 4';
         case Platform_1.Platform.XboxOne:
             return 'Xbox One';
         case Platform_1.Platform.Switch:
             return 'Switch';
+        case Platform_1.Platform.XboxScarlett:
+            return 'Xbox Scarlett';
+        case Platform_1.Platform.PS5:
+            return 'PlayStation 5';
         default:
             throw 'Unknown platform ' + platform + '.';
     }
@@ -267,7 +271,7 @@ async function exportKoremakeProject(from, to, platform, korefile, options) {
         exporter = new LinuxExporter_1.LinuxExporter();
     else if (platform === Platform_1.Platform.Tizen)
         exporter = new TizenExporter_1.TizenExporter();
-    else if (platform === Platform_1.Platform.PS4 || platform === Platform_1.Platform.XboxOne || platform === Platform_1.Platform.Switch) {
+    else if (platform === Platform_1.Platform.PS4 || platform === Platform_1.Platform.XboxOne || platform === Platform_1.Platform.Switch || platform === Platform_1.Platform.XboxScarlett || platform === Platform_1.Platform.PS5) {
         let libsdir = path.join(from.toString(), 'Backends');
         if (fs.existsSync(libsdir) && fs.statSync(libsdir).isDirectory()) {
             let libdirs = fs.readdirSync(libsdir);
@@ -358,6 +362,9 @@ function compileProject(make, project, solutionName, options, dothemath) {
     });
 }
 exports.api = 2;
+function is64bit() {
+    return process.arch === 'x64' || process.env.hasOwnProperty('PROCESSOR_ARCHITEW6432');
+}
 async function run(options, loglog) {
     log.set(loglog);
     if (options.graphics !== undefined) {
@@ -409,7 +416,7 @@ async function run(options, loglog) {
     }
     if (options.compile && solutionName !== '') {
         log.info('Compiling...');
-        const dothemath = true;
+        const dothemath = is64bit();
         let make = null;
         if ((options.customTarget && options.customTarget.baseTarget === Platform_1.Platform.Linux) || options.target === Platform_1.Platform.Linux) {
             make = child_process.spawn('make', ['-j', cpuCores.toString()], { cwd: path.join(options.to, options.buildPath) });

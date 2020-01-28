@@ -13,6 +13,8 @@ exports.Platform = {
     tvOS: 'tvos',
     PS4: 'ps4',
     XboxOne: 'xboxone',
-    Switch: 'switch'
+    Switch: 'switch',
+    XboxScarlett: 'xboxscarlett',
+    PS5: 'ps5'
 };
 //# sourceMappingURL=Platform.js.map

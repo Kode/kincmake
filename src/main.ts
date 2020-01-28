@@ -46,11 +46,15 @@ function fromPlatform(platform: string): string {
 		case Platform.tvOS:
 			return 'tvOS';
 		case Platform.PS4:
-			return 'PlayStation4';
+			return 'PlayStation 4';
 		case Platform.XboxOne:
 			return 'Xbox One';
 		case Platform.Switch:
 			return 'Switch';
+		case Platform.XboxScarlett:
+			return 'Xbox Scarlett';
+		case Platform.PS5:
+			return 'PlayStation 5';
 		default:
 			throw 'Unknown platform ' + platform + '.';
 	}
@@ -286,7 +290,7 @@ async function exportKoremakeProject(from: string, to: string, platform: string,
 	else if (platform === Platform.HTML5) exporter = new EmscriptenExporter();
 	else if (platform === Platform.Linux || platform === Platform.Pi) exporter = new LinuxExporter();
 	else if (platform === Platform.Tizen) exporter = new TizenExporter();
-	else if (platform === Platform.PS4 || platform === Platform.XboxOne || platform === Platform.Switch) {
+	else if (platform === Platform.PS4 || platform === Platform.XboxOne || platform === Platform.Switch || platform === Platform.XboxScarlett || platform === Platform.PS5) {
 		let libsdir = path.join(from.toString(), 'Backends');
 		if (fs.existsSync(libsdir) && fs.statSync(libsdir).isDirectory()) {
 			let libdirs = fs.readdirSync(libsdir);
@@ -387,6 +391,10 @@ function compileProject(make: child_process.ChildProcess, project: Project, solu
 
 export let api = 2;
 
+function is64bit() {
+	return process.arch === 'x64' || process.env.hasOwnProperty('PROCESSOR_ARCHITEW6432');
+}
+
 export async function run(options: any, loglog: any): Promise<string> {
 	log.set(loglog);
 
@@ -451,7 +459,7 @@ export async function run(options: any, loglog: any): Promise<string> {
 	if (options.compile && solutionName !== '') {
 		log.info('Compiling...');
 
-		const dothemath = true;
+		const dothemath = is64bit();
 		let make: child_process.ChildProcess = null;
 
 		if ((options.customTarget && options.customTarget.baseTarget === Platform.Linux) || options.target === Platform.Linux) {
