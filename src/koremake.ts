@@ -103,7 +103,7 @@ let options = [
 	},
 	{
 		full: 'update',
-		description: 'Update Kore and it\'s submodules',
+		description: 'Update Kinc and it\'s submodules',
 		value: false
 	},
 	{
@@ -117,15 +117,15 @@ let options = [
 		value: false
 	},
 	{
-		full: 'kore',
+		full: 'kinc',
 		short: 'k',
-		description: 'Location of Kore directory',
+		description: 'Location of Kinc directory',
 		value: true,
 		default: ''
 	},
 	{
 		full: 'init',
-		description: 'Init a Kore project inside the current directory',
+		description: 'Init a Kinc project inside the current directory',
 		value: false
 	},
 	{

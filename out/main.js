@@ -388,14 +388,14 @@ async function run(options, loglog) {
     if (options.visualstudio !== undefined) {
         Options_1.Options.visualStudioVersion = options.visualstudio;
     }
-    if (!options.kore) {
+    if (!options.kinc) {
         let p = path.join(__dirname, '..', '..', '..');
         if (fs.existsSync(p) && fs.statSync(p).isDirectory()) {
-            options.kore = p;
+            options.kinc = p;
         }
     }
     else {
-        options.kore = path.resolve(options.kore);
+        options.kinc = path.resolve(options.kinc);
     }
     debug = options.debug;
     if (options.vr !== undefined) {

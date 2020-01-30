@@ -9,11 +9,11 @@ include_directories(
 {includes})
 
 add_library(
-  kore
+  kinc
   SHARED
 {files})
 
 {libraries1}
 target_link_libraries(
-  kore
+  kinc
 {libraries2})
