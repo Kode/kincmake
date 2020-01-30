@@ -223,6 +223,7 @@ async function exportKoremakeProject(from, to, platform, korefile, options) {
         if (shaderLang(platform) === 'metal') {
             project.addFile('build/Sources/*', {});
         }
+        project.resolveBackends();
         project.searchFiles(undefined);
         project.flatten();
     }

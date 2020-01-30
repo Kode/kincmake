@@ -51,7 +51,6 @@ process.on('exit', (code: number) => {
 
 let scriptdir = '.';
 // let lastScriptDir = '.';
-let koreDir = '.';
 
 async function loadProject(directory: string, korefile: string = 'kincfile.js'): Promise<Project> {
 	return new Promise<Project>((resolve, reject) => {
@@ -170,6 +169,7 @@ export class Project {
 	cppFlags: string[] = [];
 	stackSize: number;
 	icon: string = null;
+	additionalBackends: string[] = [];
 
 	constructor(name: string) {
 		this.name = name;
@@ -201,6 +201,44 @@ export class Project {
 		this.rotated = false;
 		this.cmd = false;
 		this.stackSize = 0;
+	}
+
+	addBackend(name: string) {
+		this.additionalBackends.push(name);
+	}
+
+	findAdditionalBackends(additionalBackends: string[]) {
+		for (const backend of this.additionalBackends) {
+			additionalBackends.push(backend);
+		}
+		for (let sub of this.subProjects) {
+			sub.findAdditionalBackends(additionalBackends);
+		}
+	}
+
+	findKincProject(): Project {
+		if (this.name === 'Kinc') {
+			return this;
+		}
+		for (let sub of this.subProjects) {
+			let kinc = sub.findKincProject();
+			if (kinc != null) {
+				return kinc;
+			}
+		}
+		return null;
+	}
+
+	resolveBackends() {
+		let additionalBackends: string[] = [];
+		this.findAdditionalBackends(additionalBackends);
+
+		let kinc = this.findKincProject();
+
+		for (const backend of additionalBackends) {
+			kinc.addFile('Backends/' + backend + '/Sources/**', null);
+			kinc.addIncludeDir('Backends/' + backend + '/Sources');
+		}
 	}
 
 	flatten() {

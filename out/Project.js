@@ -50,7 +50,6 @@ process.on('exit', (code) => {
 });
 let scriptdir = '.';
 // let lastScriptDir = '.';
-let koreDir = '.';
 async function loadProject(directory, korefile = 'kincfile.js') {
     return new Promise((resolve, reject) => {
         projectInProgress += 1;
@@ -91,6 +90,7 @@ class Project {
         this.cFlags = [];
         this.cppFlags = [];
         this.icon = null;
+        this.additionalBackends = [];
         this.name = name;
         this.safeName = name.replace(/[^A-z0-9\-\_]/g, '-');
         this.version = '1.0';
@@ -119,6 +119,38 @@ class Project {
         this.rotated = false;
         this.cmd = false;
         this.stackSize = 0;
+    }
+    addBackend(name) {
+        this.additionalBackends.push(name);
+    }
+    findAdditionalBackends(additionalBackends) {
+        for (const backend of this.additionalBackends) {
+            additionalBackends.push(backend);
+        }
+        for (let sub of this.subProjects) {
+            sub.findAdditionalBackends(additionalBackends);
+        }
+    }
+    findKincProject() {
+        if (this.name === 'Kinc') {
+            return this;
+        }
+        for (let sub of this.subProjects) {
+            let kinc = sub.findKincProject();
+            if (kinc != null) {
+                return kinc;
+            }
+        }
+        return null;
+    }
+    resolveBackends() {
+        let additionalBackends = [];
+        this.findAdditionalBackends(additionalBackends);
+        let kinc = this.findKincProject();
+        for (const backend of additionalBackends) {
+            kinc.addFile('Backends/' + backend + '/Sources/**', null);
+            kinc.addIncludeDir('Backends/' + backend + '/Sources');
+        }
     }
     flatten() {
         for (let sub of this.subProjects)
