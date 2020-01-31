@@ -141,7 +141,7 @@ class VisualStudioExporter extends Exporter_1.Exporter {
             for (let system of this.getSystems(platform)) {
                 this.p('{' + project.getUuid().toString().toUpperCase() + '}.' + config + '|' + this.renameSystem(system) + '.ActiveCfg = ' + config + '|' + system, 2);
                 this.p('{' + project.getUuid().toString().toUpperCase() + '}.' + config + '|' + this.renameSystem(system) + '.Build.0 = ' + config + '|' + system, 2);
-                if (platform === Platform_1.Platform.WindowsApp || platform === Platform_1.Platform.XboxOne) {
+                if (project.vsdeploy) {
                     this.p('{' + project.getUuid().toString().toUpperCase() + '}.' + config + '|' + this.renameSystem(system) + '.Deploy.0 = ' + config + '|' + system, 2);
                 }
             }
@@ -312,7 +312,7 @@ class VisualStudioExporter extends Exporter_1.Exporter {
             }
         }
         let assets = [];
-        if (platform === Platform_1.Platform.WindowsApp || platform === Platform_1.Platform.XboxOne)
+        if (project.vsdeploy)
             this.exportAssetPathFilter(path.resolve(from, project.getDebugDir()), dirs, assets);
         this.p('<ItemGroup>', 1);
         for (let dir of dirs) {
@@ -393,7 +393,7 @@ class VisualStudioExporter extends Exporter_1.Exporter {
             }
         }
         this.p('</ItemGroup>', 1);
-        if (platform === Platform_1.Platform.WindowsApp || platform === Platform_1.Platform.XboxOne) {
+        if (project.vsdeploy) {
             lastdir = '';
             this.p('<ItemGroup>', 1);
             for (let file of assets) {
@@ -891,7 +891,7 @@ class VisualStudioExporter extends Exporter_1.Exporter {
             this.p('<AppxManifest Include="Package.appxmanifest" />', 2);
             this.p('</ItemGroup>', 1);
         }
-        if (platform === Platform_1.Platform.WindowsApp || platform === Platform_1.Platform.XboxOne) {
+        if (project.vsdeploy) {
             this.p('<ItemGroup>', 1);
             this.exportAssetPath(project, from, to, path.resolve(from, project.getDebugDir()));
             this.p('</ItemGroup>', 1);

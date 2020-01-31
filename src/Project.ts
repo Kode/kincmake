@@ -170,6 +170,7 @@ export class Project {
 	stackSize: number;
 	icon: string = null;
 	additionalBackends: string[] = [];
+	vsdeploy: boolean = false;
 
 	constructor(name: string) {
 		this.name = name;
@@ -252,6 +253,9 @@ export class Project {
 			}
 			if (sub.cmd) {
 				this.cmd = true;
+			}
+			if (sub.vsdeploy) {
+				this.vsdeploy = true;
 			}
 			let subbasedir = sub.basedir;
 

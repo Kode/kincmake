@@ -91,6 +91,7 @@ class Project {
         this.cppFlags = [];
         this.icon = null;
         this.additionalBackends = [];
+        this.vsdeploy = false;
         this.name = name;
         this.safeName = name.replace(/[^A-z0-9\-\_]/g, '-');
         this.version = '1.0';
@@ -164,6 +165,9 @@ class Project {
             }
             if (sub.cmd) {
                 this.cmd = true;
+            }
+            if (sub.vsdeploy) {
+                this.vsdeploy = true;
             }
             let subbasedir = sub.basedir;
             for (let tkey of Object.keys(sub.targetOptions)) {

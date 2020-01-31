@@ -147,7 +147,7 @@ export class VisualStudioExporter extends Exporter {
 			for (let system of this.getSystems(platform)) {
 				this.p('{' + project.getUuid().toString().toUpperCase() + '}.' + config + '|' + this.renameSystem(system) + '.ActiveCfg = ' + config + '|' + system, 2);
 				this.p('{' + project.getUuid().toString().toUpperCase() + '}.' + config + '|' + this.renameSystem(system) + '.Build.0 = ' + config + '|' + system, 2);
-				if (platform === Platform.WindowsApp || platform === Platform.XboxOne) {
+				if (project.vsdeploy) {
 					this.p('{' + project.getUuid().toString().toUpperCase() + '}.' + config + '|' + this.renameSystem(system) + '.Deploy.0 = ' + config + '|' + system, 2);
 				}
 			}
@@ -331,7 +331,7 @@ export class VisualStudioExporter extends Exporter {
 			}
 		}
 		let assets: string[] = [];
-		if (platform === Platform.WindowsApp || platform === Platform.XboxOne) this.exportAssetPathFilter(path.resolve(from, project.getDebugDir()), dirs, assets);
+		if (project.vsdeploy) this.exportAssetPathFilter(path.resolve(from, project.getDebugDir()), dirs, assets);
 
 		this.p('<ItemGroup>', 1);
 		for (let dir of dirs) {
@@ -415,7 +415,7 @@ export class VisualStudioExporter extends Exporter {
 		}
 		this.p('</ItemGroup>', 1);
 
-		if (platform === Platform.WindowsApp || platform === Platform.XboxOne) {
+		if (project.vsdeploy) {
 			lastdir = '';
 			this.p('<ItemGroup>', 1);
 			for (let file of assets) {
@@ -952,7 +952,7 @@ export class VisualStudioExporter extends Exporter {
 			this.p('</ItemGroup>', 1);
 		}
 
-		if (platform === Platform.WindowsApp || platform === Platform.XboxOne) {
+		if (project.vsdeploy) {
 			this.p('<ItemGroup>', 1);
 			this.exportAssetPath(project, from, to, path.resolve(from, project.getDebugDir()));
 			this.p('</ItemGroup>', 1);
