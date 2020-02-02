@@ -297,7 +297,11 @@ async function exportKoremakeProject(from: string, to: string, platform: string,
 			let libdirs = fs.readdirSync(libsdir);
 			for (let libdir of libdirs) {
 				if (fs.statSync(path.join(from.toString(), 'Backends', libdir)).isDirectory()
-				&& (libdir.toLowerCase() === platform.toLowerCase() || libdir.toLowerCase() === fromPlatform(platform).toLowerCase() )) {
+				&& (
+					libdir.toLowerCase() === platform.toLowerCase()
+					|| libdir.toLowerCase() === fromPlatform(platform).toLowerCase()
+					|| libdir.toLowerCase() === fromPlatform(platform).replace(/ /g, '').toLowerCase()
+				)) {
 					let libfiles = fs.readdirSync(path.join(from.toString(), 'Backends', libdir));
 					for (let libfile of libfiles) {
 						if (libfile.endsWith('Exporter.js')) {
