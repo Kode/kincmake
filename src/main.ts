@@ -122,7 +122,15 @@ function shaderLang(platform: string): string {
 					throw new Error('Unsupported shader language.');
 			}
 		case Platform.HTML5:
-			return 'essl';
+			switch (Options.graphicsApi) {
+				case GraphicsApi.WebGPU:
+					return 'spirv';
+				case GraphicsApi.OpenGL:
+				case GraphicsApi.Default:
+					return 'essl';
+				default:
+					throw new Error('Unsupported shader language.');
+			}
 		case Platform.Tizen:
 			return 'essl';
 		case Platform.Pi:
@@ -168,7 +176,12 @@ async function compileShader(projectDir: string, type: string, from: string, to:
 				temp = to + '.temp';
 			}
 
-			let params = [type, from, to, temp, platform];
+			let krafix_platform = platform;
+			if (platform === Platform.HTML5 && Options.graphicsApi === GraphicsApi.WebGPU) {
+				krafix_platform += '-webgpu';
+			}
+
+			let params = [type, from, to, temp, krafix_platform];
 			if (debug) params.push('--debug');
 			let compiler = child_process.spawn(compilerPath, params);
 
