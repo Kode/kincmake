@@ -1,6 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const Exporter_1 = require("./Exporter");
+const Options_1 = require("../Options");
+const GraphicsApi_1 = require("../GraphicsApi");
 const child_process = require("child_process");
 const fs = require("fs-extra");
 const path = require("path");
@@ -97,7 +99,11 @@ class EmscriptenExporter extends Exporter_1.Exporter {
             oline += ' ' + oname;
         }
         this.p('kore.html:' + oline);
-        this.p('emcc -O2 -s TOTAL_MEMORY=134217728 ' + oline + ' -o kore.html --preload-file ' + debugDirName, 1);
+        let flags = '-s TOTAL_MEMORY=134217728 ';
+        if (Options_1.Options.graphicsApi === GraphicsApi_1.GraphicsApi.WebGPU) {
+            flags += '-s USE_WEBGPU=1 ';
+        }
+        this.p('emcc -O2 ' + flags + oline + ' -o kore.html --preload-file ' + debugDirName, 1);
         this.p();
         for (let fileobject of project.getFiles()) {
             let filename = fileobject.file;

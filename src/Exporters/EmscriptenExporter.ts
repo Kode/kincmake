@@ -1,5 +1,7 @@
 import {Exporter} from './Exporter';
 import {Project} from '../Project';
+import {Options} from '../Options';
+import {GraphicsApi} from '../GraphicsApi';
 import * as child_process from 'child_process';
 import * as fs from 'fs-extra';
 import * as os from 'os';
@@ -114,7 +116,11 @@ export class EmscriptenExporter extends Exporter {
 		}
 		
 		this.p('kore.html:' + oline);
-		this.p('emcc -O2 -s TOTAL_MEMORY=134217728 ' + oline + ' -o kore.html --preload-file ' + debugDirName, 1);
+		let flags = '-s TOTAL_MEMORY=134217728 ';
+		if (Options.graphicsApi === GraphicsApi.WebGPU) {
+			flags += '-s USE_WEBGPU=1 ';
+		}
+		this.p('emcc -O2 ' + flags + oline + ' -o kore.html --preload-file ' + debugDirName, 1);
 		this.p();
 
 		for (let fileobject of project.getFiles()) {
