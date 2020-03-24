@@ -5,7 +5,6 @@ import {Platform} from '../Platform';
 import {File, Project} from '../Project';
 import {Options} from '../Options';
 import {VisualStudioVersion} from '../VisualStudioVersion';
-import {ClCompile} from '../ClCompile';
 import {Configuration} from '../Configuration';
 import {VrApi} from '../VrApi';
 import * as log from '../log';
@@ -458,10 +457,10 @@ export class VisualStudioExporter extends Exporter {
 		this.closeFile();
 	}
 
-	addPropertyGroup(buildType: string, wholeProgramOptimization: boolean, platform: string) {
+	addPropertyGroup(buildType: string, wholeProgramOptimization: boolean, platform: string, project: Project) {
 		this.p('<PropertyGroup Condition="\'$(Configuration)|$(Platform)\'==\'' + buildType + '|' + this.GetSys(platform) + '\'" Label="Configuration">', 1);
 		this.p('<ConfigurationType>Application</ConfigurationType>', 2);
-		this.p('<WholeProgramOptimization>' + (wholeProgramOptimization ? 'true' : 'false') + '</WholeProgramOptimization>', 2);
+		this.p('<WholeProgramOptimization>' + ((wholeProgramOptimization && project.linkTimeOptimization) ? 'true' : 'false') + '</WholeProgramOptimization>', 2);
 		this.p('<CharacterSet>MultiByte</CharacterSet>', 2);
 		this.p('</PropertyGroup>', 1);
 	}
@@ -485,23 +484,23 @@ export class VisualStudioExporter extends Exporter {
 		}
 	}
 
-	addWin8PropertyGroup(debug: boolean, platform: string) {
+	addWin8PropertyGroup(debug: boolean, platform: string, project: Project) {
 		this.p('<PropertyGroup Condition="\'$(Configuration)|$(Platform)\'==\'' + (debug ? 'Debug' : 'Release') + '|' + platform + '\'" Label="Configuration">', 1);
 		this.p('<ConfigurationType>Application</ConfigurationType>', 2);
 		this.p('<UseDebugLibraries>' + (debug ? 'true' : 'false') + '</UseDebugLibraries>', 2);
-		if (!debug) this.p('<WholeProgramOptimization>true</WholeProgramOptimization>', 2);
+		if (!debug && project.linkTimeOptimization) this.p('<WholeProgramOptimization>true</WholeProgramOptimization>', 2);
 		this.p('<PlatformToolset>' + this.getPlatformToolset() + '</PlatformToolset>', 2);
 		if (!debug) this.p('<UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>', 2);
 		this.p('</PropertyGroup>', 1);
 	}
 
-	configuration(config: string, system: string, indent: number) {
+	configuration(config: string, system: string, indent: number, project: Project) {
 		this.p('<PropertyGroup Condition="\'$(Configuration)\'==\'' + config + '\'" Label="Configuration">', indent);
 		this.p('<ConfigurationType>Application</ConfigurationType>', indent + 1);
 		this.p('<UseDebugLibraries>' + (config === 'Release' ? 'false' : 'true') + '</UseDebugLibraries>', indent + 1);
 		this.p('<PlatformToolset>' + this.getPlatformToolset() + '</PlatformToolset>', indent + 1);
 		this.p('<PreferredToolArchitecture>x64</PreferredToolArchitecture>', indent + 1);
-		if (config === 'Release') {
+		if (config === 'Release' && project.linkTimeOptimization) {
 			this.p('<WholeProgramOptimization>true</WholeProgramOptimization>', indent + 1);
 		}
 		this.p('<CharacterSet>Unicode</CharacterSet>', indent + 1);
@@ -765,17 +764,17 @@ export class VisualStudioExporter extends Exporter {
 		this.p('</PropertyGroup>', 1);
 		this.p('<Import Project="$(VCTargetsPath)\\Microsoft.Cpp.Default.props" />', 1);
 		if (platform === Platform.WindowsApp) {
-			this.addWin8PropertyGroup(true, 'Win32');
-			this.addWin8PropertyGroup(true, 'ARM');
-			this.addWin8PropertyGroup(true, 'x64');
-			this.addWin8PropertyGroup(false, 'Win32');
-			this.addWin8PropertyGroup(false, 'ARM');
-			this.addWin8PropertyGroup(false, 'x64');
+			this.addWin8PropertyGroup(true, 'Win32', project);
+			this.addWin8PropertyGroup(true, 'ARM', project);
+			this.addWin8PropertyGroup(true, 'x64', project);
+			this.addWin8PropertyGroup(false, 'Win32', project);
+			this.addWin8PropertyGroup(false, 'ARM', project);
+			this.addWin8PropertyGroup(false, 'x64', project);
 		}
 		else {
 			for (let config of this.getConfigs(platform)) {
 				for (let system of this.getSystems(platform)) {
-					this.configuration(config, system, 1);
+					this.configuration(config, system, 1, project);
 				}
 			}
 		}

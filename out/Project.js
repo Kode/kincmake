@@ -92,6 +92,7 @@ class Project {
         this.icon = null;
         this.additionalBackends = [];
         this.vsdeploy = false;
+        this.linkTimeOptimization = true;
         this.name = name;
         this.safeName = name.replace(/[^A-z0-9\-\_]/g, '-');
         this.version = '1.0';
@@ -168,6 +169,9 @@ class Project {
             }
             if (sub.vsdeploy) {
                 this.vsdeploy = true;
+            }
+            if (!sub.linkTimeOptimization) {
+                this.linkTimeOptimization = false;
             }
             let subbasedir = sub.basedir;
             for (let tkey of Object.keys(sub.targetOptions)) {

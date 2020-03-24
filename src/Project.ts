@@ -171,6 +171,7 @@ export class Project {
 	icon: string = null;
 	additionalBackends: string[] = [];
 	vsdeploy: boolean = false;
+	linkTimeOptimization: boolean = true;
 
 	constructor(name: string) {
 		this.name = name;
@@ -256,6 +257,9 @@ export class Project {
 			}
 			if (sub.vsdeploy) {
 				this.vsdeploy = true;
+			}
+			if (!sub.linkTimeOptimization) {
+				this.linkTimeOptimization = false;
 			}
 			let subbasedir = sub.basedir;
 

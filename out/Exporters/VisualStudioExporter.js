@@ -434,10 +434,10 @@ class VisualStudioExporter extends Exporter_1.Exporter {
         this.p('</Project>');
         this.closeFile();
     }
-    addPropertyGroup(buildType, wholeProgramOptimization, platform) {
+    addPropertyGroup(buildType, wholeProgramOptimization, platform, project) {
         this.p('<PropertyGroup Condition="\'$(Configuration)|$(Platform)\'==\'' + buildType + '|' + this.GetSys(platform) + '\'" Label="Configuration">', 1);
         this.p('<ConfigurationType>Application</ConfigurationType>', 2);
-        this.p('<WholeProgramOptimization>' + (wholeProgramOptimization ? 'true' : 'false') + '</WholeProgramOptimization>', 2);
+        this.p('<WholeProgramOptimization>' + ((wholeProgramOptimization && project.linkTimeOptimization) ? 'true' : 'false') + '</WholeProgramOptimization>', 2);
         this.p('<CharacterSet>MultiByte</CharacterSet>', 2);
         this.p('</PropertyGroup>', 1);
     }
@@ -459,24 +459,24 @@ class VisualStudioExporter extends Exporter_1.Exporter {
                 throw 'Unknown Visual Studio version';
         }
     }
-    addWin8PropertyGroup(debug, platform) {
+    addWin8PropertyGroup(debug, platform, project) {
         this.p('<PropertyGroup Condition="\'$(Configuration)|$(Platform)\'==\'' + (debug ? 'Debug' : 'Release') + '|' + platform + '\'" Label="Configuration">', 1);
         this.p('<ConfigurationType>Application</ConfigurationType>', 2);
         this.p('<UseDebugLibraries>' + (debug ? 'true' : 'false') + '</UseDebugLibraries>', 2);
-        if (!debug)
+        if (!debug && project.linkTimeOptimization)
             this.p('<WholeProgramOptimization>true</WholeProgramOptimization>', 2);
         this.p('<PlatformToolset>' + this.getPlatformToolset() + '</PlatformToolset>', 2);
         if (!debug)
             this.p('<UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>', 2);
         this.p('</PropertyGroup>', 1);
     }
-    configuration(config, system, indent) {
+    configuration(config, system, indent, project) {
         this.p('<PropertyGroup Condition="\'$(Configuration)\'==\'' + config + '\'" Label="Configuration">', indent);
         this.p('<ConfigurationType>Application</ConfigurationType>', indent + 1);
         this.p('<UseDebugLibraries>' + (config === 'Release' ? 'false' : 'true') + '</UseDebugLibraries>', indent + 1);
         this.p('<PlatformToolset>' + this.getPlatformToolset() + '</PlatformToolset>', indent + 1);
         this.p('<PreferredToolArchitecture>x64</PreferredToolArchitecture>', indent + 1);
-        if (config === 'Release') {
+        if (config === 'Release' && project.linkTimeOptimization) {
             this.p('<WholeProgramOptimization>true</WholeProgramOptimization>', indent + 1);
         }
         this.p('<CharacterSet>Unicode</CharacterSet>', indent + 1);
@@ -713,17 +713,17 @@ class VisualStudioExporter extends Exporter_1.Exporter {
         this.p('</PropertyGroup>', 1);
         this.p('<Import Project="$(VCTargetsPath)\\Microsoft.Cpp.Default.props" />', 1);
         if (platform === Platform_1.Platform.WindowsApp) {
-            this.addWin8PropertyGroup(true, 'Win32');
-            this.addWin8PropertyGroup(true, 'ARM');
-            this.addWin8PropertyGroup(true, 'x64');
-            this.addWin8PropertyGroup(false, 'Win32');
-            this.addWin8PropertyGroup(false, 'ARM');
-            this.addWin8PropertyGroup(false, 'x64');
+            this.addWin8PropertyGroup(true, 'Win32', project);
+            this.addWin8PropertyGroup(true, 'ARM', project);
+            this.addWin8PropertyGroup(true, 'x64', project);
+            this.addWin8PropertyGroup(false, 'Win32', project);
+            this.addWin8PropertyGroup(false, 'ARM', project);
+            this.addWin8PropertyGroup(false, 'x64', project);
         }
         else {
             for (let config of this.getConfigs(platform)) {
                 for (let system of this.getSystems(platform)) {
-                    this.configuration(config, system, 1);
+                    this.configuration(config, system, 1, project);
                 }
             }
         }
