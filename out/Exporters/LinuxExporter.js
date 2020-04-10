@@ -122,7 +122,7 @@ class LinuxExporter extends Exporter_1.Exporter {
             if (precompiledHeader !== null) {
                 let realfile = path.relative(outputPath, path.resolve(from, file.file));
                 this.p(path.basename(realfile) + '.gch: ' + realfile);
-                this.p('\t' + cppCompiler + ' ' + cpp + ' ' + optimization + ' $(INC) $(DEF) -c ' + realfile + ' -o ' + path.basename(file.file) + '.gch $(LIB)');
+                this.p('\t' + cppCompiler + ' ' + cpp + ' ' + optimization + ' $(INC) $(DEF) -c ' + realfile + ' -o ' + path.basename(file.file) + '.gch');
             }
         }
         for (let fileobject of project.getFiles()) {
@@ -142,7 +142,7 @@ class LinuxExporter extends Exporter_1.Exporter {
                     compiler = cCompiler;
                     flags = '';
                 }
-                this.p('\t' + compiler + ' ' + cpp + ' ' + optimization + ' $(INC) $(DEF) ' + flags + ' -c ' + realfile + ' -o ' + name + '.o $(LIB)');
+                this.p('\t' + compiler + ' ' + cpp + ' ' + optimization + ' $(INC) $(DEF) ' + flags + ' -c ' + realfile + ' -o ' + name + '.o');
             }
         }
         // project.getDefines()
