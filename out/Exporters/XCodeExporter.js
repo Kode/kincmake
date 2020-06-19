@@ -139,10 +139,11 @@ class XCodeExporter extends Exporter_1.Exporter {
         this.exportWorkspace(to, project);
         let icons = [];
         class IconImage {
-            constructor(idiom, size, scale) {
+            constructor(idiom, size, scale, background = undefined) {
                 this.idiom = idiom;
                 this.size = size;
                 this.scale = scale;
+                this.background = background;
             }
         }
         if (platform === Platform_1.Platform.iOS) {
@@ -163,7 +164,7 @@ class XCodeExporter extends Exporter_1.Exporter {
             icons.push(new IconImage('ipad', 76, 1));
             icons.push(new IconImage('ipad', 76, 2));
             icons.push(new IconImage('ipad', 83.5, 2));
-            icons.push(new IconImage('ios-marketing', 1024, 1));
+            icons.push(new IconImage('ios-marketing', 1024, 1, 0x000000ff));
         }
         else {
             icons.push(new IconImage('mac', 16, 1));
@@ -204,7 +205,7 @@ class XCodeExporter extends Exporter_1.Exporter {
         // const black = 0xff;
         for (let i = 0; i < icons.length; ++i) {
             const icon = icons[i];
-            Icon.exportPng(project.icon, path.resolve(to, 'Images.xcassets', 'AppIcon.appiconset', icon.idiom + icon.scale + 'x' + icon.size + '.png'), icon.size * icon.scale, icon.size * icon.scale, undefined, from);
+            Icon.exportPng(project.icon, path.resolve(to, 'Images.xcassets', 'AppIcon.appiconset', icon.idiom + icon.scale + 'x' + icon.size + '.png'), icon.size * icon.scale, icon.size * icon.scale, icon.background, from);
         }
         let plistname = '';
         let files = [];

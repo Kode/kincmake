@@ -182,11 +182,13 @@ export class XCodeExporter extends Exporter {
 			idiom: string;
 			size: number;
 			scale: number;
+			background: number;
 
-			constructor(idiom: string, size: number, scale: number) {
+			constructor(idiom: string, size: number, scale: number, background: number = undefined) {
 				this.idiom = idiom;
 				this.size = size;
 				this.scale = scale;
+				this.background = background;
 			}
 		}
 
@@ -208,7 +210,7 @@ export class XCodeExporter extends Exporter {
 			icons.push(new IconImage('ipad', 76, 1));
 			icons.push(new IconImage('ipad', 76, 2));
 			icons.push(new IconImage('ipad', 83.5, 2));
-			icons.push(new IconImage('ios-marketing', 1024, 1));
+			icons.push(new IconImage('ios-marketing', 1024, 1, 0x000000ff));
 		}
 		else {
 			icons.push(new IconImage('mac', 16, 1));
@@ -250,7 +252,7 @@ export class XCodeExporter extends Exporter {
 		// const black = 0xff;
 		for (let i = 0; i < icons.length; ++i) {
 			const icon = icons[i];
-			Icon.exportPng(project.icon, path.resolve(to, 'Images.xcassets', 'AppIcon.appiconset', icon.idiom + icon.scale + 'x' + icon.size + '.png'), icon.size * icon.scale, icon.size * icon.scale, undefined, from);
+			Icon.exportPng(project.icon, path.resolve(to, 'Images.xcassets', 'AppIcon.appiconset', icon.idiom + icon.scale + 'x' + icon.size + '.png'), icon.size * icon.scale, icon.size * icon.scale, icon.background, from);
 		}
 
 		let plistname = '';
