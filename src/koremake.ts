@@ -155,6 +155,16 @@ let options = [
 		full: 'nosigning',
 		value: false,
 		description: 'Disable code signing for iOS'
+	},
+	{
+		full: 'lib',
+		value: false,
+		description: 'Compile to a static library'
+	},
+	{
+		full: 'dynlib',
+		value: false,
+		description: 'Compile to a dynamic library'
 	}
 ];
 
