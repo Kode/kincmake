@@ -238,6 +238,13 @@ async function exportKoremakeProject(from, to, platform, korefile, options) {
         project.resolveBackends();
         project.searchFiles(undefined);
         project.flatten();
+        if (options.lib) {
+            project.addDefine('KINC_NO_MAIN');
+        }
+        else if (options.dynlib) {
+            project.addDefine('KINC_NO_MAIN');
+            project.addDefine('KINC_DYNAMIC_COMPILE');
+        }
     }
     catch (error) {
         log.error(error);
