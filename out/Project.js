@@ -121,6 +121,7 @@ class Project {
         this.rotated = false;
         this.cmd = false;
         this.stackSize = 0;
+        this.kincProcessed = false;
     }
     addBackend(name) {
         this.additionalBackends.push(name);
@@ -479,7 +480,7 @@ class Project {
         Project.koreDir = path.join(__dirname, '../../..');
         Project.platform = platform;
         let project = await loadProject(path.resolve(directory), korefile);
-        if (project.kore) {
+        if (project.kore && !project.kincProcessed) {
             await project.addProject(Project.koreDir);
         }
         let defines = getDefines(platform, project.isRotated());

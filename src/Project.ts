@@ -162,6 +162,7 @@ export class Project {
 	cpp11: boolean;
 	c11: boolean;
 	kore: boolean;
+	kincProcessed: boolean;
 	targetOptions: any;
 	rotated: boolean;
 	cmd: boolean;
@@ -203,6 +204,7 @@ export class Project {
 		this.rotated = false;
 		this.cmd = false;
 		this.stackSize = 0;
+		this.kincProcessed = false;
 	}
 
 	addBackend(name: string) {
@@ -586,7 +588,7 @@ export class Project {
 		Project.koreDir = path.join(__dirname, '../../..');
 		Project.platform = platform;
 		let project = await loadProject(path.resolve(directory), korefile);
-		if (project.kore) {
+		if (project.kore && !project.kincProcessed) {
 			await project.addProject(Project.koreDir);
 		}
 		let defines = getDefines(platform, project.isRotated());
