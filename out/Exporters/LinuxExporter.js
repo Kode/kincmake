@@ -110,7 +110,8 @@ class LinuxExporter extends Exporter_1.Exporter {
         if (project.cpp11 && options.compiler !== Compiler_1.Compiler.Clang) {
             cpp = '-std=c++11';
         }
-        this.p('\t' + cppCompiler + ' ' + cpp + ' ' + optimization + ' ' + ofilelist + ' -o "' + project.getSafeName() + '" $(LIB)');
+        const lib = options.dynlib ? '-shared' : '';
+        this.p('\t' + (options.lib ? 'ar rcs' : cppCompiler) + ' ' + lib + ' ' + cpp + ' ' + optimization + ' ' + ofilelist + ' -o "' + project.getSafeName() + '" $(LIB)');
         for (let file of project.getFiles()) {
             let precompiledHeader = null;
             for (let header of precompiledHeaders) {

@@ -124,7 +124,8 @@ export class LinuxExporter extends Exporter {
 			cpp = '-std=c++11';
 		}
 
-		this.p('\t' + cppCompiler + ' ' + cpp + ' ' + optimization + ' ' + ofilelist + ' -o "' + project.getSafeName() + '" $(LIB)');
+		const lib = options.dynlib ? '-shared' : '';
+		this.p('\t' + (options.lib ? 'ar rcs' : cppCompiler) + ' ' + lib + ' ' + cpp + ' ' + optimization + ' ' + ofilelist + ' -o "' + project.getSafeName() + '" $(LIB)');
 
 		for (let file of project.getFiles()) {
 			let precompiledHeader: string = null;
