@@ -133,7 +133,7 @@ class XCodeExporter extends Exporter_1.Exporter {
         this.p('</Workspace>');
         this.closeFile();
     }
-    async exportSolution(project, from, to, platform) {
+    async exportSolution(project, from, to, platform, vrApi, options) {
         const xdir = path.resolve(to, project.getSafeName() + '.xcodeproj');
         fs.ensureDirSync(xdir);
         this.exportWorkspace(to, project);
@@ -750,6 +750,14 @@ class XCodeExporter extends Exporter_1.Exporter {
         this.p('BUNDLE_VERSION = "' + targetOptions.version + '";', 4);
         this.p('BUILD_VERSION = "' + targetOptions.build + '";', 4);
         this.p('PRODUCT_NAME = "$(TARGET_NAME)";', 4);
+        if (options.lib) {
+            this.p('MACH_O_TYPE = staticlib;', 4);
+            this.p('STRIP_INSTALLED_PRODUCT = NO;', 4);
+        }
+        else if (options.dynlib) {
+            this.p('MACH_O_TYPE = mh_dylib;', 4);
+            this.p('STRIP_STYLE = debugging;', 4);
+        }
         this.p('};', 3);
         this.p('name = Debug;', 3);
         this.p('};', 2);
@@ -800,6 +808,14 @@ class XCodeExporter extends Exporter_1.Exporter {
         this.p('BUNDLE_VERSION = "' + targetOptions.version + '";', 4);
         this.p('BUILD_VERSION = "' + targetOptions.build + '";', 4);
         this.p('PRODUCT_NAME = "$(TARGET_NAME)";', 4);
+        if (options.lib) {
+            this.p('MACH_O_TYPE = staticlib;', 4);
+            this.p('STRIP_INSTALLED_PRODUCT = NO;', 4);
+        }
+        else if (options.dynlib) {
+            this.p('MACH_O_TYPE = mh_dylib;', 4);
+            this.p('STRIP_STYLE = debugging;', 4);
+        }
         this.p('};', 3);
         this.p('name = Release;', 3);
         this.p('};', 2);
