@@ -91,11 +91,17 @@ class LinuxExporter extends Exporter_1.Exporter {
         this.p('DEF=' + defline);
         this.p();
         let cline = '-std=c99 ';
+        if (options.dynlib) {
+            cline += '-fPIC ';
+        }
         for (let flag of project.cFlags) {
             cline += flag + ' ';
         }
         this.p('CFLAGS=' + cline);
         let cppline = '';
+        if (options.dynlib) {
+            cppline += '-fPIC ';
+        }
         for (let flag of project.cppFlags) {
             cppline += flag + ' ';
         }
@@ -105,13 +111,27 @@ class LinuxExporter extends Exporter_1.Exporter {
             optimization = '-O2';
         else
             optimization = '-g';
-        this.p(project.getSafeName() + ': ' + gchfilelist + ofilelist);
+        if (options.lib) {
+            this.p(project.getSafeName() + '.a: ' + gchfilelist + ofilelist);
+        }
+        else if (options.dynlib) {
+            this.p(project.getSafeName() + '.so: ' + gchfilelist + ofilelist);
+        }
+        else {
+            this.p(project.getSafeName() + ': ' + gchfilelist + ofilelist);
+        }
         let cpp = '';
         if (project.cpp11 && options.compiler !== Compiler_1.Compiler.Clang) {
             cpp = '-std=c++11';
         }
-        const lib = options.dynlib ? '-shared' : '';
-        this.p('\t' + (options.lib ? 'ar rcs' : cppCompiler) + ' ' + lib + ' ' + cpp + ' ' + optimization + ' ' + ofilelist + ' -o "' + project.getSafeName() + '" $(LIB)');
+        let output = '-o "' + project.getSafeName() + '"';
+        if (options.lib) {
+            output = '-o "' + project.getSafeName() + '.a"';
+        }
+        else if (options.dynlib) {
+            output = '-shared -o "' + project.getSafeName() + '.so"';
+        }
+        this.p('\t' + (options.lib ? 'ar rcs' : cppCompiler) + ' ' + output + ' ' + cpp + ' ' + optimization + ' ' + ofilelist + ' $(LIB)');
         for (let file of project.getFiles()) {
             let precompiledHeader = null;
             for (let header of precompiledHeaders) {
