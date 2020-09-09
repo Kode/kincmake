@@ -353,7 +353,15 @@ function compileProject(make, project, solutionName, options, dothemath) {
             log.info(`Build time: ${min}m ${sec}s`);
             if (code === 0) {
                 if ((options.customTarget && options.customTarget.baseTarget === Platform_1.Platform.Linux) || options.target === Platform_1.Platform.Linux) {
-                    fs.copySync(path.resolve(path.join(options.to.toString(), options.buildPath), solutionName), path.resolve(options.from.toString(), project.getDebugDir(), solutionName), { overwrite: true });
+                    if (options.lib) {
+                        fs.copySync(path.resolve(path.join(options.to.toString(), options.buildPath), solutionName + '.a'), path.resolve(options.from.toString(), project.getDebugDir(), solutionName + '.a'), { overwrite: true });
+                    }
+                    else if (options.dynlib) {
+                        fs.copySync(path.resolve(path.join(options.to.toString(), options.buildPath), solutionName + '.so'), path.resolve(options.from.toString(), project.getDebugDir(), solutionName + '.so'), { overwrite: true });
+                    }
+                    else {
+                        fs.copySync(path.resolve(path.join(options.to.toString(), options.buildPath), solutionName), path.resolve(options.from.toString(), project.getDebugDir(), solutionName), { overwrite: true });
+                    }
                 }
                 else if ((options.customTarget && options.customTarget.baseTarget === Platform_1.Platform.Windows) || options.target === Platform_1.Platform.Windows) {
                     const from = dothemath
