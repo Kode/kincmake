@@ -393,7 +393,7 @@ function compileProject(make: child_process.ChildProcess, project: Project, solu
 					}
 				}
 				else if ((options.customTarget && options.customTarget.baseTarget === Platform.Windows) || options.target === Platform.Windows) {
-					const extension = (options.lib || options.dynlib) ? options.lib ? '.lib': '.dll': '.exe';
+					const extension = (options.lib || options.dynlib) ? (options.lib ? '.lib' : '.dll') : '.exe';
 					const from =
 					dothemath
 					? path.join(options.to.toString(), 'x64', options.debug ? 'Debug' : 'Release', solutionName + extension)

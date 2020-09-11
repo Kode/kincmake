@@ -365,7 +365,7 @@ function compileProject(make, project, solutionName, options, dothemath) {
                     }
                 }
                 else if ((options.customTarget && options.customTarget.baseTarget === Platform_1.Platform.Windows) || options.target === Platform_1.Platform.Windows) {
-                    const extension = (options.lib || options.dynlib) ? options.lib ? '.lib' : '.dll' : '.exe';
+                    const extension = (options.lib || options.dynlib) ? (options.lib ? '.lib' : '.dll') : '.exe';
                     const from = dothemath
                         ? path.join(options.to.toString(), 'x64', options.debug ? 'Debug' : 'Release', solutionName + extension)
                         : path.join(options.to.toString(), options.debug ? 'Debug' : 'Release', solutionName + extension);
