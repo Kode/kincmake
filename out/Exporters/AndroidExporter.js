@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.AndroidExporter = void 0;
 const Exporter_1 = require("./Exporter");
 const Project_1 = require("../Project");
 const Architecture_1 = require("../Architecture");

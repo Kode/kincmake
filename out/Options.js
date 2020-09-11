@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Options = void 0;
 const GraphicsApi_1 = require("./GraphicsApi");
 const Architecture_1 = require("./Architecture");
 const AudioApi_1 = require("./AudioApi");

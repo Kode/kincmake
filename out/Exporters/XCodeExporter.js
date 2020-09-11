@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.XCodeExporter = void 0;
 const Exporter_1 = require("./Exporter");
 const GraphicsApi_1 = require("../GraphicsApi");
 const Icon = require("../Icon");
