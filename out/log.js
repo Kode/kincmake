@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.error = exports.info = exports.set = void 0;
 let myInfo = function (text, newline) {
     if (newline) {
         console.log(text);

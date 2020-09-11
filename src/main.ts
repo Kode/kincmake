@@ -393,14 +393,15 @@ function compileProject(make: child_process.ChildProcess, project: Project, solu
 					}
 				}
 				else if ((options.customTarget && options.customTarget.baseTarget === Platform.Windows) || options.target === Platform.Windows) {
+					const extension = (options.lib || options.dynlib) ? options.lib ? '.lib': '.dll': '.exe';
 					const from =
 					dothemath
-					? path.join(options.to.toString(), 'x64', options.debug ? 'Debug' : 'Release', solutionName + '.exe')
-					: path.join(options.to.toString(), options.debug ? 'Debug' : 'Release', solutionName + '.exe');
+					? path.join(options.to.toString(), 'x64', options.debug ? 'Debug' : 'Release', solutionName + extension)
+					: path.join(options.to.toString(), options.debug ? 'Debug' : 'Release', solutionName + extension);
 					const dir = path.isAbsolute(project.getDebugDir())
 						? project.getDebugDir()
 						: path.join(options.from.toString(), project.getDebugDir());
-					fs.copySync(from, path.join(dir, solutionName + '.exe'), { overwrite: true });
+					fs.copySync(from, path.join(dir, solutionName + extension), { overwrite: true });
 				}
 				if (options.run) {
 					if ((options.customTarget && options.customTarget.baseTarget === Platform.OSX) || options.target === Platform.OSX) {

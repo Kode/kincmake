@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Project = exports.Define = void 0;
 const fs = require("fs-extra");
 const path = require("path");
 const log = require("./log");
