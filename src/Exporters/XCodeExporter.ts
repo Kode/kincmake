@@ -334,11 +334,21 @@ export class XCodeExporter extends Exporter {
 				this.p(file.getBuildId() + ' /* ' + file.toString() + ' in Sources */ = {isa = PBXBuildFile; fileRef = ' + file.getFileId() + ' /* ' + file.toString() + ' */; };', 2);
 			}
 		}
-		this.p(iconBuildId + ' /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = ' + iconFileId + ' /* Images.xcassets */; };', 2);
+		if (!options.lib && !options.dynlib) {
+			this.p(iconBuildId + ' /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = ' + iconFileId + ' /* Images.xcassets */; };', 2);
+		}
 		this.p('/* End PBXBuildFile section */');
 		this.p();
 		this.p('/* Begin PBXFileReference section */');
-		this.p(appFileId + ' /* ' + project.getSafeName() + '.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "' + project.getSafeName() + '.app"; sourceTree = BUILT_PRODUCTS_DIR; };', 2);
+		if (options.lib) {
+			this.p(appFileId + ' /* ' + project.getSafeName() + '.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "' + project.getSafeName() + '.a"; sourceTree = BUILT_PRODUCTS_DIR; };', 2);
+		}
+		else if (options.dynlib) {
+			this.p(appFileId + ' /* ' + project.getSafeName() + '.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "' + project.getSafeName() + '.dylib"; sourceTree = BUILT_PRODUCTS_DIR; };', 2);
+		}
+		else {
+			this.p(appFileId + ' /* ' + project.getSafeName() + '.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "' + project.getSafeName() + '.app"; sourceTree = BUILT_PRODUCTS_DIR; };', 2);
+		}
 
 		for (let framework of frameworks) {
 			if (framework.toString().endsWith('.framework')) {
@@ -387,7 +397,9 @@ export class XCodeExporter extends Exporter {
 				this.p(file.getFileId() + ' /* ' + file.toString() + ' */ = {isa = PBXFileReference; ' + fileencoding + 'lastKnownFileType = ' + filetype + '; name = "' + file.getLastName() + '"; path = "' + path.resolve(from, file.toString()) + '"; sourceTree = "<group>"; };', 2);
 			}
 		}
-		this.p(iconFileId + ' /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };', 2);
+		if (!options.lib && !options.dynlib) {
+			this.p(iconFileId + ' /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };', 2);
+		}
 		this.p('/* End PBXFileReference section */');
 		this.p();
 		this.p('/* Begin PBXFrameworksBuildPhase section */');
@@ -407,7 +419,9 @@ export class XCodeExporter extends Exporter {
 		this.p(mainGroupId + ' = {', 2);
 		this.p('isa = PBXGroup;', 3);
 		this.p('children = (', 3);
-		this.p(iconFileId + ' /* Images.xcassets */,', 4);
+		if (!options.lib && !options.dynlib) {
+			this.p(iconFileId + ' /* Images.xcassets */,', 4);
+		}
 		this.p(debugDirFileId + ' /* Deployment */,', 4);
 		// p(solutionGroupId + " /* " + solution.getName() + " */,", 4);
 		for (let dir of directories) {
@@ -421,7 +435,15 @@ export class XCodeExporter extends Exporter {
 		this.p(productsGroupId + ' /* Products */ = {', 2);
 		this.p('isa = PBXGroup;', 3);
 		this.p('children = (', 3);
-		this.p(appFileId + ' /* ' + project.getSafeName() + '.app */,', 4);
+		if (options.lib) {
+			this.p(appFileId + ' /* ' + project.getSafeName() + '.a */,', 4);
+		}
+		else if (options.dynlib) {
+			this.p(appFileId + ' /* ' + project.getSafeName() + '.dynlib */,', 4);
+		}
+		else {
+			this.p(appFileId + ' /* ' + project.getSafeName() + '.app */,', 4);
+		}
 		this.p(');', 3);
 		this.p('name = Products;', 3);
 		this.p('sourceTree = "<group>";', 3);
@@ -476,8 +498,18 @@ export class XCodeExporter extends Exporter {
 		this.p(');', 3);
 		this.p('name = "' + project.getName() + '";', 3);
 		this.p('productName = "' + project.getName() + '";', 3);
-		this.p('productReference = ' + appFileId + ' /* ' + project.getSafeName() + '.app */;', 3);
-		this.p('productType = "com.apple.product-type.' + (project.isCmd() ? 'tool' : 'application') + '";', 3);
+		if (options.lib) {
+			this.p('productReference = ' + appFileId + ' /* ' + project.getSafeName() + '.a */;', 3);
+			this.p('productType = "com.apple.product-type.library.static";', 3);
+		}
+		else if (options.dynlib) {
+			this.p('productReference = ' + appFileId + ' /* ' + project.getSafeName() + '.dylib */;', 3);
+			this.p('productType = "com.apple.product-type.library.dynamic";', 3);
+		}
+		else {
+			this.p('productReference = ' + appFileId + ' /* ' + project.getSafeName() + '.app */;', 3);
+			this.p('productType = "com.apple.product-type.' + (project.isCmd() ? 'tool' : 'application') + '";', 3);
+		}
 		this.p('};', 2);
 		this.p('/* End PBXNativeTarget section */');
 		this.p();
@@ -514,18 +546,20 @@ export class XCodeExporter extends Exporter {
 		this.p('};', 2);
 		this.p('/* End PBXProject section */');
 		this.p();
-		this.p('/* Begin PBXResourcesBuildPhase section */');
-		this.p(resourcesBuildId + ' /* Resources */ = {', 2);
-		this.p('isa = PBXResourcesBuildPhase;', 3);
-		this.p('buildActionMask = 2147483647;', 3);
-		this.p('files = (', 3);
-		this.p(debugDirBuildId + ' /* Deployment in Resources */,', 4);
-		this.p(iconBuildId + ' /* Images.xcassets in Resources */,', 4);
-		this.p(');', 3);
-		this.p('runOnlyForDeploymentPostprocessing = 0;', 3);
-		this.p('};', 2);
-		this.p('/* End PBXResourcesBuildPhase section */');
-		this.p();
+		if (!options.lib && !options.dynlib) {
+			this.p('/* Begin PBXResourcesBuildPhase section */');
+			this.p(resourcesBuildId + ' /* Resources */ = {', 2);
+			this.p('isa = PBXResourcesBuildPhase;', 3);
+			this.p('buildActionMask = 2147483647;', 3);
+			this.p('files = (', 3);
+			this.p(debugDirBuildId + ' /* Deployment in Resources */,', 4);
+			this.p(iconBuildId + ' /* Images.xcassets in Resources */,', 4);
+			this.p(');', 3);
+			this.p('runOnlyForDeploymentPostprocessing = 0;', 3);
+			this.p('};', 2);
+			this.p('/* End PBXResourcesBuildPhase section */');
+			this.p();
+		}
 		this.p('/* Begin PBXSourcesBuildPhase section */');
 		this.p(sourceBuildId + ' /* Sources */ = {', 2);
 		this.p('isa = PBXSourcesBuildPhase;', 3);
@@ -726,8 +760,10 @@ export class XCodeExporter extends Exporter {
 		this.p(nativeDebugId + ' /* Debug */ = {', 2);
 		this.p('isa = XCBuildConfiguration;', 3);
 		this.p('buildSettings = {', 3);
-		this.p('ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;', 4);
-		if (platform === Platform.OSX) {
+		if (!options.lib && !options.dynlib) {
+			this.p('ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;', 4);
+		}
+		if (platform === Platform.OSX && (!options.lib && !options.dynlib)) {
 			this.p('COMBINE_HIDPI_IMAGES = YES;', 4);
 		}
 		this.p('FRAMEWORK_SEARCH_PATHS = (', 4);
@@ -751,20 +787,22 @@ export class XCodeExporter extends Exporter {
 		}
 		this.p(');', 4);
 
-		this.p('INFOPLIST_EXPAND_BUILD_SETTINGS = "YES";', 4);
-		this.p('INFOPLIST_FILE = "' + path.resolve(from, plistname) + '";', 4);
+		if (!options.lib && !options.dynlib) {
+			this.p('INFOPLIST_EXPAND_BUILD_SETTINGS = "YES";', 4);
+			this.p('INFOPLIST_FILE = "' + path.resolve(from, plistname) + '";', 4);
 
-		this.p('LD_RUNPATH_SEARCH_PATHS = (', 4);
-		this.p('"$(inherited)",', 5);
-		if (platform === Platform.iOS) {
-			this.p('"@executable_path/Frameworks",', 5);
-		}
-		for (let framework of frameworks) {
-			if (framework.toString().endsWith('.dylib') && framework.localPath != null) {
-				this.p(framework.localPath.substr(0, framework.localPath.lastIndexOf('/')) + ',', 5);
+			this.p('LD_RUNPATH_SEARCH_PATHS = (', 4);
+			this.p('"$(inherited)",', 5);
+			if (platform === Platform.iOS) {
+				this.p('"@executable_path/Frameworks",', 5);
 			}
+			for (let framework of frameworks) {
+				if (framework.toString().endsWith('.dylib') && framework.localPath != null) {
+					this.p(framework.localPath.substr(0, framework.localPath.lastIndexOf('/')) + ',', 5);
+				}
+			}
+			this.p(');', 4);
 		}
-		this.p(');', 4);
 
 		if (project.cFlags.length > 0) {
 			this.p('OTHER_CFLAGS = (', 4);
@@ -782,17 +820,30 @@ export class XCodeExporter extends Exporter {
 			this.p(');', 4);
 		}
 
-		this.p('PRODUCT_BUNDLE_IDENTIFIER = "' + targetOptions.bundle + '";', 4);
+		if (options.dynlib) {
+			this.p('DYLIB_COMPATIBILITY_VERSION = 1;', 4);
+			this.p('DYLIB_CURRENT_VERSION = 1;', 4);
+			this.p('EXECUTABLE_PREFIX = lib;', 4);
+		}
+		else if (options.lib) {
+			this.p('EXECUTABLE_PREFIX = lib;', 4);
+		}
+
+		if (!options.lib && !options.dynlib) {
+			this.p('PRODUCT_BUNDLE_IDENTIFIER = "' + targetOptions.bundle + '";', 4);
+		}
 		this.p('BUNDLE_VERSION = "' + targetOptions.version + '";', 4);
 		this.p('BUILD_VERSION = "' + targetOptions.build + '";', 4);
 		this.p('PRODUCT_NAME = "$(TARGET_NAME)";', 4);
 		if (options.lib) {
-			this.p('MACH_O_TYPE = staticlib;', 4);
-			this.p('STRIP_INSTALLED_PRODUCT = NO;', 4);
+			// this.p('MACH_O_TYPE = staticlib;', 4);
+			// this.p('STRIP_INSTALLED_PRODUCT = NO;', 4);
+			this.p('SKIP_INSTALL = YES;', 4);
 		}
 		else if (options.dynlib) {
-			this.p('MACH_O_TYPE = mh_dylib;', 4);
-			this.p('STRIP_STYLE = debugging;', 4);
+			// this.p('MACH_O_TYPE = mh_dylib;', 4);
+			// this.p('STRIP_STYLE = debugging;', 4);
+			this.p('SKIP_INSTALL = YES;', 4);
 		}
 		this.p('};', 3);
 		this.p('name = Debug;', 3);
@@ -800,8 +851,10 @@ export class XCodeExporter extends Exporter {
 		this.p(nativeReleaseId + ' /* Release */ = {', 2);
 		this.p('isa = XCBuildConfiguration;', 3);
 		this.p('buildSettings = {', 3);
-		this.p('ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;', 4);
-		if (platform === Platform.OSX) {
+		if (!options.lib && !options.dynlib) {
+			this.p('ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;', 4);
+		}
+		if (platform === Platform.OSX && (!options.lib && !options.dynlib)) {
 			this.p('COMBINE_HIDPI_IMAGES = YES;', 4);
 		}
 		this.p('FRAMEWORK_SEARCH_PATHS = (', 4);
@@ -816,13 +869,21 @@ export class XCodeExporter extends Exporter {
 		this.p('"/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include",', 5);
 		for (let p of project.getIncludeDirs()) this.p('"' + path.resolve(from, p).replace(/ /g, '\\\\ ') + '",', 5);
 		this.p(');', 4);
-		this.p('INFOPLIST_EXPAND_BUILD_SETTINGS = "YES";', 4);
-		this.p('INFOPLIST_FILE = "' + path.resolve(from, plistname) + '";', 4);
-		if (platform === Platform.iOS) {
-			this.p('LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";', 4);
-		}
-		else {
-			this.p('LD_RUNPATH_SEARCH_PATHS = "$(inherited)";', 4);
+
+		if (!options.lib && !options.dynlib) {
+			this.p('INFOPLIST_EXPAND_BUILD_SETTINGS = "YES";', 4);
+			this.p('INFOPLIST_FILE = "' + path.resolve(from, plistname) + '";', 4);
+			this.p('LD_RUNPATH_SEARCH_PATHS = (', 4);
+			this.p('"$(inherited)",', 5);
+			if (platform === Platform.iOS) {
+				this.p('"@executable_path/Frameworks",', 5);
+			}
+			for (let framework of frameworks) {
+				if (framework.toString().endsWith('.dylib') && framework.localPath != null) {
+					this.p(framework.localPath.substr(0, framework.localPath.lastIndexOf('/')) + ',', 5);
+				}
+			}
+			this.p(');', 4);
 		}
 
 		if (project.cFlags.length > 0) {
@@ -841,17 +902,30 @@ export class XCodeExporter extends Exporter {
 			this.p(');', 4);
 		}
 
-		this.p('PRODUCT_BUNDLE_IDENTIFIER = "' + targetOptions.bundle + '";', 4);
+		if (options.dynlib) {
+			this.p('DYLIB_COMPATIBILITY_VERSION = 1;', 4);
+			this.p('DYLIB_CURRENT_VERSION = 1;', 4);
+			this.p('EXECUTABLE_PREFIX = lib;', 4);
+		}
+		else if (options.lib) {
+			this.p('EXECUTABLE_PREFIX = lib;', 4);
+		}
+
+		if (!options.lib && !options.dynlib) {
+			this.p('PRODUCT_BUNDLE_IDENTIFIER = "' + targetOptions.bundle + '";', 4);
+		}
 		this.p('BUNDLE_VERSION = "' + targetOptions.version + '";', 4);
 		this.p('BUILD_VERSION = "' + targetOptions.build + '";', 4);
 		this.p('PRODUCT_NAME = "$(TARGET_NAME)";', 4);
 		if (options.lib) {
-			this.p('MACH_O_TYPE = staticlib;', 4);
-			this.p('STRIP_INSTALLED_PRODUCT = NO;', 4);
+			// this.p('MACH_O_TYPE = staticlib;', 4);
+			// this.p('STRIP_INSTALLED_PRODUCT = NO;', 4);
+			this.p('SKIP_INSTALL = YES;', 4);
 		}
 		else if (options.dynlib) {
-			this.p('MACH_O_TYPE = mh_dylib;', 4);
-			this.p('STRIP_STYLE = debugging;', 4);
+			// this.p('MACH_O_TYPE = mh_dylib;', 4);
+			// this.p('STRIP_STYLE = debugging;', 4);
+			this.p('SKIP_INSTALL = YES;', 4);
 		}
 		this.p('};', 3);
 		this.p('name = Release;', 3);
