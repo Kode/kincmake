@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.EmscriptenExporter = void 0;
 const Exporter_1 = require("./Exporter");
 const Options_1 = require("../Options");
 const GraphicsApi_1 = require("../GraphicsApi");

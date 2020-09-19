@@ -51,8 +51,13 @@ process.on('exit', (code: number) => {
 
 let scriptdir = '.';
 // let lastScriptDir = '.';
+let cppEnabled = false;
 
 async function loadProject(directory: string, korefile: string = 'kincfile.js'): Promise<Project> {
+	if (korefile.toLowerCase().includes('korefile.js')) {
+		cppEnabled = true;
+	}
+
 	return new Promise<Project>((resolve, reject) => {
 		projectInProgress += 1;
 		let resolver = async (project: Project) => {
@@ -94,6 +99,7 @@ async function loadProject(directory: string, korefile: string = 'kincfile.js'):
 				'vr',
 				'RayTraceApi',
 				'raytrace',
+				'cpp',
 				'require',
 				'resolve',
 				'reject',
@@ -114,6 +120,7 @@ async function loadProject(directory: string, korefile: string = 'kincfile.js'):
 				Options.vrApi,
 				RayTraceApi,
 				Options.rayTraceApi,
+				cppEnabled,
 				require,
 				resolver,
 				reject,
@@ -612,6 +619,10 @@ export class Project {
 
 	setCmd() {
 		this.cmd = true;
+	}
+
+	set cpp(value: boolean) {
+		cppEnabled = value;
 	}
 
 	// deprecated

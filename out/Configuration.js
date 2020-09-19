@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Configuration = void 0;
 exports.Configuration = {
     Debug: 'Debug',
     CodeAnalysis: 'CodeAnalysis',

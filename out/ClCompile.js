@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.ClCompile = void 0;
 const Block_1 = require("./Block");
 const Platform_1 = require("./Platform");
 function toLine(options) {

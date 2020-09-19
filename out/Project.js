@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Project = exports.Define = void 0;
 const fs = require("fs-extra");
 const path = require("path");
 const log = require("./log");
@@ -50,7 +51,11 @@ process.on('exit', (code) => {
 });
 let scriptdir = '.';
 // let lastScriptDir = '.';
+let cppEnabled = false;
 async function loadProject(directory, korefile = 'kincfile.js') {
+    if (korefile.toLowerCase().includes('korefile.js')) {
+        cppEnabled = true;
+    }
     return new Promise((resolve, reject) => {
         projectInProgress += 1;
         let resolver = async (project) => {
@@ -74,7 +79,7 @@ async function loadProject(directory, korefile = 'kincfile.js') {
             scriptdir = directory;
             let file = fs.readFileSync(path.resolve(directory, korefile), 'utf8');
             let AsyncFunction = Object.getPrototypeOf(async () => { }).constructor;
-            let project = new AsyncFunction('log', 'Project', 'Platform', 'platform', 'GraphicsApi', 'graphics', 'Architecture', 'arch', 'AudioApi', 'audio', 'VrApi', 'vr', 'RayTraceApi', 'raytrace', 'require', 'resolve', 'reject', '__dirname', file)(log, Project, Platform_1.Platform, Project.platform, GraphicsApi_1.GraphicsApi, Options_1.Options.graphicsApi, Architecture_1.Architecture, Options_1.Options.architecture, AudioApi_1.AudioApi, Options_1.Options.audioApi, VrApi_1.VrApi, Options_1.Options.vrApi, RayTraceApi_1.RayTraceApi, Options_1.Options.rayTraceApi, require, resolver, reject, directory);
+            let project = new AsyncFunction('log', 'Project', 'Platform', 'platform', 'GraphicsApi', 'graphics', 'Architecture', 'arch', 'AudioApi', 'audio', 'VrApi', 'vr', 'RayTraceApi', 'raytrace', 'cpp', 'require', 'resolve', 'reject', '__dirname', file)(log, Project, Platform_1.Platform, Project.platform, GraphicsApi_1.GraphicsApi, Options_1.Options.graphicsApi, Architecture_1.Architecture, Options_1.Options.architecture, AudioApi_1.AudioApi, Options_1.Options.audioApi, VrApi_1.VrApi, Options_1.Options.vrApi, RayTraceApi_1.RayTraceApi, Options_1.Options.rayTraceApi, cppEnabled, require, resolver, reject, directory);
         }
         catch (error) {
             log.error(error);
@@ -500,6 +505,9 @@ class Project {
     }
     setCmd() {
         this.cmd = true;
+    }
+    set cpp(value) {
+        cppEnabled = value;
     }
     // deprecated
     static createProject() {

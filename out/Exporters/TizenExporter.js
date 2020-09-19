@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.TizenExporter = void 0;
 const Exporter_1 = require("./Exporter");
 const fs = require("fs-extra");
 const path = require("path");
