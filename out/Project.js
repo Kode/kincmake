@@ -121,7 +121,10 @@ class Project {
             android: {},
             xboxOne: {},
             playStation4: {},
-            switch: {}
+            switch: {},
+            xboxSeriesXS: {},
+            playStation5: {},
+            stadia: {}
         };
         this.rotated = false;
         this.cmd = false;
