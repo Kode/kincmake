@@ -781,7 +781,7 @@ export class XCodeExporter extends Exporter {
 
 		this.p('LIBRARY_SEARCH_PATHS = (', 4);
 		for (let framework of frameworks) {
-			if (framework.toString().endsWith('.dylib') && framework.localPath != null) {
+			if ((framework.toString().endsWith('.dylib') || framework.toString().endsWith('.a')) && framework.localPath != null) {
 				this.p(framework.localPath.substr(0, framework.localPath.lastIndexOf('/')) + ',', 5);
 			}
 		}
@@ -868,6 +868,14 @@ export class XCodeExporter extends Exporter {
 		this.p('"$(inherited)",', 5);
 		this.p('"/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include",', 5);
 		for (let p of project.getIncludeDirs()) this.p('"' + path.resolve(from, p).replace(/ /g, '\\\\ ') + '",', 5);
+		this.p(');', 4);
+
+		this.p('LIBRARY_SEARCH_PATHS = (', 4);
+		for (let framework of frameworks) {
+			if ((framework.toString().endsWith('.dylib') || framework.toString().endsWith('.a')) && framework.localPath != null) {
+				this.p(framework.localPath.substr(0, framework.localPath.lastIndexOf('/')) + ',', 5);
+			}
+		}
 		this.p(');', 4);
 
 		if (!options.lib && !options.dynlib) {
