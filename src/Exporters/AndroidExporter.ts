@@ -141,9 +141,8 @@ export class AndroidExporter extends Exporter {
 		gradle = gradle.replace(/{targetSdkVersion}/g, targetOptions.targetSdkVersion.toString());
 		let arch = '';
 		if (targetOptions.abiFilters.length > 0) {
-			arch = '';
 			for (let item of targetOptions.abiFilters) {
-				if (arch.length == 0) {
+				if (arch.length === 0) {
 					arch = '"'+ item +'"';
 				}
 				else {
