@@ -13,6 +13,9 @@ interface TargetOptions {
 	installLocation: string;
 	versionCode: number;
 	versionName: string;
+	compileSdkVersion: number;
+	minSdkVersion: number;
+	targetSdkVersion: number;
 	screenOrientation: string;
 	permissions: string[];
 	disableStickyImmersiveMode: boolean;
@@ -21,6 +24,7 @@ interface TargetOptions {
 	buildGradlePath: string;
 	globalBuildGradlePath: string;
 	proguardRulesPath: string;
+	abiFilters: string[];
 }
 
 export class AndroidExporter extends Exporter {
@@ -40,6 +44,9 @@ export class AndroidExporter extends Exporter {
 			installLocation: 'internalOnly',
 			versionCode: 1,
 			versionName: '1.0',
+			compileSdkVersion: 29,
+			minSdkVersion: 14,
+			targetSdkVersion: 29,
 			screenOrientation: 'sensor',
 			permissions: new Array<string>(),
 			disableStickyImmersiveMode: false,
@@ -47,7 +54,8 @@ export class AndroidExporter extends Exporter {
 			customFilesPath: null,
 			buildGradlePath: path.join(indir, 'app', 'build.gradle'),
 			globalBuildGradlePath: path.join(indir, 'build.gradle'),
-			proguardRulesPath: path.join(indir, 'app', 'proguard-rules.pro')
+			proguardRulesPath: path.join(indir, 'app', 'proguard-rules.pro'),
+			abiFilters: new Array<string>()
 		};
 
 		if (project.targetOptions != null && project.targetOptions.android != null) {
@@ -128,17 +136,34 @@ export class AndroidExporter extends Exporter {
 		gradle = gradle.replace(/{package}/g, targetOptions.package);
 		gradle = gradle.replace(/{versionCode}/g, targetOptions.versionCode.toString());
 		gradle = gradle.replace(/{versionName}/g, targetOptions.versionName);
+		gradle = gradle.replace(/{compileSdkVersion}/g, targetOptions.compileSdkVersion.toString());
+		gradle = gradle.replace(/{minSdkVersion}/g, targetOptions.minSdkVersion.toString());
+		gradle = gradle.replace(/{targetSdkVersion}/g, targetOptions.targetSdkVersion.toString());
 		let arch = '';
-		switch (Options.architecture) {
-			case Architecture.Default: arch = ''; break;
-			case Architecture.Arm7: arch = 'armeabi-v7a'; break;
-			case Architecture.Arm8: arch = 'arm64-v8a'; break;
-			case Architecture.X86: arch = 'x86'; break;
-			case Architecture.X86_64: arch = 'x86_64'; break;
-			default: throw 'Unknown architecture ' + Options.architecture;
+		if (targetOptions.abiFilters.length > 0) {
+			arch = '';
+			for (let item of targetOptions.abiFilters) {
+				if (arch.length == 0) {
+					arch = '"'+ item +'"';
+				}
+				else {
+					arch = arch +', "'+ item +'"';
+				}
+			}
+			arch = `ndk { abiFilters ${arch} }`;
 		}
-		if (Options.architecture !== Architecture.Default) {
-			arch = `ndk {abiFilters '${arch}'}`;
+		else {
+			switch (Options.architecture) {
+				case Architecture.Default: arch = ''; break;
+				case Architecture.Arm7: arch = 'armeabi-v7a'; break;
+				case Architecture.Arm8: arch = 'arm64-v8a'; break;
+				case Architecture.X86: arch = 'x86'; break;
+				case Architecture.X86_64: arch = 'x86_64'; break;
+				default: throw 'Unknown architecture ' + Options.architecture;
+			}
+			if (Options.architecture !== Architecture.Default) {
+				arch = `ndk {abiFilters '${arch}'}`;
+			}			
 		}
 		gradle = gradle.replace(/{architecture}/g, arch);
 		gradle = gradle.replace(/{cflags}/g, cflags);
