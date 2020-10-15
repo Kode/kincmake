@@ -143,10 +143,10 @@ export class AndroidExporter extends Exporter {
 		if (targetOptions.abiFilters.length > 0) {
 			for (let item of targetOptions.abiFilters) {
 				if (arch.length === 0) {
-					arch = '"'+ item +'"';
+					arch = '"' + item + '"';
 				}
 				else {
-					arch = arch +', "'+ item +'"';
+					arch = arch + ', "' + item + '"';
 				}
 			}
 			arch = `ndk { abiFilters ${arch} }`;
