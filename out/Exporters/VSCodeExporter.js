@@ -28,12 +28,8 @@ class VSCodeExporter extends Exporter_1.Exporter {
             configurations: [
                 {
                     name: 'Win32',
-                    includePath: [
-                        includes
-                    ],
-                    defines: [
-                        defines
-                    ],
+                    includePath: includes,
+                    defines: defines,
                     windowsSdkVersion: '10.0.19041.0',
                     compilerPath: 'C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Tools/MSVC/14.27.29110/bin/Hostx64/x64/cl.exe',
                     cStandard: 'c11',
