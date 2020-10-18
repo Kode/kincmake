@@ -164,6 +164,11 @@ let options = [
         full: 'dynlib',
         value: false,
         description: 'Compile to a dynamic library'
+    },
+    {
+        full: 'vscode',
+        value: false,
+        description: 'Create a vscode project - this is used automatically by the vscode Kinc extension'
     }
 ];
 let parsedOptions = {};

@@ -103,16 +103,14 @@ class AndroidExporter extends Exporter_1.Exporter {
         gradle = gradle.replace(/{compileSdkVersion}/g, targetOptions.compileSdkVersion.toString());
         gradle = gradle.replace(/{minSdkVersion}/g, targetOptions.minSdkVersion.toString());
         gradle = gradle.replace(/{targetSdkVersion}/g, targetOptions.targetSdkVersion.toString());
-        
-        let arch = ``;
+        let arch = '';
         if (targetOptions.abiFilters.length > 0) {
-            arch = ``;
             for (let item of targetOptions.abiFilters) {
-                if (arch.length == 0) {
-                    arch = '"'+ item +'"';
+                if (arch.length === 0) {
+                    arch = '"' + item + '"';
                 }
                 else {
-                    arch = arch +', "'+ item +'"';
+                    arch = arch + ', "' + item + '"';
                 }
             }
             arch = `ndk { abiFilters ${arch} }`;
@@ -138,7 +136,7 @@ class AndroidExporter extends Exporter_1.Exporter {
             }
             if (Options_1.Options.architecture !== Architecture_1.Architecture.Default) {
                 arch = `ndk {abiFilters '${arch}'}`;
-           }
+            }
         }
         gradle = gradle.replace(/{architecture}/g, arch);
         gradle = gradle.replace(/{cflags}/g, cflags);

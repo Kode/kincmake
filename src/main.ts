@@ -16,6 +16,7 @@ import {EmscriptenExporter} from './Exporters/EmscriptenExporter';
 import {TizenExporter} from './Exporters/TizenExporter';
 import {VisualStudioExporter} from './Exporters/VisualStudioExporter';
 import {XCodeExporter} from './Exporters/XCodeExporter';
+import { VSCodeExporter } from './Exporters/VSCodeExporter';
 const cpuCores: number = require('physical-cpu-count');
 
 let _global: any = global;
@@ -306,7 +307,10 @@ async function exportKoremakeProject(from: string, to: string, platform: string,
 	project.flatten();
 
 	let exporter: Exporter = null;
-	if (platform === Platform.iOS || platform === Platform.OSX || platform === Platform.tvOS) exporter = new XCodeExporter();
+	if (options.vscode) {
+		exporter = new VSCodeExporter();
+	}
+	else if (platform === Platform.iOS || platform === Platform.OSX || platform === Platform.tvOS) exporter = new XCodeExporter();
 	else if (platform === Platform.Android) exporter = new AndroidExporter();
 	else if (platform === Platform.HTML5) exporter = new EmscriptenExporter();
 	else if (platform === Platform.Linux || platform === Platform.Pi) exporter = new LinuxExporter();

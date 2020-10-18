@@ -17,6 +17,7 @@ const EmscriptenExporter_1 = require("./Exporters/EmscriptenExporter");
 const TizenExporter_1 = require("./Exporters/TizenExporter");
 const VisualStudioExporter_1 = require("./Exporters/VisualStudioExporter");
 const XCodeExporter_1 = require("./Exporters/XCodeExporter");
+const VSCodeExporter_1 = require("./Exporters/VSCodeExporter");
 const cpuCores = require('physical-cpu-count');
 let _global = global;
 _global.__base = __dirname + '/';
@@ -282,7 +283,10 @@ async function exportKoremakeProject(from, to, platform, korefile, options) {
     project.searchFiles(undefined);
     project.flatten();
     let exporter = null;
-    if (platform === Platform_1.Platform.iOS || platform === Platform_1.Platform.OSX || platform === Platform_1.Platform.tvOS)
+    if (options.vscode) {
+        exporter = new VSCodeExporter_1.VSCodeExporter();
+    }
+    else if (platform === Platform_1.Platform.iOS || platform === Platform_1.Platform.OSX || platform === Platform_1.Platform.tvOS)
         exporter = new XCodeExporter_1.XCodeExporter();
     else if (platform === Platform_1.Platform.Android)
         exporter = new AndroidExporter_1.AndroidExporter();
