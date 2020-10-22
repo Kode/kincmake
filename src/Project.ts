@@ -25,14 +25,34 @@ function getDefines(platform: string, rotated: boolean) {
 
 function contains(array: any[], value: any) {
 	for (const element of array) {
-		if (element === value) return true;
+		if (element === value) {
+			return true;
+		}
 	}
 	return false;
 }
 
 function containsDefine(array: Define[], value: Define) {
 	for (const element of array) {
-		if (element.value === value.value && element.config === value.config) return true;
+		if (element.value === value.value && element.config === value.config) {
+			return true;
+		}
+	}
+	return false;
+}
+
+function containsFancyDefine(array: Define[], value: Define) {
+	const name = value.value.substring(0, value.value.indexOf('='));
+	for (const element of array) {
+		if (element.config === value.config) {
+			const index = element.value.indexOf('=');
+			if (index >= 0) {
+				const otherName = element.value.substring(0, index);
+				if (name === otherName) {
+					return true;
+				}
+			}
+		}
 	}
 	return false;
 }
@@ -290,7 +310,18 @@ export class Project {
 				}
 			}
 
-			for (let d of sub.defines) if (!containsDefine(this.defines, d)) this.defines.push(d);
+			for (let d of sub.defines) {
+				if (d.value.indexOf('=') >= 0) {
+					if (!containsFancyDefine(this.defines, d)) {
+						this.defines.push(d);
+					}
+				}
+				else {
+					if (!containsDefine(this.defines, d)) {
+						this.defines.push(d);
+					}
+				}
+			}
 			for (let file of sub.files) {
 				let absolute = file.file;
 				if (!path.isAbsolute(absolute)) {

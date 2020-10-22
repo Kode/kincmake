@@ -28,15 +28,32 @@ function getDefines(platform, rotated) {
 }
 function contains(array, value) {
     for (const element of array) {
-        if (element === value)
+        if (element === value) {
             return true;
+        }
     }
     return false;
 }
 function containsDefine(array, value) {
     for (const element of array) {
-        if (element.value === value.value && element.config === value.config)
+        if (element.value === value.value && element.config === value.config) {
             return true;
+        }
+    }
+    return false;
+}
+function containsFancyDefine(array, value) {
+    const name = value.value.substring(0, value.value.indexOf('='));
+    for (const element of array) {
+        if (element.config === value.config) {
+            const index = element.value.indexOf('=');
+            if (index >= 0) {
+                const otherName = element.value.substring(0, index);
+                if (name === otherName) {
+                    return true;
+                }
+            }
+        }
     }
     return false;
 }
@@ -199,9 +216,18 @@ class Project {
                     }
                 }
             }
-            for (let d of sub.defines)
-                if (!containsDefine(this.defines, d))
-                    this.defines.push(d);
+            for (let d of sub.defines) {
+                if (d.value.indexOf('=') >= 0) {
+                    if (!containsFancyDefine(this.defines, d)) {
+                        this.defines.push(d);
+                    }
+                }
+                else {
+                    if (!containsDefine(this.defines, d)) {
+                        this.defines.push(d);
+                    }
+                }
+            }
             for (let file of sub.files) {
                 let absolute = file.file;
                 if (!path.isAbsolute(absolute)) {
