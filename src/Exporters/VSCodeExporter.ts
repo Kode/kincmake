@@ -98,7 +98,32 @@ export class VSCodeExporter extends Exporter {
 		};
 
 		this.p(JSON.stringify(data, null, '\t'));
+		this.closeFile();
 
+		this.writeProtoLaunchJson(project, from, to, platform, vrApi, options);
+	}
+
+	writeProtoLaunchJson(project: Project, from: string, to: string, platform: string, vrApi: any, options: any) {
+		this.writeFile(path.join(from, '.vscode', 'protolaunch.json'));
+		const data: any = {
+			name: 'Kinc: Launch',
+			type: platform === Platform.Windows ? 'cppvsdbg' : 'cppdbg',
+			request: 'launch',
+			program: path.join(project.getDebugDir(), project.getSafeName() + (platform === Platform.Windows ? '.exe' : '')),
+			cwd: project.getDebugDir()
+		};
+
+		if (platform === Platform.Windows) {
+			// data.symbolSearchPath = 'C:\\Symbols;C:\\SymbolDir2';
+			data.externalConsole = true;
+			data.logging = {
+				moduleLoad: false,
+				trace: true
+			};
+			// data.visualizerFile = '${workspaceFolder}/my.natvis';
+		}
+
+		this.p(JSON.stringify(data, null, '\t'));
 		this.closeFile();
 	}
 }
