@@ -73,21 +73,27 @@ export class VSCodeExporter extends Exporter {
 			}
 		}
 
+		const config: any = {
+			name: this.configName(platform),
+			includePath: includes,
+			defines: defines,
+			compilerPath: this.compilerPath(platform),
+			cStandard: 'c11',
+			cppStandard: 'c++17',
+			intelliSenseMode: this.intelliSenseMode(platform)
+		};
+
+		if (platform === Platform.Windows) {
+			config.windowsSdkVersion = '10.0.19041.0';
+		}
+
+		if (platform === Platform.OSX) {
+			config.macFrameworkPath = ['/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks'];
+		}
+
 		const data = {
 			configurations: [
-				{
-					name: this.configName(platform),
-					includePath: includes,
-					defines: defines,
-					windowsSdkVersion: '10.0.19041.0',
-					macFrameworkPath: [
-						'/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks'
-					],
-					compilerPath: this.compilerPath(platform),
-					cStandard: 'c11',
-					cppStandard: 'c++17',
-					intelliSenseMode: this.intelliSenseMode(platform)
-				}
+				config
 			]
 		};
 
