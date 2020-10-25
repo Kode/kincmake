@@ -98,7 +98,8 @@ class VSCodeExporter extends Exporter_1.Exporter {
             type: platform === Platform_1.Platform.Windows ? 'cppvsdbg' : 'cppdbg',
             request: 'launch',
             program: path.join(project.getDebugDir(), project.getSafeName() + (platform === Platform_1.Platform.Windows ? '.exe' : '')),
-            cwd: project.getDebugDir()
+            cwd: project.getDebugDir(),
+            preLaunchTask: 'Kinc: Build for ' + this.preLaunchTask(platform)
         };
         if (platform === Platform_1.Platform.Windows) {
             // data.symbolSearchPath = 'C:\\Symbols;C:\\SymbolDir2';
@@ -111,6 +112,20 @@ class VSCodeExporter extends Exporter_1.Exporter {
         }
         this.p(JSON.stringify(data, null, '\t'));
         this.closeFile();
+    }
+    preLaunchTask(platform) {
+        if (platform === Platform_1.Platform.Windows) {
+            return 'Windows';
+        }
+        else if (platform === Platform_1.Platform.OSX) {
+            return 'macOS';
+        }
+        else if (platform === Platform_1.Platform.Linux) {
+            return 'Linux';
+        }
+        else {
+            return 'Unknown';
+        }
     }
 }
 exports.VSCodeExporter = VSCodeExporter;

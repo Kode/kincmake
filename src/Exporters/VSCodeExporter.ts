@@ -110,7 +110,8 @@ export class VSCodeExporter extends Exporter {
 			type: platform === Platform.Windows ? 'cppvsdbg' : 'cppdbg',
 			request: 'launch',
 			program: path.join(project.getDebugDir(), project.getSafeName() + (platform === Platform.Windows ? '.exe' : '')),
-			cwd: project.getDebugDir()
+			cwd: project.getDebugDir(),
+			preLaunchTask: 'Kinc: Build for ' + this.preLaunchTask(platform)
 		};
 
 		if (platform === Platform.Windows) {
@@ -125,5 +126,20 @@ export class VSCodeExporter extends Exporter {
 
 		this.p(JSON.stringify(data, null, '\t'));
 		this.closeFile();
+	}
+
+	preLaunchTask(platform: string) {
+		if (platform === Platform.Windows) {
+			return 'Windows';
+		}
+		else if (platform === Platform.OSX) {
+			return 'macOS';
+		}
+		else if (platform === Platform.Linux) {
+			return 'Linux';
+		}
+		else {
+			return 'Unknown';
+		}
 	}
 }
