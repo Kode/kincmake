@@ -97,7 +97,7 @@ class VSCodeExporter extends Exporter_1.Exporter {
             name: 'Kinc: Launch',
             type: platform === Platform_1.Platform.Windows ? 'cppvsdbg' : 'cppdbg',
             request: 'launch',
-            program: path.join(project.getDebugDir(), project.getSafeName() + (platform === Platform_1.Platform.Windows ? '.exe' : '')),
+            program: this.program(project, platform),
             cwd: project.getDebugDir(),
             preLaunchTask: 'Kinc: Build for ' + this.preLaunchTask(platform)
         };
@@ -110,8 +110,19 @@ class VSCodeExporter extends Exporter_1.Exporter {
             };
             // data.visualizerFile = '${workspaceFolder}/my.natvis';
         }
+        else if (platform === Platform_1.Platform.OSX) {
+            data.MIMode = 'lldb';
+        }
         this.p(JSON.stringify(data, null, '\t'));
         this.closeFile();
+    }
+    program(project, platform) {
+        if (platform === Platform_1.Platform.OSX) {
+            return path.join(project.getBasedir(), 'build', 'build', 'Release', project.getSafeName() + '.app', 'Contents', 'MacOS', project.getSafeName());
+        }
+        else {
+            return path.join(project.getDebugDir(), project.getSafeName() + (platform === Platform_1.Platform.Windows ? '.exe' : ''));
+        }
     }
     preLaunchTask(platform) {
         if (platform === Platform_1.Platform.Windows) {
