@@ -17,6 +17,11 @@ import {TizenExporter} from './Exporters/TizenExporter';
 import {VisualStudioExporter} from './Exporters/VisualStudioExporter';
 import {XCodeExporter} from './Exporters/XCodeExporter';
 import { VSCodeExporter } from './Exporters/VSCodeExporter';
+import { Language } from './Languages/Language';
+import { Languages } from './Languages';
+import { IDL } from './IDL';
+import { BeefLang } from './Languages/BeefLang';
+import { IDLRootType } from 'webidl2';
 const cpuCores: number = require('physical-cpu-count');
 
 let _global: any = global;
@@ -340,11 +345,23 @@ async function exportKoremakeProject(from: string, to: string, platform: string,
 	}
 	else exporter = new VisualStudioExporter();
 
-	if (exporter === null) {
+	let langExporter: Language = null;
+	let tree: IDLRootType[] = null;
+	if (options.toLanguage === Languages.Beef) {
+		langExporter = new BeefLang();
+		for( let file of project.IDLfiles){
+			tree = IDL.generate(file);
+		}
+	}
+	if (exporter === null && langExporter === null) {
 		throw 'No exporter found for platform ' + platform + '.';
 	}
 
-	await exporter.exportSolution(project, from, to, platform, options.vrApi, options);
+	if (exporter !== null)
+		await exporter.exportSolution(project, from, to, platform, options.vrApi, options);
+	if (langExporter !== null)
+		await langExporter.exportWrapper(tree, from, to, options);
+
 
 	return project;
 }
