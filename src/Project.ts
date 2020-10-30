@@ -211,6 +211,7 @@ export class Project {
 		this.uuid = uuid.v4();
 
 		this.files = [];
+		this.IDLfiles = [];
 		this.customs = [];
 		this.javadirs = [];
 		this.subProjects = [];

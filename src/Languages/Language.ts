@@ -23,5 +23,6 @@ export abstract class Language {
 		let data = Buffer.from(tabs + line + '\n');
 		fs.writeSync(this.out, data, 0, data.length, null);
     }
-    abstract async exportWrapper(tree: idl.IDLRootType[], from: string, to: string, options: any): Promise<void>;
+	abstract async exportWrapper(tree: idl.IDLRootType[], from: string, to: string, options: any, filename: string): Promise<void>;
+	abstract toLangType(idlType: string): string;
 }

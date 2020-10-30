@@ -169,6 +169,11 @@ let options = [
         full: 'vscode',
         value: false,
         description: 'Create a vscode project - this is used automatically by the vscode Kinc extension'
+    },
+    {
+        full: 'toLanguage',
+        value: true,
+        description: 'Export IDL specified in kincfile to wrapper for specified language'
     }
 ];
 let parsedOptions = {};

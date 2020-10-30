@@ -173,7 +173,7 @@ let options = [
 	},
 	{
 		full: 'toLanguage',
-		value: false,
+		value: true,
 		description: 'Export IDL specified in kincfile to wrapper for specified language'
 	}
 ];

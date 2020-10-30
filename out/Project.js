@@ -122,6 +122,7 @@ class Project {
         this.basedir = scriptdir;
         this.uuid = uuid.v4();
         this.files = [];
+        this.IDLfiles = [];
         this.customs = [];
         this.javadirs = [];
         this.subProjects = [];
@@ -415,6 +416,13 @@ class Project {
         for (let i = 0; i < arguments.length; ++i) {
             if (typeof arguments[i] === 'string') {
                 this.addFile(arguments[i], options);
+            }
+        }
+    }
+    addIdlDef() {
+        for (let i = 0; i < arguments.length; ++i) {
+            if (typeof arguments[i] === 'string') {
+                this.IDLfiles.push(arguments[i]);
             }
         }
     }
