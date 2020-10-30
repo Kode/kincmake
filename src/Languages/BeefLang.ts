@@ -6,8 +6,17 @@ export class BeefLang extends Language {
 		super();
 	}
 	async exportWrapper(tree: idl.IDLRootType[], from: string, to: string, options: any): Promise<void> {
-		for (let type of tree) {
-
+		for (let node of tree) {
+			let type = node.type.toString();
+			switch (type) {
+				case 'enum':
+					for (let attr of node.extAttrs) {
+						
+					}
+			}
+			if (type === 'eof') {
+				break;
+			}
 		}
 	}
 }
