@@ -363,7 +363,7 @@ async function exportKoremakeProject(from: string, to: string, platform: string,
 
 	if (exporter !== null)
 		await exporter.exportSolution(project, from, to, platform, options.vrApi, options);
-	if (langExporter !== null){
+	if (langExporter !== null) {
 		trees.forEach((tree, index) => {
 			langExporter.exportWrapper(tree, from, to, options, project.IDLfiles[index]);
 		});
