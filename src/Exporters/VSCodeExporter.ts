@@ -133,10 +133,10 @@ export class VSCodeExporter extends Exporter {
 
 	program(project: Project, platform: string) {
 		if (platform === Platform.OSX) {
-			return path.join(project.getBasedir(), 'build', 'build', 'Release', project.getSafeName() + '.app', 'Contents', 'MacOS', project.getSafeName())
+			return path.join(project.getBasedir(), 'build', 'build', 'Release', project.getSafeName() + '.app', 'Contents', 'MacOS', project.getSafeName());
 		}
 		else {
-			return path.join(project.getDebugDir(), project.getSafeName() + (platform === Platform.Windows ? '.exe' : ''))
+			return path.join(project.getDebugDir(), project.getSafeName() + (platform === Platform.Windows ? '.exe' : ''));
 		}
 	}
 
