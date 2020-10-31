@@ -160,7 +160,7 @@ export class EmscriptenExporter extends Exporter {
 			this.p(project.getSafeName() + '.so: ' + gchfilelist + ofilelist);
 		}
 		else {
-			this.p('kinc.html' + ': ' + gchfilelist + ofilelist);
+			this.p('index.html' + ': ' + gchfilelist + ofilelist);
 		}
 
 		let cpp = '';
@@ -171,7 +171,7 @@ export class EmscriptenExporter extends Exporter {
 			flags += '-s USE_WEBGPU=1 ';
 		}
 
-		let output = ' ' + flags + '-o kinc.html --preload-file ' + debugDirName;
+		let output = ' ' + flags + '-o index.html --preload-file ' + debugDirName;
 		if (options.lib) {
 			output = '-o "' + project.getSafeName() + '.a"';
 		}

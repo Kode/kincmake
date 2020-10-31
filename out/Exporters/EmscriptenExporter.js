@@ -146,7 +146,7 @@ class EmscriptenExporter extends Exporter_1.Exporter {
             this.p(project.getSafeName() + '.so: ' + gchfilelist + ofilelist);
         }
         else {
-            this.p('kinc.html' + ': ' + gchfilelist + ofilelist);
+            this.p('index.html' + ': ' + gchfilelist + ofilelist);
         }
         let cpp = '';
         // cpp = '-std=c++11';
@@ -154,7 +154,7 @@ class EmscriptenExporter extends Exporter_1.Exporter {
         if (Options_1.Options.graphicsApi === GraphicsApi_1.GraphicsApi.WebGPU) {
             flags += '-s USE_WEBGPU=1 ';
         }
-        let output = ' ' + flags + '-o kinc.html --preload-file ' + debugDirName;
+        let output = ' ' + flags + '-o index.html --preload-file ' + debugDirName;
         if (options.lib) {
             output = '-o "' + project.getSafeName() + '.a"';
         }
