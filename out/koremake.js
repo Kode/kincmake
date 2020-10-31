@@ -279,7 +279,8 @@ if (parsedOptions.init) {
 }
 else if (parsedOptions.update) {
     console.log('Updating everything...');
-    require('child_process').spawnSync('git', ['submodule', 'foreach', '--recursive', 'git', 'pull', 'origin', 'master'], { stdio: 'inherit', stderr: 'inherit' });
+    require('child_process').spawnSync('git', ['pull', 'origin', 'master'], { stdio: 'inherit', stderr: 'inherit' });
+    require('child_process').spawnSync('git', ['submodule', 'update', '--init', '--recursive'], { stdio: 'inherit', stderr: 'inherit' });
 }
 else {
     runKincmake();
