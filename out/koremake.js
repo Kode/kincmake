@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const os = require("os");
+const path = require("path");
 const Platform_1 = require("./Platform");
 const GraphicsApi_1 = require("./GraphicsApi");
 const Architecture_1 = require("./Architecture");
@@ -109,6 +110,17 @@ let options = [
         full: 'debug',
         description: 'Compile in debug mode',
         value: false
+    },
+    {
+        full: 'server',
+        description: 'Run local http server for html5 target',
+        value: false
+    },
+    {
+        full: 'port',
+        description: 'Running port for the server',
+        value: true,
+        default: 8080
     },
     {
         full: 'noshaders',
@@ -276,6 +288,24 @@ async function runKincmake() {
 if (parsedOptions.init) {
     console.log('Initializing Kinc project.\n');
     require('./init').run(parsedOptions.name, parsedOptions.from, parsedOptions.projectfile);
+}
+else if (parsedOptions.server) {
+    console.log('Running server on ' + parsedOptions.port);
+    let nstatic = require('node-static');
+    let fileServer = new nstatic.Server(path.join(parsedOptions.from, 'build', parsedOptions.debug ? 'Debug' : 'Release'), { cache: 0 });
+    let server = require('http').createServer(function (request, response) {
+        request.addListener('end', function () {
+            fileServer.serve(request, response);
+        }).resume();
+    });
+    server.on('error', function (e) {
+        if (e.code === 'EADDRINUSE') {
+            console.log('Error: Port ' + parsedOptions.port + ' is already in use.');
+            console.log('Please close the competing program (maybe another instance of khamake?)');
+            console.log('or switch to a different port using the --port argument.');
+        }
+    });
+    server.listen(parsedOptions.port);
 }
 else if (parsedOptions.update) {
     console.log('Updating everything...');
