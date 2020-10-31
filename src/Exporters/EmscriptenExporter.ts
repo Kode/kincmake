@@ -40,131 +40,191 @@ export class EmscriptenExporter extends Exporter {
 		super();
 	}
 
-	compile(inFilename: string, outFilename: string) {
-		if (fs.existsSync(outFilename)) return;
+	exportMakefile(project: Project, from: string, to: string, platform: string, vrApi: any, options: any) {
+		const cCompiler = 'emcc';
+		const cppCompiler = 'emcc';
 
-		// console.log("Compiling " + inFilename + " to " + outFilename);
-		// console.log(emmccPath + " " + inFilename+ " " +includes+ " " +defines+ " " +"-c -o"+ " " +outFilename);
+		let objects: any = {};
+		let ofiles: any = {};
+		let outputPath = path.resolve(to, options.buildPath);
+		fs.ensureDirSync(outputPath);
 
-		// console.log(emmccPath + " " + inFilename+ " " +  includes+ " " +  defines+ " " + "-c -o"+ " " + outFilename);
-
-		let params: string[] = [];
-		params.push(inFilename);
-
-		for (let i = 0; i < includesArray.length; i++) {
-			params.push(includesArray[i]);
-		}
-
-		for (let i = 0; i < definesArray.length; i++) {
-			params.push(definesArray[i]);
-		}
-
-		params.push('-c');
-		params.push('-o');
-		params.push(outFilename);
-
-		// console.log(params);
-
-		let res = child_process.spawnSync(emmccPath, params, {stdio: 'inherit'});
-		if (res != null) {
-			if (res.stdout !== null && res.stdout.toString() !== '')
-				console.log('stdout: ' + res.stdout);
-			if (res.stderr !== null && res.stderr.toString() !== '')
-				console.log('stderr: ' + res.stderr);
-			if (res.error !== null)
-				console.log(res.error);
-		}
-	}
-
-	async exportSolution(project: Project, from: string, to: string, platform: string) {
 		let debugDirName = project.getDebugDir();
 		debugDirName = debugDirName.replace(/\\/g, '/');
 		if (debugDirName.endsWith('/')) debugDirName = debugDirName.substr(0, debugDirName.length - 1);
 		if (debugDirName.lastIndexOf('/') >= 0) debugDirName = debugDirName.substr(debugDirName.lastIndexOf('/') + 1);
 		
-		fs.copySync(path.resolve(from, debugDirName), path.resolve(to, debugDirName), { overwrite: true });
-		
-		defines = '';
-		definesArray = [];
+		fs.copySync(path.resolve(from, debugDirName), path.resolve(outputPath, debugDirName), { overwrite: true });
+
+		for (let fileobject of project.getFiles()) {
+			let file = fileobject.file;
+			if (file.endsWith('.cpp') || file.endsWith('.c') || file.endsWith('.cc') || file.endsWith('.s') || file.endsWith('.S')) {
+				let name = file.toLowerCase();
+				if (name.indexOf('/') >= 0) name = name.substr(name.lastIndexOf('/') + 1);
+				name = name.substr(0, name.lastIndexOf('.'));
+				if (!objects[name]) {
+					objects[name] = true;
+					ofiles[file] = name;
+				}
+				else {
+					while (objects[name]) {
+						name = name + '_';
+					}
+					objects[name] = true;
+					ofiles[file] = name;
+				}
+			}
+		}
+
+		let gchfilelist = '';
+		let precompiledHeaders: string[] = [];
+		for (let file of project.getFiles()) {
+			if (file.options && file.options.pch && precompiledHeaders.indexOf(file.options.pch) < 0) {
+				precompiledHeaders.push(file.options.pch);
+			}
+		}
+		for (let file of project.getFiles()) {
+			let precompiledHeader: string = null;
+			for (let header of precompiledHeaders) {
+				if (file.file.endsWith(header)) {
+					precompiledHeader = header;
+					break;
+				}
+			}
+			if (precompiledHeader !== null) {
+				// let realfile = path.relative(outputPath, path.resolve(from, file.file));
+				gchfilelist += path.basename(file.file) + '.gch ';
+			}
+		}
+
+		let ofilelist = '';
+		for (let o in objects) {
+			ofilelist += o + '.o ';
+		}
+
+		this.writeFile(path.resolve(outputPath, 'makefile'));
+
+		let incline = '-I./ '; // local directory to pick up the precompiled header hxcpp.h.gch
+		for (let inc of project.getIncludeDirs()) {
+			inc = path.relative(outputPath, path.resolve(from, inc));
+			incline += '-I' + inc + ' ';
+		}
+		this.p('INC=' + incline);
+
+		let libsline = '-static-libgcc -static-libstdc++ -pthread';
+		/*if (project.cmd) {
+			libsline += ' -static';
+		}*/
+		for (let lib of project.getLibs()) {
+			libsline += ' -l' + lib;
+		}
+		this.p('LIB=' + libsline);
+
+		let defline = '';
 		for (const def of project.getDefines()) {
 			if (def.config && def.config.toLowerCase() === 'debug') {
 				continue;
 			}
-			defines += '-D' + def.value + ' ';
-			definesArray.push('-D' + def.value);
+			defline += '-D' + def.value + ' ';
 		}
-		defines += '-D KORE_DEBUGDIR="\\"' + debugDirName + '\\""' + ' ';
-		definesArray.push('-D KORE_DEBUGDIR="\\"' + debugDirName + '\\""');
-
-		includes = '';
-		includesArray = [];
-		for (let inc in project.getIncludeDirs()) {
-			includes += '-I' + this.nicePath(from, to, project.getIncludeDirs()[inc]) + ' ';
-			includesArray.push('-I' + this.nicePath(from, to, project.getIncludeDirs()[inc]));
-		}
-
-		this.writeFile(path.resolve(to, 'makefile'));
-
+		defline += '-D KORE_DEBUGDIR="\\"' + debugDirName + '\\""' + ' ';
+		this.p('DEF=' + defline);
 		this.p();
-		let oline = '';
-		for (let fileobject of project.getFiles()) {
-			let filename = fileobject.file;
-			if (!filename.endsWith('.cpp') && !filename.endsWith('.c')) continue;
-			let lastpoint = filename.lastIndexOf('.');
-			let oname = this.nicePath(from, to, filename.substr(0, lastpoint) + '.o');
-			oline += ' ' + oname;
+
+		let cline = '-std=c99 ';
+		if (options.dynlib) {
+			cline += '-fPIC ';
 		}
-		
-		this.p('kore.html:' + oline);
+		for (let flag of project.cFlags) {
+			cline += flag + ' ';
+		}
+		this.p('CFLAGS=' + cline);
+
+		let cppline = '';
+		if (options.dynlib) {
+			cppline += '-fPIC ';
+		}
+		for (let flag of project.cppFlags) {
+			cppline += flag + ' ';
+		}
+		this.p('CPPFLAGS=' + cppline);
+
+		let optimization = '';
+		if (!options.debug) optimization = '-O2';
+		else optimization = '-g';
+
+		if (options.lib) {
+			this.p(project.getSafeName() + '.a: ' + gchfilelist + ofilelist);
+		}
+		else if (options.dynlib) {
+			this.p(project.getSafeName() + '.so: ' + gchfilelist + ofilelist);
+		}
+		else {
+			this.p('kinc.html' + ': ' + gchfilelist + ofilelist);
+		}
+
+		let cpp = '';
+		// cpp = '-std=c++11';
+
 		let flags = '-s TOTAL_MEMORY=134217728 ';
 		if (Options.graphicsApi === GraphicsApi.WebGPU) {
 			flags += '-s USE_WEBGPU=1 ';
 		}
-		this.p('emcc -O2 ' + flags + oline + ' -o kore.html --preload-file ' + debugDirName, 1);
-		this.p();
+
+		let output = ' ' + flags + '-o kinc.html --preload-file ' + debugDirName;
+		if (options.lib) {
+			output = '-o "' + project.getSafeName() + '.a"';
+		}
+		else if (options.dynlib) {
+			output = '-shared -o "' + project.getSafeName() + '.so"';
+		}
+		this.p('\t' + (options.lib ? 'ar rcs' : cppCompiler) + ' ' + output + ' ' + cpp + ' ' + optimization + ' ' + ofilelist + ' $(LIB)');
+
+		for (let file of project.getFiles()) {
+			let precompiledHeader: string = null;
+			for (let header of precompiledHeaders) {
+				if (file.file.endsWith(header)) {
+					precompiledHeader = header;
+					break;
+				}
+			}
+			if (precompiledHeader !== null) {
+				let realfile = path.relative(outputPath, path.resolve(from, file.file));
+				this.p(path.basename(realfile) + '.gch: ' + realfile);
+				this.p('\t' + cppCompiler + ' ' + cpp + ' ' + optimization + ' $(INC) $(DEF) -c ' + realfile + ' -o ' + path.basename(file.file) + '.gch');
+			}
+		}
 
 		for (let fileobject of project.getFiles()) {
-			let filename = fileobject.file;
-			if (!filename.endsWith('.cpp') && !filename.endsWith('.c')) continue;
-			let builddir = to;
-			let dirs = filename.split('/');
-			let name = '';
-			for (let i = 0; i < dirs.length - 1; ++i) {
-				let s = dirs[i];
-				if (s === '' || s === '..') continue;
-				name += s + '/';
-				builddir = path.resolve(builddir, s);
-				if (!fs.existsSync(builddir)) fs.ensureDirSync(builddir);
+			let file = fileobject.file;
+			if (file.endsWith('.c') || file.endsWith('.cpp') || file.endsWith('.cc') || file.endsWith('.s') || file.endsWith('.S')) {
+				this.p();
+				let name = ofiles[file];
+				let realfile = path.relative(outputPath, path.resolve(from, file));
+				this.p(name + '.o: ' + realfile);
+
+				let compiler = cppCompiler;
+				let flags = '$(CPPFLAGS)';
+				if (file.endsWith('.c')) {
+					compiler = cCompiler;
+					flags = '$(CFLAGS)';
+				}
+				else if (file.endsWith('.s') || file.endsWith('.S')) {
+					compiler = cCompiler;
+					flags = '';
+				}
+
+				this.p('\t' + compiler + ' ' + cpp + ' ' + optimization + ' $(INC) $(DEF) ' + flags + ' -c ' + realfile + ' -o ' + name + '.o');
 			}
-			let lastpoint = filename.lastIndexOf('.');
-			let oname = this.nicePath(from, to, filename.substr(0, lastpoint) + '.o');
-			this.p(oname + ': ' + this.nicePath(from, to, filename));
-			this.p('emcc -O2 -c ' + this.nicePath(from, to, filename) + ' ' + includes + ' ' + defines + ' -o ' + oname, 1);
 		}
+
+		// project.getDefines()
+		// project.getIncludeDirs()
 
 		this.closeFile();
+	}
 
-		/*
-		 std::vector<std::string> objectFiles;
-		 for (std::string filename : project->getFiles()) if (endsWith(filename, ".c") || endsWith(filename, ".cpp")) {
-		 //files += "../../" + filename + " ";
-		 compile(directory.resolve(filename).toString(), directory.resolve(Paths::get("build", filename + ".o")).toString());
-		 objectFiles.push_back(directory.resolve(Paths::get("build", filename + ".o")).toString());
-		 }
-		 link(objectFiles, directory.resolve(Paths::get("build", "Kt.js")));
-		 */
-
-
-		/*console.log("Compiling files...");
-		var objectFiles = [];
-		var files = project.getFiles();
-		for (let file of files) {
-			if (file.endsWith(".c") || file.endsWith(".cpp")) {
-				//files += "../../" + filename + " ";
-				compile(from.resolve(file).toString(), to.resolve(file + ".o").toString());
-				objectFiles.push(to.resolve(file + ".o").toString());
-			}
-		}
-		link(objectFiles, to.resolve(Paths.get("build", "Kt.js").toString()));*/
+	async exportSolution(project: Project, from: string, to: string, platform: string, vrApi: any, options: any) {
+		this.exportMakefile(project, from, to, platform, vrApi, options);
 	}
 }
