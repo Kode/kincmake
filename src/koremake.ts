@@ -302,6 +302,8 @@ else if (parsedOptions.server) {
 	let fileServer = new nstatic.Server(path.join(parsedOptions.from, 'build', parsedOptions.debug ? 'Debug' : 'Release'), { cache: 0 });
 	let server = require('http').createServer(function (request: any, response: any) {
 		request.addListener('end', function () {
+			response.setHeader('Cross-Origin-Embedder-Policy', 'require-corp');
+			response.setHeader('Cross-Origin-Opener-Policy', 'same-origin');
 			fileServer.serve(request, response);
 		}).resume();
 	});

@@ -4,33 +4,8 @@ exports.EmscriptenExporter = void 0;
 const Exporter_1 = require("./Exporter");
 const Options_1 = require("../Options");
 const GraphicsApi_1 = require("../GraphicsApi");
-const child_process = require("child_process");
 const fs = require("fs-extra");
 const path = require("path");
-let emmccPath = 'emcc';
-let defines = '';
-let includes = '';
-let definesArray = [];
-let includesArray = [];
-function link(files, output) {
-    let params = []; // -O2 ";
-    for (let file of files) {
-        // console.log(files[file]);
-        params.push(file);
-    }
-    params.push('-o');
-    params.push(output);
-    console.log('Linking ' + output);
-    let res = child_process.spawnSync(emmccPath, params);
-    if (res != null) {
-        if (res.stdout !== null && res.stdout.toString() !== '')
-            console.log('stdout: ' + res.stdout);
-        if (res.stderr !== null && res.stderr.toString() !== '')
-            console.log('stderr: ' + res.stderr);
-        if (res.error !== null)
-            console.log(res.error);
-    }
-}
 class EmscriptenExporter extends Exporter_1.Exporter {
     constructor() {
         super();
@@ -100,7 +75,10 @@ class EmscriptenExporter extends Exporter_1.Exporter {
             incline += '-I' + inc + ' ';
         }
         this.p('INC=' + incline);
-        let libsline = '-static-libgcc -static-libstdc++ -pthread';
+        let libsline = '-static-libgcc -static-libstdc++';
+        if (project.targetOptions.html5.threads) {
+            libsline += ' -pthread';
+        }
         /*if (project.cmd) {
             libsline += ' -static';
         }*/
@@ -150,11 +128,14 @@ class EmscriptenExporter extends Exporter_1.Exporter {
         }
         let cpp = '';
         // cpp = '-std=c++11';
-        let flags = '-s TOTAL_MEMORY=134217728 ';
-        if (Options_1.Options.graphicsApi === GraphicsApi_1.GraphicsApi.WebGPU) {
-            flags += '-s USE_WEBGPU=1 ';
+        if (project.targetOptions.html5.threads) {
+            cpp += ' -pthread';
         }
-        let output = ' ' + flags + '-o index.html --preload-file ' + debugDirName;
+        let linkerFlags = '-s TOTAL_MEMORY=134217728 ';
+        if (Options_1.Options.graphicsApi === GraphicsApi_1.GraphicsApi.WebGPU) {
+            linkerFlags += '-s USE_WEBGPU=1 ';
+        }
+        let output = ' ' + linkerFlags + '-o index.html --preload-file ' + debugDirName;
         if (options.lib) {
             output = '-o "' + project.getSafeName() + '.a"';
         }

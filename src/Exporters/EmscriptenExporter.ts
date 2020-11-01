@@ -2,38 +2,8 @@ import {Exporter} from './Exporter';
 import {Project} from '../Project';
 import {Options} from '../Options';
 import {GraphicsApi} from '../GraphicsApi';
-import * as child_process from 'child_process';
 import * as fs from 'fs-extra';
-import * as os from 'os';
 import * as path from 'path';
-
-let emmccPath = 'emcc';
-let defines = '';
-let includes = '';
-let definesArray: string[] = [];
-let includesArray: string[] = [];
-
-function link(files: string[], output: string) {
-	let params: string[] = []; // -O2 ";
-	for (let file of files) {
-		// console.log(files[file]);
-		params.push(file);
-	}
-	params.push('-o');
-	params.push(output);
-
-	console.log('Linking ' + output);
-
-	let res = child_process.spawnSync(emmccPath, params);
-	if (res != null) {
-		if (res.stdout !== null && res.stdout.toString() !== '')
-			console.log('stdout: ' + res.stdout);
-		if (res.stderr !== null && res.stderr.toString() !== '')
-			console.log('stderr: ' + res.stderr);
-		if (res.error !== null)
-			console.log(res.error);
-	}
-}
 
 export class EmscriptenExporter extends Exporter {
 	constructor() {
@@ -111,7 +81,10 @@ export class EmscriptenExporter extends Exporter {
 		}
 		this.p('INC=' + incline);
 
-		let libsline = '-static-libgcc -static-libstdc++ -pthread';
+		let libsline = '-static-libgcc -static-libstdc++';
+		if (project.targetOptions.html5.threads) {
+			libsline += ' -pthread';
+		}
 		/*if (project.cmd) {
 			libsline += ' -static';
 		}*/
@@ -165,13 +138,16 @@ export class EmscriptenExporter extends Exporter {
 
 		let cpp = '';
 		// cpp = '-std=c++11';
-
-		let flags = '-s TOTAL_MEMORY=134217728 ';
-		if (Options.graphicsApi === GraphicsApi.WebGPU) {
-			flags += '-s USE_WEBGPU=1 ';
+		if (project.targetOptions.html5.threads) {
+			cpp += ' -pthread';
 		}
 
-		let output = ' ' + flags + '-o index.html --preload-file ' + debugDirName;
+		let linkerFlags = '-s TOTAL_MEMORY=134217728 ';
+		if (Options.graphicsApi === GraphicsApi.WebGPU) {
+			linkerFlags += '-s USE_WEBGPU=1 ';
+		}
+
+		let output = ' ' + linkerFlags + '-o index.html --preload-file ' + debugDirName;
 		if (options.lib) {
 			output = '-o "' + project.getSafeName() + '.a"';
 		}

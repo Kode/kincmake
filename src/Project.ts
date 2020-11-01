@@ -229,7 +229,8 @@ export class Project {
 			switch: {},
 			xboxSeriesXS: {},
 			playStation5: {},
-			stadia: {}
+			stadia: {},
+			html5: {}
 		};
 		this.rotated = false;
 		this.cmd = false;
