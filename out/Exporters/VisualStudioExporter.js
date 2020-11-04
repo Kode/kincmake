@@ -528,7 +528,7 @@ class VisualStudioExporter extends Exporter_1.Exporter {
         this.p('<RuntimeLibrary>' + (config === 'Release' ? 'MultiThreaded' : 'MultiThreadedDebug') + '</RuntimeLibrary>', indent + 2);
         this.p('<MultiProcessorCompilation>true</MultiProcessorCompilation>', indent + 2);
         this.p('<MinimalRebuild>false</MinimalRebuild>', indent + 2);
-        if (project.cppstd != 0) {
+        if (project.cppstd !== 0) {
             this.p('<LanguageStandard>stdcpp' + project.cppstd + '</LanguageStandard>', indent + 2);
         }
         // if (Options.visualStudioVersion == VisualStudioVersion.VS2013) this.p("<SDLCheck>true</SDLCheck>", 3);

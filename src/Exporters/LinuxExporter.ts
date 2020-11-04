@@ -208,7 +208,7 @@ export class LinuxExporter extends Exporter {
 		this.p('<Option type="1" />', 4);
 		this.p('<Option compiler="gcc" />', 4);
 		this.p('<Compiler>', 4);
-		if (project.cppstd != 0) {
+		if (project.cppstd !== 0) {
 			this.p('<Add option="-std=c++' + project.cppstd + '" />', 5);
 		}
 		this.p('<Add option="-g" />', 5);
@@ -221,7 +221,7 @@ export class LinuxExporter extends Exporter {
 		this.p('<Option type="0" />', 4);
 		this.p('<Option compiler="gcc" />', 4);
 		this.p('<Compiler>', 4);
-		if (project.cppstd != 0) {
+		if (project.cppstd !== 0) {
 			this.p('<Add option="-std=c++' + project.cppstd + '" />', 5);
 		}
 		this.p('<Add option="-O2" />', 5);
@@ -232,7 +232,7 @@ export class LinuxExporter extends Exporter {
 		this.p('</Target>', 3);
 		this.p('</Build>', 2);
 		this.p('<Compiler>', 2);
-		if (project.cppstd != 0) {
+		if (project.cppstd !== 0) {
 			this.p('<Add option="-std=c++' + project.cppstd + '" />', 3);
 		}
 		this.p('<Add option="-Wall" />', 3);

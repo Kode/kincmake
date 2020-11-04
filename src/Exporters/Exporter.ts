@@ -55,7 +55,7 @@ export abstract class Exporter {
 		this.p('cmake_minimum_required(VERSION 3.10)');
 		this.p('project(' + name + ')');
 		
-		switch (project.cppstd){
+		switch (project.cppstd) {
 			case 0: 
 				this.p('set(CMAKE_CXX_STANDARD 98)');
 				break;
