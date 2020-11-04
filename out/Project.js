@@ -131,7 +131,7 @@ class Project {
         this.systemDependendLibraries = {};
         this.includes = [];
         this.excludes = [];
-        this.cpp11 = false;
+        this.cppstd = 0;
         this.c11 = false;
         this.kore = true;
         this.targetOptions = {
@@ -185,8 +185,8 @@ class Project {
         for (let sub of this.subProjects)
             sub.flatten();
         for (let sub of this.subProjects) {
-            if (sub.cpp11) {
-                this.cpp11 = true;
+            if (sub.cppstd != 0) {
+                this.cppstd = Math.max(this.cppstd, sub.cppstd);
             }
             if (sub.c11) {
                 this.c11 = true;

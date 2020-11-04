@@ -186,7 +186,7 @@ export class Project {
 	includes: {file: string, options: any}[];
 	excludes: string[];
 	customs: {file: string, command: string, output: string}[];
-	cpp11: boolean;
+	cppstd: number;
 	c11: boolean;
 	kore: boolean;
 	kincProcessed: boolean;
@@ -219,7 +219,7 @@ export class Project {
 		this.systemDependendLibraries = {};
 		this.includes = [];
 		this.excludes = [];
-		this.cpp11 = false;
+		this.cppstd = 0;
 		this.c11 = false;
 		this.kore = true;
 		this.targetOptions = {
@@ -279,8 +279,8 @@ export class Project {
 	flatten() {
 		for (let sub of this.subProjects) sub.flatten();
 		for (let sub of this.subProjects) {
-			if (sub.cpp11) {
-				this.cpp11 = true;
+			if (sub.cppstd != 0) {
+				this.cppstd = Math.max(this.cppstd,sub.cppstd);
 			}
 			if (sub.c11) {
 				this.c11 = true;

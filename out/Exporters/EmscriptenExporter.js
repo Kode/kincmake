@@ -128,6 +128,9 @@ class EmscriptenExporter extends Exporter_1.Exporter {
         }
         let cpp = '';
         // cpp = '-std=c++11';
+        if (project.cppstd != 0) {
+            cpp += '-std=c++' + project.cppstd;
+        }
         if (project.targetOptions.html5.threads) {
             cpp += ' -pthread';
         }

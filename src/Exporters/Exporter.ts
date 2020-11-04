@@ -54,11 +54,17 @@ export abstract class Exporter {
 
 		this.p('cmake_minimum_required(VERSION 3.10)');
 		this.p('project(' + name + ')');
-		if (project.cpp11) {
-			this.p('set(CMAKE_CXX_STANDARD 11)');
-		}
-		else {
-			this.p('set(CMAKE_CXX_STANDARD 98)');
+		
+		switch (project.cppstd){
+			case 0: 
+				this.p('set(CMAKE_CXX_STANDARD 98)');
+				break;
+			case 3: 
+				this.p('set(CMAKE_CXX_STANDARD 03)');
+				break;
+			default:
+				this.p('set(CMAKE_CXX_STANDARD '+ project.cppstd +')');
+				break;
 		}
 
 		this.p('set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread -static-libgcc -static-libstdc++")');

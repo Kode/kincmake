@@ -122,8 +122,8 @@ class LinuxExporter extends Exporter_1.Exporter {
             this.p(project.getSafeName() + ': ' + gchfilelist + ofilelist);
         }
         let cpp = '';
-        if (project.cpp11 && options.compiler !== Compiler_1.Compiler.Clang) {
-            cpp = '-std=c++11';
+        if (project.cppstd != 0 && options.compiler !== Compiler_1.Compiler.Clang) { //TODO this isn't tested see if clang may require a different flag e.g. non numeric.
+            cpp = '-std=c++' + project.cppstd;
         }
         let output = '-o "' + project.getSafeName() + '"';
         if (options.lib) {
@@ -189,8 +189,8 @@ class LinuxExporter extends Exporter_1.Exporter {
         this.p('<Option type="1" />', 4);
         this.p('<Option compiler="gcc" />', 4);
         this.p('<Compiler>', 4);
-        if (project.cpp11) {
-            this.p('<Add option="-std=c++11" />', 5);
+        if (project.cppstd != 0) {
+            this.p('<Add option="-std=c++' + project.cppstd + '" />', 5);
         }
         this.p('<Add option="-g" />', 5);
         this.p('</Compiler>', 4);
@@ -203,8 +203,8 @@ class LinuxExporter extends Exporter_1.Exporter {
         this.p('<Option type="0" />', 4);
         this.p('<Option compiler="gcc" />', 4);
         this.p('<Compiler>', 4);
-        if (project.cpp11) {
-            this.p('<Add option="-std=c++11" />', 5);
+        if (project.cppstd != 0) {
+            this.p('<Add option="-std=c++' + project.cppstd + '" />', 5);
         }
         this.p('<Add option="-O2" />', 5);
         this.p('</Compiler>', 4);
@@ -214,8 +214,8 @@ class LinuxExporter extends Exporter_1.Exporter {
         this.p('</Target>', 3);
         this.p('</Build>', 2);
         this.p('<Compiler>', 2);
-        if (project.cpp11) {
-            this.p('<Add option="-std=c++11" />', 3);
+        if (project.cppstd != 0) {
+            this.p('<Add option="-std=c++' + project.cppstd + '" />', 3);
         }
         this.p('<Add option="-Wall" />', 3);
         for (const def of project.getDefines()) {

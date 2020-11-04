@@ -141,8 +141,8 @@ class AndroidExporter extends Exporter_1.Exporter {
         gradle = gradle.replace(/{architecture}/g, arch);
         gradle = gradle.replace(/{cflags}/g, cflags);
         cppflags = '-frtti -fexceptions ' + cppflags;
-        if (project.cpp11) {
-            cppflags = '-std=c++11 ' + cppflags;
+        if (project.cppstd != 0) {
+            cppflags = '-std=c++' + project.cppstd + ' ' + cppflags;
         }
         gradle = gradle.replace(/{cppflags}/g, cppflags);
         let javasources = '';
