@@ -114,12 +114,19 @@ export class EmscriptenExporter extends Exporter {
 		this.p('CFLAGS=' + cline);
 
 		let cppline = '';
+		if (project.cppstd !== 0) {
+			cppline += '-std=c++' + project.cppstd + ' ';
+		}		
+		if (project.targetOptions.html5.threads) {
+			cppline += ' -pthread';
+		}
 		if (options.dynlib) {
 			cppline += '-fPIC ';
 		}
 		for (let flag of project.cppFlags) {
 			cppline += flag + ' ';
 		}
+
 		this.p('CPPFLAGS=' + cppline);
 
 		let optimization = '';
@@ -135,16 +142,8 @@ export class EmscriptenExporter extends Exporter {
 		else {
 			this.p('index.html' + ': ' + gchfilelist + ofilelist);
 		}
-
-		let cpp = '';
-		// cpp = '-std=c++11';
-		if (project.cppstd !== 0) {
-			cpp += '-std=c++' + project.cppstd;
-		}
 		
-		if (project.targetOptions.html5.threads) {
-			cpp += ' -pthread';
-		}
+
 
 		let linkerFlags = '-s TOTAL_MEMORY=134217728 ';
 		if (Options.graphicsApi === GraphicsApi.WebGPU) {
@@ -158,7 +157,7 @@ export class EmscriptenExporter extends Exporter {
 		else if (options.dynlib) {
 			output = '-shared -o "' + project.getSafeName() + '.so"';
 		}
-		this.p('\t' + (options.lib ? 'ar rcs' : cppCompiler) + ' ' + output + ' ' + cpp + ' ' + optimization + ' ' + ofilelist + ' $(LIB)');
+		this.p('\t' + (options.lib ? 'ar rcs' : cppCompiler) + ' ' + output + ' ' + optimization + ' ' + ofilelist + ' $(LIB)');
 
 		for (let file of project.getFiles()) {
 			let precompiledHeader: string = null;
@@ -171,7 +170,7 @@ export class EmscriptenExporter extends Exporter {
 			if (precompiledHeader !== null) {
 				let realfile = path.relative(outputPath, path.resolve(from, file.file));
 				this.p(path.basename(realfile) + '.gch: ' + realfile);
-				this.p('\t' + cppCompiler + ' ' + cpp + ' ' + optimization + ' $(INC) $(DEF) -c ' + realfile + ' -o ' + path.basename(file.file) + '.gch');
+				this.p('\t' + cppCompiler + ' ' + optimization + ' $(INC) $(DEF) -c ' + realfile + ' -o ' + path.basename(file.file) + '.gch');
 			}
 		}
 
@@ -194,7 +193,7 @@ export class EmscriptenExporter extends Exporter {
 					flags = '';
 				}
 
-				this.p('\t' + compiler + ' ' + cpp + ' ' + optimization + ' $(INC) $(DEF) ' + flags + ' -c ' + realfile + ' -o ' + name + '.o');
+				this.p('\t' + compiler + ' ' + optimization + ' $(INC) $(DEF) ' + flags + ' -c ' + realfile + ' -o ' + name + '.o');
 			}
 		}
 

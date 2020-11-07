@@ -105,6 +105,12 @@ class EmscriptenExporter extends Exporter_1.Exporter {
         }
         this.p('CFLAGS=' + cline);
         let cppline = '';
+        if (project.cppstd !== 0) {
+            cppline += '-std=c++' + project.cppstd + ' ';
+        }
+        if (project.targetOptions.html5.threads) {
+            cppline += ' -pthread';
+        }
         if (options.dynlib) {
             cppline += '-fPIC ';
         }
@@ -126,14 +132,6 @@ class EmscriptenExporter extends Exporter_1.Exporter {
         else {
             this.p('index.html' + ': ' + gchfilelist + ofilelist);
         }
-        let cpp = '';
-        // cpp = '-std=c++11';
-        if (project.cppstd !== 0) {
-            cpp += '-std=c++' + project.cppstd;
-        }
-        if (project.targetOptions.html5.threads) {
-            cpp += ' -pthread';
-        }
         let linkerFlags = '-s TOTAL_MEMORY=134217728 ';
         if (Options_1.Options.graphicsApi === GraphicsApi_1.GraphicsApi.WebGPU) {
             linkerFlags += '-s USE_WEBGPU=1 ';
@@ -145,7 +143,7 @@ class EmscriptenExporter extends Exporter_1.Exporter {
         else if (options.dynlib) {
             output = '-shared -o "' + project.getSafeName() + '.so"';
         }
-        this.p('\t' + (options.lib ? 'ar rcs' : cppCompiler) + ' ' + output + ' ' + cpp + ' ' + optimization + ' ' + ofilelist + ' $(LIB)');
+        this.p('\t' + (options.lib ? 'ar rcs' : cppCompiler) + ' ' + output + ' ' + optimization + ' ' + ofilelist + ' $(LIB)');
         for (let file of project.getFiles()) {
             let precompiledHeader = null;
             for (let header of precompiledHeaders) {
@@ -157,7 +155,7 @@ class EmscriptenExporter extends Exporter_1.Exporter {
             if (precompiledHeader !== null) {
                 let realfile = path.relative(outputPath, path.resolve(from, file.file));
                 this.p(path.basename(realfile) + '.gch: ' + realfile);
-                this.p('\t' + cppCompiler + ' ' + cpp + ' ' + optimization + ' $(INC) $(DEF) -c ' + realfile + ' -o ' + path.basename(file.file) + '.gch');
+                this.p('\t' + cppCompiler + ' ' + optimization + ' $(INC) $(DEF) -c ' + realfile + ' -o ' + path.basename(file.file) + '.gch');
             }
         }
         for (let fileobject of project.getFiles()) {
@@ -177,7 +175,7 @@ class EmscriptenExporter extends Exporter_1.Exporter {
                     compiler = cCompiler;
                     flags = '';
                 }
-                this.p('\t' + compiler + ' ' + cpp + ' ' + optimization + ' $(INC) $(DEF) ' + flags + ' -c ' + realfile + ' -o ' + name + '.o');
+                this.p('\t' + compiler + ' ' + optimization + ' $(INC) $(DEF) ' + flags + ' -c ' + realfile + ' -o ' + name + '.o');
             }
         }
         // project.getDefines()

@@ -535,6 +535,7 @@ class VisualStudioExporter extends Exporter_1.Exporter {
         if (config === 'Develop') {
             this.p('<BasicRuntimeChecks>Default</BasicRuntimeChecks>', indent + 2);
         }
+        this.p('<SupportJustMyCode>false</SupportJustMyCode>', indent + 2);
         this.p('</ClCompile>', indent + 1);
         this.p('<Link>', indent + 1);
         if (project.isCmd())
