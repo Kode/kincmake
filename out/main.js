@@ -18,6 +18,9 @@ const TizenExporter_1 = require("./Exporters/TizenExporter");
 const VisualStudioExporter_1 = require("./Exporters/VisualStudioExporter");
 const XCodeExporter_1 = require("./Exporters/XCodeExporter");
 const VSCodeExporter_1 = require("./Exporters/VSCodeExporter");
+const Languages_1 = require("./Languages");
+const idl = require("webidl2");
+const BeefLang_1 = require("./Languages/BeefLang");
 const cpuCores = require('physical-cpu-count');
 let _global = global;
 _global.__base = __dirname + '/';
@@ -227,6 +230,9 @@ async function exportKoremakeProject(from, to, platform, korefile, options) {
     if (options.onlyshaders) {
         log.info('Only compiling shaders.');
     }
+    else if (options.toLanguage) {
+        log.info('Only exporting language wrappers ' + options.toLanguage + '.');
+    }
     else {
         log.info('Creating ' + fromPlatform(platform) + ' project files.');
     }
@@ -319,10 +325,25 @@ async function exportKoremakeProject(from, to, platform, korefile, options) {
     }
     else
         exporter = new VisualStudioExporter_1.VisualStudioExporter();
-    if (exporter === null) {
+    let langExporter = null;
+    let trees = [];
+    if (options.toLanguage === Languages_1.Languages.Beef) {
+        langExporter = new BeefLang_1.BeefLang();
+        for (let file of project.IDLfiles) {
+            let webidl = fs.readFileSync(file).toString();
+            trees.push(idl.parse(webidl));
+        }
+    }
+    if (exporter === null && langExporter === null) {
         throw 'No exporter found for platform ' + platform + '.';
     }
-    await exporter.exportSolution(project, from, to, platform, options.vrApi, options);
+    if (exporter !== null)
+        await exporter.exportSolution(project, from, to, platform, options.vrApi, options);
+    if (langExporter !== null) {
+        trees.forEach((tree, index) => {
+            langExporter.exportWrapper(tree, from, to, options, project.IDLfiles[index]);
+        });
+    }
     return project;
 }
 function isKoremakeProject(directory, korefile) {

@@ -177,6 +177,7 @@ export class Project {
 	basedir: string;
 	uuid: string;
 	files: File[];
+	IDLfiles: string[];
 	javadirs: string[];
 	subProjects: Project[];
 	includeDirs: string[];
@@ -210,6 +211,7 @@ export class Project {
 		this.uuid = uuid.v4();
 
 		this.files = [];
+		this.IDLfiles = [];
 		this.customs = [];
 		this.javadirs = [];
 		this.subProjects = [];
@@ -512,6 +514,14 @@ export class Project {
 		for (let i = 0; i < arguments.length; ++i) {
 			if (typeof arguments[i] === 'string') {
 				this.addFile(arguments[i], options);
+			}
+		}
+	}
+
+	addIdlDef() {
+		for (let i = 0; i < arguments.length; ++i) {
+			if (typeof arguments[i] === 'string') {
+				this.IDLfiles.push(arguments[i]);
 			}
 		}
 	}
