@@ -132,7 +132,8 @@ class EmscriptenExporter extends Exporter_1.Exporter {
         else {
             this.p('index.html' + ': ' + gchfilelist + ofilelist);
         }
-        let linkerFlags = '-s TOTAL_MEMORY=134217728 ';
+        // let linkerFlags = '-s TOTAL_MEMORY=134217728 ';
+        let linkerFlags = '-fno-rtti -s TOTAL_MEMORY=134217728 -s ALLOW_MEMORY_GROWTH=1 ';
         if (Options_1.Options.graphicsApi === GraphicsApi_1.GraphicsApi.WebGPU) {
             linkerFlags += '-s USE_WEBGPU=1 ';
         }

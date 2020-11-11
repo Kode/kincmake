@@ -145,7 +145,8 @@ export class EmscriptenExporter extends Exporter {
 		
 
 
-		let linkerFlags = '-s TOTAL_MEMORY=134217728 ';
+		// let linkerFlags = '-s TOTAL_MEMORY=134217728 ';
+		let linkerFlags = '-fno-rtti -s TOTAL_MEMORY=134217728 -s ALLOW_MEMORY_GROWTH=1 ';
 		if (Options.graphicsApi === GraphicsApi.WebGPU) {
 			linkerFlags += '-s USE_WEBGPU=1 ';
 		}
