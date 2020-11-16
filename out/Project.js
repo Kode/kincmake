@@ -69,7 +69,7 @@ process.on('exit', (code) => {
 let scriptdir = '.';
 // let lastScriptDir = '.';
 let cppEnabled = false;
-async function loadProject(directory, korefile = 'kincfile.js') {
+async function loadProject(directory, options = {}, korefile = 'kincfile.js') {
     if (korefile.toLowerCase().includes('korefile.js')) {
         cppEnabled = true;
     }
@@ -96,7 +96,7 @@ async function loadProject(directory, korefile = 'kincfile.js') {
             scriptdir = directory;
             let file = fs.readFileSync(path.resolve(directory, korefile), 'utf8');
             let AsyncFunction = Object.getPrototypeOf(async () => { }).constructor;
-            let project = new AsyncFunction('log', 'Project', 'Platform', 'platform', 'GraphicsApi', 'graphics', 'Architecture', 'arch', 'AudioApi', 'audio', 'VrApi', 'vr', 'RayTraceApi', 'raytrace', 'cpp', 'require', 'resolve', 'reject', '__dirname', file)(log, Project, Platform_1.Platform, Project.platform, GraphicsApi_1.GraphicsApi, Options_1.Options.graphicsApi, Architecture_1.Architecture, Options_1.Options.architecture, AudioApi_1.AudioApi, Options_1.Options.audioApi, VrApi_1.VrApi, Options_1.Options.vrApi, RayTraceApi_1.RayTraceApi, Options_1.Options.rayTraceApi, cppEnabled, require, resolver, reject, directory);
+            let project = new AsyncFunction('log', 'Project', 'Platform', 'platform', 'GraphicsApi', 'graphics', 'Architecture', 'arch', 'AudioApi', 'audio', 'VrApi', 'vr', 'RayTraceApi', 'raytrace', 'cpp', 'require', 'resolve', 'reject', '__dirname', 'Options', file)(log, Project, Platform_1.Platform, Project.platform, GraphicsApi_1.GraphicsApi, Options_1.Options.graphicsApi, Architecture_1.Architecture, Options_1.Options.architecture, AudioApi_1.AudioApi, Options_1.Options.audioApi, VrApi_1.VrApi, Options_1.Options.vrApi, RayTraceApi_1.RayTraceApi, Options_1.Options.rayTraceApi, cppEnabled, require, resolver, reject, directory, options);
         }
         catch (error) {
             log.error(error);
@@ -516,13 +516,13 @@ class Project {
     setDebugDir(debugDir) {
         this.debugDir = path.resolve(this.basedir, debugDir);
     }
-    async addProject(directory) {
-        this.subProjects.push(await loadProject(path.isAbsolute(directory) ? directory : path.join(this.basedir, directory)));
+    async addProject(directory, options = {}, projectFile = 'kincfile.js') {
+        this.subProjects.push(await loadProject(path.isAbsolute(directory) ? directory : path.join(this.basedir, directory), options, projectFile));
     }
     static async create(directory, platform, korefile) {
         Project.koreDir = path.join(__dirname, '../../..');
         Project.platform = platform;
-        let project = await loadProject(path.resolve(directory), korefile);
+        let project = await loadProject(path.resolve(directory), null, korefile);
         if (project.kore && !project.kincProcessed) {
             await project.addProject(Project.koreDir);
         }
