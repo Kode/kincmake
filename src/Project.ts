@@ -73,7 +73,7 @@ let scriptdir = '.';
 // let lastScriptDir = '.';
 let cppEnabled = false;
 
-async function loadProject(directory: string, options:any =  {}, korefile: string = 'kincfile.js'): Promise<Project> {
+async function loadProject(directory: string, options: any =  {}, korefile: string = 'kincfile.js'): Promise<Project> {
 	if (korefile.toLowerCase().includes('korefile.js')) {
 		cppEnabled = true;
 	}
@@ -634,7 +634,7 @@ export class Project {
 		this.debugDir = path.resolve(this.basedir, debugDir);
 	}
 
-	async addProject(directory: string, options:any = {}, projectFile: string = 'kincfile.js') {
+	async addProject(directory: string, options: any = {}, projectFile: string = 'kincfile.js') {
 		this.subProjects.push(await loadProject(path.isAbsolute(directory) ? directory : path.join(this.basedir, directory), options, projectFile));
 	}
 
