@@ -84,7 +84,10 @@ class LinuxExporter extends Exporter_1.Exporter {
         this.p('LIB=' + libsline);
         let defline = '';
         for (const def of project.getDefines()) {
-            if (def.config && def.config.toLowerCase() === 'debug') {
+            if (def.config && def.config.toLowerCase() === 'debug' && !options.debug) {
+                continue;
+            }
+            if (def.config && def.config.toLowerCase() === 'release' && options.debug) {
                 continue;
             }
             defline += '-D' + def.value + ' ';

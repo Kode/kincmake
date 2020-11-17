@@ -17,6 +17,11 @@ import {TizenExporter} from './Exporters/TizenExporter';
 import {VisualStudioExporter} from './Exporters/VisualStudioExporter';
 import {XCodeExporter} from './Exporters/XCodeExporter';
 import { VSCodeExporter } from './Exporters/VSCodeExporter';
+import { Language } from './Languages/Language';
+import { Languages } from './Languages';
+import * as idl from 'webidl2';
+import { BeefLang } from './Languages/BeefLang';
+
 const cpuCores: number = require('physical-cpu-count');
 
 let _global: any = global;
@@ -244,6 +249,9 @@ async function exportKoremakeProject(from: string, to: string, platform: string,
 	if (options.onlyshaders) {
 		log.info('Only compiling shaders.');
 	}
+	else if (options.toLanguage) {
+		log.info('Only exporting language wrappers ' + options.toLanguage + '.');
+	}
 	else {
 		log.info('Creating ' + fromPlatform(platform) + ' project files.');
 	}
@@ -340,11 +348,28 @@ async function exportKoremakeProject(from: string, to: string, platform: string,
 	}
 	else exporter = new VisualStudioExporter();
 
-	if (exporter === null) {
+	let langExporter: Language = null;
+	let trees: idl.IDLRootType[][] = [];
+	if (options.toLanguage === Languages.Beef) {
+		langExporter = new BeefLang();
+		for ( let file of project.IDLfiles) {
+			let webidl = fs.readFileSync(file).toString();
+			trees.push(idl.parse(webidl));
+		}
+	}
+	if (exporter === null && langExporter === null) {
 		throw 'No exporter found for platform ' + platform + '.';
 	}
 
-	await exporter.exportSolution(project, from, to, platform, options.vrApi, options);
+	if (exporter !== null)
+		await exporter.exportSolution(project, from, to, platform, options.vrApi, options);
+	if (langExporter !== null) {
+		trees.forEach((tree, index) => {
+			langExporter.exportWrapper(tree, from, to, options, project.IDLfiles[index]);
+		});
+	}
+		
+
 
 	return project;
 }
