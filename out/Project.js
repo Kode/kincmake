@@ -516,7 +516,7 @@ class Project {
     setDebugDir(debugDir) {
         this.debugDir = path.resolve(this.basedir, debugDir);
     }
-    async addProject(directory, options = null, projectFile = 'kincfile.js') {
+    async addProject(directory, options = {}, projectFile = 'kincfile.js') {
         this.subProjects.push(await loadProject(path.isAbsolute(directory) ? directory : path.join(this.basedir, directory), options, projectFile));
     }
     static async create(directory, platform, korefile) {

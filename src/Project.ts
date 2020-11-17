@@ -634,7 +634,7 @@ export class Project {
 		this.debugDir = path.resolve(this.basedir, debugDir);
 	}
 
-	async addProject(directory: string, options:any = null, projectFile: string = 'kincfile.js') {
+	async addProject(directory: string, options:any = {}, projectFile: string = 'kincfile.js') {
 		this.subProjects.push(await loadProject(path.isAbsolute(directory) ? directory : path.join(this.basedir, directory), options, projectFile));
 	}
 
