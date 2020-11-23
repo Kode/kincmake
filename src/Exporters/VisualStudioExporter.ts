@@ -719,8 +719,7 @@ export class VisualStudioExporter extends Exporter {
 			this.p('<ApplicationTypeRevision>10.0</ApplicationTypeRevision>', indent);
 			this.p('<EnableDotNetNativeCompatibleProfile>true</EnableDotNetNativeCompatibleProfile>', indent);
 		}
-
-		if (Options.graphicsApi === GraphicsApi.Direct3D12 || platform === Platform.WindowsApp || Options.visualStudioVersion === VisualStudioVersion.VS2017) {
+		else if (Options.visualStudioVersion === VisualStudioVersion.VS2017) {
 			this.p('<WindowsTargetPlatformVersion>' + windowsTargetVersion + '</WindowsTargetPlatformVersion>', indent);
 		}
 		else if (Options.visualStudioVersion === VisualStudioVersion.VS2019) {
