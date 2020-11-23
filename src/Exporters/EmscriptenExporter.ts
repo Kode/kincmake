@@ -161,7 +161,7 @@ export class EmscriptenExporter extends Exporter {
 			linkerFlags += '-s USE_WEBGPU=1 ';
 		}
 
-		let output = ' ' + linkerFlags + '-o index.html --preload-file ' + debugDirName;
+		let output = ' ' + linkerFlags + '-o kiss.js --preload-file ' + debugDirName;
 		if (options.lib) {
 			output = '-o "' + project.getSafeName() + '.a"';
 		}

@@ -143,7 +143,7 @@ class EmscriptenExporter extends Exporter_1.Exporter {
         if (Options_1.Options.graphicsApi === GraphicsApi_1.GraphicsApi.WebGPU) {
             linkerFlags += '-s USE_WEBGPU=1 ';
         }
-        let output = ' ' + linkerFlags + '-o index.html --preload-file ' + debugDirName;
+        let output = ' ' + linkerFlags + '-o kiss.js --preload-file ' + debugDirName;
         if (options.lib) {
             output = '-o "' + project.getSafeName() + '.a"';
         }
