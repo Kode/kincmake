@@ -114,7 +114,7 @@ export class EmscriptenExporter extends Exporter {
 		this.p('DEF=' + defline);
 		this.p();
 
-		let cline = '-std=c99 ';
+		let cline = '-std=gnu99 ';
 		if (options.dynlib) {
 			cline += '-fPIC ';
 		}
@@ -140,7 +140,7 @@ export class EmscriptenExporter extends Exporter {
 		this.p('CPPFLAGS=' + cppline);
 
 		let optimization = '';
-		if (!options.debug) optimization = '-O2';
+		if (!options.debug) optimization = '-O2 -flto ';
 		else optimization = '-g';
 
 		if (options.lib) {
@@ -153,10 +153,9 @@ export class EmscriptenExporter extends Exporter {
 			this.p('index.html' + ': ' + gchfilelist + ofilelist);
 		}
 		
-
-
 		// let linkerFlags = '-s TOTAL_MEMORY=134217728 ';
-		let linkerFlags = '-fno-rtti -s TOTAL_MEMORY=134217728 -s ALLOW_MEMORY_GROWTH=1 ';
+		let prepend = '--pre-js '+ Project.koreDir + '\\Sources\\html5\\Backend.js --pre-js ' + Project.koreDir + '\\Sources\\html5\\Webgl.js '
+		let linkerFlags = '--closure 0 '+ prepend + ' -fno-rtti -s WASM_BIGINT -s ENVIRONMENT=web -s TOTAL_MEMORY=134217728 -s ALLOW_MEMORY_GROWTH=1 ';
 		if (Options.graphicsApi === GraphicsApi.WebGPU) {
 			linkerFlags += '-s USE_WEBGPU=1 ';
 		}
