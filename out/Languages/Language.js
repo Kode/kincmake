@@ -18,6 +18,11 @@ class Language {
         let data = Buffer.from(tabs + line + '\n');
         fs.writeSync(this.out, data, 0, data.length, null);
     }
+    async exportWrapper(tree, from, to, options, filename) {
+        return new Promise((resolve, reject) => {
+            reject('Called an abstract function');
+        });
+    }
 }
 exports.Language = Language;
 //# sourceMappingURL=Language.js.map

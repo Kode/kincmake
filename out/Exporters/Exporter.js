@@ -26,6 +26,11 @@ class Exporter {
         }
         return path.relative(to, absolute);
     }
+    async exportSolution(project, from, to, platform, vrApi, options) {
+        return new Promise((resolve, reject) => {
+            reject('Called an abstract function');
+        });
+    }
     exportCLion(project, from, to, platform, vrApi, options) {
         let name = project.getSafeName();
         const indir = path.join(__dirname, '..', '..', 'Data', 'linux');

@@ -1,6 +1,7 @@
 import {Project} from '../Project';
 import * as fs from 'fs-extra';
 import * as path from 'path';
+import { resolve } from 'dns';
 
 export abstract class Exporter {
 	out: number;
@@ -32,7 +33,11 @@ export abstract class Exporter {
 		return path.relative(to, absolute);
 	}
 
-	abstract async exportSolution(project: Project, from: string, to: string, platform: string, vrApi: any, options: any): Promise<void>;
+	async exportSolution(project: Project, from: string, to: string, platform: string, vrApi: any, options: any): Promise<void> {
+		return new Promise<void>((resolve, reject) => {
+			reject('Called an abstract function');
+		});
+	}
 
 	exportCLion(project: Project, from: string, to: string, platform: string, vrApi: any, options: any) {
 		let name = project.getSafeName();

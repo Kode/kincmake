@@ -22,7 +22,13 @@ export abstract class Language {
 		for (let i = 0; i < indent; ++i) tabs += '\t';
 		let data = Buffer.from(tabs + line + '\n');
 		fs.writeSync(this.out, data, 0, data.length, null);
-    }
-	abstract async exportWrapper(tree: idl.IDLRootType[], from: string, to: string, options: any, filename: string): Promise<void>;
+	}
+	
+	async exportWrapper(tree: idl.IDLRootType[], from: string, to: string, options: any, filename: string): Promise<void> {
+		return new Promise<void>((resolve, reject) => {
+			reject('Called an abstract function');
+		});
+	}
+	
 	abstract toLangType(idlType: string): string;
 }
