@@ -454,6 +454,49 @@ function compileProject(make: child_process.ChildProcess, project: Project, solu
 
 export let api = 2;
 
+function findKincVersion(dir: string): string {
+	if (fs.existsSync(path.join(dir, '.git'))) {
+		let gitVersion = 'git-error';
+		try {
+			const output = child_process.spawnSync('git', ['rev-parse', 'HEAD'], {encoding: 'utf8', cwd: dir}).output;
+			for (const str of output) {
+				if (str != null && str.length > 0) {
+					gitVersion = str.substr(0, 8);
+					break;
+				}
+			}
+		}
+		catch (error) {
+
+		}
+
+		let gitStatus = 'git-error';
+		try {
+			const output = child_process.spawnSync('git', ['status', '--porcelain'], {encoding: 'utf8', cwd: dir}).output;
+			gitStatus = '';
+			for (const str of output) {
+				if (str != null && str.length > 0) {
+					gitStatus = str.trim();
+					break;
+				}
+			}
+		}
+		catch (error) {
+
+		}
+
+		if (gitStatus) {
+			return gitVersion + ', ' + gitStatus.replace(/\n/g, ',');
+		}
+		else {
+			return gitVersion;
+		}
+	}
+	else {
+		return 'unversioned';
+	}
+}
+
 function is64bit() {
 	return process.arch === 'x64' || process.env.hasOwnProperty('PROCESSOR_ARCHITEW6432');
 }
@@ -498,6 +541,7 @@ export async function run(options: any, loglog: any): Promise<string> {
 	else {
 		options.kinc = path.resolve(options.kinc);
 	}
+	log.info('Using Kinc (' + findKincVersion(options.kinc) + ') from ' + options.kinc);
 
 	debug = options.debug;
 

@@ -419,6 +419,44 @@ function compileProject(make, project, solutionName, options, dothemath) {
     });
 }
 exports.api = 2;
+function findKincVersion(dir) {
+    if (fs.existsSync(path.join(dir, '.git'))) {
+        let gitVersion = 'git-error';
+        try {
+            const output = child_process.spawnSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8', cwd: dir }).output;
+            for (const str of output) {
+                if (str != null && str.length > 0) {
+                    gitVersion = str.substr(0, 8);
+                    break;
+                }
+            }
+        }
+        catch (error) {
+        }
+        let gitStatus = 'git-error';
+        try {
+            const output = child_process.spawnSync('git', ['status', '--porcelain'], { encoding: 'utf8', cwd: dir }).output;
+            gitStatus = '';
+            for (const str of output) {
+                if (str != null && str.length > 0) {
+                    gitStatus = str.trim();
+                    break;
+                }
+            }
+        }
+        catch (error) {
+        }
+        if (gitStatus) {
+            return gitVersion + ', ' + gitStatus.replace(/\n/g, ',');
+        }
+        else {
+            return gitVersion;
+        }
+    }
+    else {
+        return 'unversioned';
+    }
+}
 function is64bit() {
     return process.arch === 'x64' || process.env.hasOwnProperty('PROCESSOR_ARCHITEW6432');
 }
@@ -454,6 +492,7 @@ async function run(options, loglog) {
     else {
         options.kinc = path.resolve(options.kinc);
     }
+    log.info('Using Kinc (' + findKincVersion(options.kinc) + ') from ' + options.kinc);
     debug = options.debug;
     if (options.vr !== undefined) {
         Options_1.Options.vrApi = options.vr;
