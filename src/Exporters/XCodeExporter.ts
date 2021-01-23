@@ -530,7 +530,7 @@ export class XCodeExporter extends Exporter {
 		this.p('};', 3);
 		this.p('buildConfigurationList = ' + projectBuildConfigListId + ' /* Build configuration list for PBXProject "' + project.getSafeName() + '" */;', 3);
 		this.p('compatibilityVersion = "Xcode 3.2";', 3);
-		this.p('developmentRegion = English;', 3);
+		this.p('developmentRegion = en;', 3);
 		this.p('hasScannedForEncodings = 0;', 3);
 		this.p('knownRegions = (', 3);
 		this.p('en,', 4);
