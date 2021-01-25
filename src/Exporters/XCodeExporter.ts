@@ -517,7 +517,7 @@ export class XCodeExporter extends Exporter {
 		this.p(projectId + ' /* Project object */ = {', 2);
 		this.p('isa = PBXProject;', 3);
 		this.p('attributes = {', 3);
-		this.p('LastUpgradeCheck = 0610;', 4);
+		this.p('LastUpgradeCheck = 1230;', 4);
 		this.p('ORGANIZATIONNAME = "' + targetOptions.organizationName + '";', 4);
 		this.p('TargetAttributes = {', 4);
 		this.p(targetId + ' = {', 5);
@@ -610,18 +610,27 @@ export class XCodeExporter extends Exporter {
 		this.p('CLANG_CXX_LIBRARY = "compiler-default";', 4);
 		this.p('CLANG_ENABLE_MODULES = YES;', 4);
 		this.p('CLANG_ENABLE_OBJC_ARC = YES;', 4);
+		this.p('CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;', 4);
 		this.p('CLANG_WARN_BOOL_CONVERSION = YES;', 4);
+		this.p('CLANG_WARN_COMMA = YES;', 4);
 		this.p('CLANG_WARN_CONSTANT_CONVERSION = YES;', 4);
+		this.p('CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;', 4);
 		this.p('CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;', 4);
 		this.p('CLANG_WARN_EMPTY_BODY = YES;', 4);
 		this.p('CLANG_WARN_ENUM_CONVERSION = YES;', 4);
+		this.p('CLANG_WARN_INFINITE_RECURSION = YES;', 4);
 		this.p('CLANG_WARN_INT_CONVERSION = YES;', 4);
+		this.p('CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;', 4);
+		this.p('CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;', 4);
+		this.p('CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;', 4);
 		this.p('CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;', 4);
+		this.p('CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;', 4);
+		this.p('CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;', 4);
+		this.p('CLANG_WARN_STRICT_PROTOTYPES = YES;', 4);
+		this.p('CLANG_WARN_SUSPICIOUS_MOVE = YES;', 4);
 		this.p('CLANG_WARN_UNREACHABLE_CODE = YES;', 4);
 		this.p('CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;', 4);
-		this.p('CLANG_WARN_INFINITE_RECURSION = YES;', 4);
-		this.p('CLANG_WARN_SUSPICIOUS_MOVE = YES;', 4);
-
+		
 		if (platform === Platform.iOS) {
 			this.p('"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";', 4);
 		}
@@ -630,6 +639,7 @@ export class XCodeExporter extends Exporter {
 		}
 		this.p('COPY_PHASE_STRIP = NO;', 4);
 		this.p('ENABLE_STRICT_OBJC_MSGSEND = YES;', 4);
+		this.p('ENABLE_TESTABILITY = YES;', 4);
 		if (project.c11) {
 			this.p('GCC_C_LANGUAGE_STANDARD = c11;', 4);
 		}
@@ -637,6 +647,7 @@ export class XCodeExporter extends Exporter {
 			this.p('GCC_C_LANGUAGE_STANDARD = gnu99;', 4);
 		}
 		this.p('GCC_DYNAMIC_NO_PIC = NO;', 4);
+		this.p('GCC_NO_COMMON_BLOCKS = YES;', 4);
 		this.p('GCC_OPTIMIZATION_LEVEL = 0;', 4);
 		this.p('GCC_PREPROCESSOR_DEFINITIONS = (', 4);
 		this.p('"DEBUG=1",', 5);
@@ -687,17 +698,26 @@ export class XCodeExporter extends Exporter {
 		this.p('CLANG_CXX_LIBRARY = "compiler-default";', 4);
 		this.p('CLANG_ENABLE_MODULES = YES;', 4);
 		this.p('CLANG_ENABLE_OBJC_ARC = YES;', 4);
+		this.p('CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;', 4);
 		this.p('CLANG_WARN_BOOL_CONVERSION = YES;', 4);
+		this.p('CLANG_WARN_COMMA = YES;', 4);
 		this.p('CLANG_WARN_CONSTANT_CONVERSION = YES;', 4);
+		this.p('CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;', 4);
 		this.p('CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;', 4);
 		this.p('CLANG_WARN_EMPTY_BODY = YES;', 4);
 		this.p('CLANG_WARN_ENUM_CONVERSION = YES;', 4);
+		this.p('CLANG_WARN_INFINITE_RECURSION = YES;', 4);
 		this.p('CLANG_WARN_INT_CONVERSION = YES;', 4);
+		this.p('CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;', 4);
+		this.p('CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;', 4);
+		this.p('CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;', 4);
 		this.p('CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;', 4);
+		this.p('CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;', 4);
+		this.p('CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;', 4);
+		this.p('CLANG_WARN_STRICT_PROTOTYPES = YES;', 4);
+		this.p('CLANG_WARN_SUSPICIOUS_MOVE = YES;', 4);
 		this.p('CLANG_WARN_UNREACHABLE_CODE = YES;', 4);
 		this.p('CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;', 4);
-		this.p('CLANG_WARN_INFINITE_RECURSION = YES;', 4);
-		this.p('CLANG_WARN_SUSPICIOUS_MOVE = YES;', 4);
 
 		if (platform === Platform.iOS) {
 			this.p('"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";', 4);
@@ -717,6 +737,7 @@ export class XCodeExporter extends Exporter {
 		else {
 			this.p('GCC_C_LANGUAGE_STANDARD = gnu99;', 4);
 		}
+		this.p('GCC_NO_COMMON_BLOCKS = YES;', 4);
 		this.p('GCC_PREPROCESSOR_DEFINITIONS = (', 4);
 		for (const define of project.getDefines()) {
 			if (define.config && define.config.toLowerCase() === 'debug') {
@@ -834,6 +855,7 @@ export class XCodeExporter extends Exporter {
 		}
 		this.p('BUNDLE_VERSION = "' + targetOptions.version + '";', 4);
 		this.p('BUILD_VERSION = "' + targetOptions.build + '";', 4);
+		this.p('CODE_SIGN_IDENTITY = "-";', 4);
 		this.p('PRODUCT_NAME = "$(TARGET_NAME)";', 4);
 		if (options.lib) {
 			// this.p('MACH_O_TYPE = staticlib;', 4);
@@ -924,6 +946,7 @@ export class XCodeExporter extends Exporter {
 		}
 		this.p('BUNDLE_VERSION = "' + targetOptions.version + '";', 4);
 		this.p('BUILD_VERSION = "' + targetOptions.build + '";', 4);
+		this.p('CODE_SIGN_IDENTITY = "-";', 4);
 		this.p('PRODUCT_NAME = "$(TARGET_NAME)";', 4);
 		if (options.lib) {
 			// this.p('MACH_O_TYPE = staticlib;', 4);
@@ -957,6 +980,7 @@ export class XCodeExporter extends Exporter {
 		this.p(nativeReleaseId + ' /* Release */,', 4);
 		this.p(');', 3);
 		this.p('defaultConfigurationIsVisible = 0;', 3);
+		this.p('defaultConfigurationName = Release;', 3);
 		this.p('};', 2);
 		this.p('/* End XCConfigurationList section */');
 		this.p('};', 1);
