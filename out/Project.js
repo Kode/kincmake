@@ -63,7 +63,8 @@ function isAbsolute(path) {
 let projectInProgress = 0;
 process.on('exit', (code) => {
     if (projectInProgress > 0) {
-        console.error('Error: korefile did not call resolve, no project created.');
+        process.exitCode = 1;
+        console.error('Error: kincfile or korefile did not call resolve, no project created.');
     }
 });
 let scriptdir = '.';

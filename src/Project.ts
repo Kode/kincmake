@@ -65,7 +65,8 @@ let projectInProgress = 0;
 
 process.on('exit', (code: number) => {
 	if (projectInProgress > 0) {
-		console.error('Error: korefile did not call resolve, no project created.');
+		process.exitCode = 1;
+		console.error('Error: kincfile or korefile did not call resolve, no project created.');
 	}
 });
 
