@@ -57,8 +57,10 @@ function fromPlatform(platform) {
             return 'Xbox Scarlett';
         case Platform_1.Platform.PS5:
             return 'PlayStation 5';
+        case Platform_1.Platform.FreeBSD:
+            return 'FreeBSD';
         default:
-            throw 'Unknown platform ' + platform + '.';
+        throw 'Unknown platform ' + platform + '.';
     }
 }
 function shaderLang(platform) {
@@ -298,7 +300,7 @@ async function exportKoremakeProject(from, to, platform, korefile, options) {
         exporter = new AndroidExporter_1.AndroidExporter();
     else if (platform === Platform_1.Platform.HTML5)
         exporter = new EmscriptenExporter_1.EmscriptenExporter();
-    else if (platform === Platform_1.Platform.Linux || platform === Platform_1.Platform.Pi)
+    else if (platform === Platform_1.Platform.Linux || platform === Platform_1.Platform.Pi || platform === Platform_1.Platform.FreeBSD)
         exporter = new LinuxExporter_1.LinuxExporter();
     else if (platform === Platform_1.Platform.Tizen)
         exporter = new TizenExporter_1.TizenExporter();
@@ -514,7 +516,7 @@ async function run(options, loglog) {
         log.info('Compiling...');
         const dothemath = is64bit();
         let make = null;
-        if ((options.customTarget && options.customTarget.baseTarget === Platform_1.Platform.Linux) || options.target === Platform_1.Platform.Linux) {
+        if ((options.customTarget && options.customTarget.baseTarget === Platform_1.Platform.Linux) || options.target === Platform_1.Platform.Linux || options.target === Platform_1.Platform.FreeBSD) {
             make = child_process.spawn('make', ['-j', cpuCores.toString()], { cwd: path.join(options.to, options.buildPath) });
         }
         else if ((options.customTarget && options.customTarget.baseTarget === Platform_1.Platform.Pi) || options.target === Platform_1.Platform.Pi) {

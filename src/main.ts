@@ -61,6 +61,8 @@ function fromPlatform(platform: string): string {
 			return 'Xbox Scarlett';
 		case Platform.PS5:
 			return 'PlayStation 5';
+		case Platform.FreeBSD:
+			return 'FreeBSD';
 		default:
 			throw 'Unknown platform ' + platform + '.';
 	}
@@ -368,7 +370,7 @@ async function exportKoremakeProject(from: string, to: string, platform: string,
 			langExporter.exportWrapper(tree, from, to, options, project.IDLfiles[index]);
 		});
 	}
-		
+
 
 
 	return project;
