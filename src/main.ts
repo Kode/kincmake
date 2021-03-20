@@ -571,10 +571,10 @@ export async function run(options: any, loglog: any): Promise<string> {
 		const dothemath = is64bit();
 		let make: child_process.ChildProcess = null;
 
-		if ((options.customTarget && options.customTarget.baseTarget === Platform.Linux) || options.target === Platform.Linux) {
+		if ((options.customTarget && options.customTarget.baseTarget === Platform.Linux) || options.target === Platform.Linux || options.target === Platform.FreeBSD) {
 			make = child_process.spawn('make', ['-j', cpuCores.toString()], { cwd: path.join(options.to, options.buildPath) });
 		}
-		else if ((options.customTarget && options.customTarget.baseTarget === Platform.Pi) || options.target === Platform.Pi || options.target === Platform.FreeBSD) {
+		else if ((options.customTarget && options.customTarget.baseTarget === Platform.Pi) || options.target === Platform.Pi) {
 			make = child_process.spawn('make', [], { cwd: path.join(options.to, options.buildPath) });
 		}
 		else if ((options.customTarget && options.customTarget.baseTarget === Platform.HTML5) || options.target === Platform.HTML5) {

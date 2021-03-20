@@ -15,7 +15,7 @@ function sys() {
         return '.exe';
     }
     else if (os.platform() === 'freebsd') {
-        return '-freebsd'
+        return '-freebsd';
     }
     else {
         return '-osx';
