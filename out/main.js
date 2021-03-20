@@ -60,7 +60,7 @@ function fromPlatform(platform) {
         case Platform_1.Platform.FreeBSD:
             return 'FreeBSD';
         default:
-        throw 'Unknown platform ' + platform + '.';
+            throw 'Unknown platform ' + platform + '.';
     }
 }
 function shaderLang(platform) {

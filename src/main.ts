@@ -323,7 +323,7 @@ async function exportKoremakeProject(from: string, to: string, platform: string,
 	else if (platform === Platform.iOS || platform === Platform.OSX || platform === Platform.tvOS) exporter = new XCodeExporter();
 	else if (platform === Platform.Android) exporter = new AndroidExporter();
 	else if (platform === Platform.HTML5) exporter = new EmscriptenExporter();
-	else if (platform === Platform.Linux || platform === Platform.Pi) exporter = new LinuxExporter();
+	else if (platform === Platform.Linux || platform === Platform.Pi || platform === Platform.FreeBSD) exporter = new LinuxExporter();
 	else if (platform === Platform.Tizen) exporter = new TizenExporter();
 	else if (platform === Platform.PS4 || platform === Platform.XboxOne || platform === Platform.Switch || platform === Platform.XboxScarlett || platform === Platform.PS5) {
 		let libsdir = path.join(from.toString(), 'Backends');
@@ -574,7 +574,7 @@ export async function run(options: any, loglog: any): Promise<string> {
 		if ((options.customTarget && options.customTarget.baseTarget === Platform.Linux) || options.target === Platform.Linux) {
 			make = child_process.spawn('make', ['-j', cpuCores.toString()], { cwd: path.join(options.to, options.buildPath) });
 		}
-		else if ((options.customTarget && options.customTarget.baseTarget === Platform.Pi) || options.target === Platform.Pi) {
+		else if ((options.customTarget && options.customTarget.baseTarget === Platform.Pi) || options.target === Platform.Pi || options.target === Platform.FreeBSD) {
 			make = child_process.spawn('make', [], { cwd: path.join(options.to, options.buildPath) });
 		}
 		else if ((options.customTarget && options.customTarget.baseTarget === Platform.HTML5) || options.target === Platform.HTML5) {
