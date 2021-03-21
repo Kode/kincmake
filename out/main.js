@@ -21,6 +21,7 @@ const VSCodeExporter_1 = require("./Exporters/VSCodeExporter");
 const Languages_1 = require("./Languages");
 const idl = require("webidl2");
 const BeefLang_1 = require("./Languages/BeefLang");
+const FreeBSDExporter_1 = require("./Exporters/FreeBSDExporter");
 const cpuCores = require('physical-cpu-count');
 let _global = global;
 _global.__base = __dirname + '/';
@@ -300,8 +301,10 @@ async function exportKoremakeProject(from, to, platform, korefile, options) {
         exporter = new AndroidExporter_1.AndroidExporter();
     else if (platform === Platform_1.Platform.HTML5)
         exporter = new EmscriptenExporter_1.EmscriptenExporter();
-    else if (platform === Platform_1.Platform.Linux || platform === Platform_1.Platform.Pi || platform === Platform_1.Platform.FreeBSD)
+    else if (platform === Platform_1.Platform.Linux || platform === Platform_1.Platform.Pi)
         exporter = new LinuxExporter_1.LinuxExporter();
+    else if (platform === Platform_1.Platform.FreeBSD)
+        exporter = new FreeBSDExporter_1.FreeBSDExporter();
     else if (platform === Platform_1.Platform.Tizen)
         exporter = new TizenExporter_1.TizenExporter();
     else if (platform === Platform_1.Platform.PS4 || platform === Platform_1.Platform.XboxOne || platform === Platform_1.Platform.Switch || platform === Platform_1.Platform.XboxScarlett || platform === Platform_1.Platform.PS5) {

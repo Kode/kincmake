@@ -21,6 +21,7 @@ import { Language } from './Languages/Language';
 import { Languages } from './Languages';
 import * as idl from 'webidl2';
 import { BeefLang } from './Languages/BeefLang';
+import { FreeBSDExporter } from './Exporters/FreeBSDExporter';
 
 const cpuCores: number = require('physical-cpu-count');
 
@@ -323,7 +324,8 @@ async function exportKoremakeProject(from: string, to: string, platform: string,
 	else if (platform === Platform.iOS || platform === Platform.OSX || platform === Platform.tvOS) exporter = new XCodeExporter();
 	else if (platform === Platform.Android) exporter = new AndroidExporter();
 	else if (platform === Platform.HTML5) exporter = new EmscriptenExporter();
-	else if (platform === Platform.Linux || platform === Platform.Pi || platform === Platform.FreeBSD) exporter = new LinuxExporter();
+	else if (platform === Platform.Linux || platform === Platform.Pi) exporter = new LinuxExporter();
+	else if (platform === Platform.FreeBSD) exporter = new FreeBSDExporter();
 	else if (platform === Platform.Tizen) exporter = new TizenExporter();
 	else if (platform === Platform.PS4 || platform === Platform.XboxOne || platform === Platform.Switch || platform === Platform.XboxScarlett || platform === Platform.PS5) {
 		let libsdir = path.join(from.toString(), 'Backends');
