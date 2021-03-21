@@ -14,6 +14,7 @@ export interface PlatformType {
 	Switch: string;
 	XboxScarlett: string;
 	PS5: string;
+	FreeBSD: string;
 }
 
 export let Platform: PlatformType = {
@@ -31,5 +32,6 @@ export let Platform: PlatformType = {
 	XboxOne: 'xboxone',
 	Switch: 'switch',
 	XboxScarlett: 'xboxscarlett',
-	PS5: 'ps5'
+	PS5: 'ps5',
+	FreeBSD: 'freebsd'
 };

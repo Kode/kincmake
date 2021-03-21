@@ -16,6 +16,7 @@ exports.Platform = {
     XboxOne: 'xboxone',
     Switch: 'switch',
     XboxScarlett: 'xboxscarlett',
-    PS5: 'ps5'
+    PS5: 'ps5',
+    FreeBSD: 'freebsd'
 };
 //# sourceMappingURL=Platform.js.map
