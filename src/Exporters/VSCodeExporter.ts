@@ -150,6 +150,9 @@ export class VSCodeExporter extends Exporter {
 		else if (platform === Platform.Linux) {
 			return 'Linux';
 		}
+		else if (platform === Platform.FreeBSD) {
+			return 'FreeBSD';
+		}
 		else {
 			return 'Unknown';
 		}
