@@ -73,7 +73,7 @@ class FreeBSDExporter extends Exporter_1.Exporter {
             inc = path.relative(outputPath, path.resolve(from, inc));
             incline += '-I' + inc + ' ';
         }
-        incline += '-I/usr/local/include';
+        incline += '-I/usr/local/include'; // Add search dir for FreeBSD
         console.log(incline);
         this.p('INC=' + incline);
         let libsline = '-static-libgcc -static-libstdc++ -pthread';
@@ -83,7 +83,7 @@ class FreeBSDExporter extends Exporter_1.Exporter {
         for (let lib of project.getLibs()) {
             libsline += ' -l' + lib;
         }
-        libsline += ' -L/usr/local/lib';
+        libsline += ' -L/usr/local/lib'; // Add search dir for FreeBSD
         this.p('LIB=' + libsline);
         let defline = '';
         for (const def of project.getDefines()) {

@@ -80,7 +80,7 @@ export class FreeBSDExporter extends Exporter {
 			inc = path.relative(outputPath, path.resolve(from, inc));
 			incline += '-I' + inc + ' ';
 		}
-		incline += '-I/usr/local/include' // Add search dir for FreeBSD
+		incline += '-I/usr/local/include'; // Add search dir for FreeBSD
 		console.log(incline);
 		this.p('INC=' + incline);
 
@@ -91,7 +91,7 @@ export class FreeBSDExporter extends Exporter {
 		for (let lib of project.getLibs()) {
 			libsline += ' -l' + lib;
 		}
-		libsline += ' -L/usr/local/lib' // Add search dir for FreeBSD
+		libsline += ' -L/usr/local/lib'; // Add search dir for FreeBSD
 		this.p('LIB=' + libsline);
 
 		let defline = '';
