@@ -139,6 +139,16 @@ function shaderLang(platform) {
             return 'essl';
         case Platform_1.Platform.Pi:
             return 'essl';
+        case Platform_1.Platform.FreeBSD:
+            switch (Options_1.Options.graphicsApi) {
+                case GraphicsApi_1.GraphicsApi.Vulkan:
+                    return 'spirv';
+                case GraphicsApi_1.GraphicsApi.OpenGL:
+                case GraphicsApi_1.GraphicsApi.Default:
+                    return 'glsl';
+                default:
+                    throw new Error('Unsupported shader language.');
+            }
         default:
             return platform;
     }
