@@ -448,7 +448,7 @@ function compileProject(make: child_process.ChildProcess, project: Project, solu
 				}
 				if (options.run) {
 					if ((options.customTarget && options.customTarget.baseTarget === Platform.OSX) || options.target === Platform.OSX) {
-						child_process.spawn('open', ['build/Release/' + project.name + '.app/Contents/MacOS/' + project.name], {stdio: 'inherit', cwd: options.to});
+						child_process.spawn('build/Release/' + project.name + '.app/Contents/MacOS/' + project.name, {stdio: 'inherit', cwd: options.to});
 					}
 					else if ((options.customTarget && (options.customTarget.baseTarget === Platform.Linux || options.customTarget.baseTarget === Platform.Windows)) || options.target === Platform.Linux || options.target === Platform.Windows) {
 						child_process.spawn(path.resolve(options.from.toString(), project.getDebugDir(), solutionName), [], {stdio: 'inherit', cwd: path.resolve(options.from.toString(), project.getDebugDir())});

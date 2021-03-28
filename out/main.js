@@ -416,7 +416,7 @@ function compileProject(make, project, solutionName, options, dothemath) {
                 }
                 if (options.run) {
                     if ((options.customTarget && options.customTarget.baseTarget === Platform_1.Platform.OSX) || options.target === Platform_1.Platform.OSX) {
-                        child_process.spawn('open', ['build/Release/' + project.name + '.app/Contents/MacOS/' + project.name], { stdio: 'inherit', cwd: options.to });
+                        child_process.spawn('build/Release/' + project.name + '.app/Contents/MacOS/' + project.name, { stdio: 'inherit', cwd: options.to });
                     }
                     else if ((options.customTarget && (options.customTarget.baseTarget === Platform_1.Platform.Linux || options.customTarget.baseTarget === Platform_1.Platform.Windows)) || options.target === Platform_1.Platform.Linux || options.target === Platform_1.Platform.Windows) {
                         child_process.spawn(path.resolve(options.from.toString(), project.getDebugDir(), solutionName), [], { stdio: 'inherit', cwd: path.resolve(options.from.toString(), project.getDebugDir()) });
