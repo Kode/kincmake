@@ -100,12 +100,30 @@ export class VSCodeExporter extends Exporter {
 		this.p(JSON.stringify(data, null, '\t'));
 		this.closeFile();
 
-		this.writeProtoLaunchJson(project, from, to, platform, vrApi, options);
+		this.writeLaunchJson(project, from, to, platform, vrApi, options);
 	}
 
-	writeProtoLaunchJson(project: Project, from: string, to: string, platform: string, vrApi: any, options: any) {
-		this.writeFile(path.join(from, '.vscode', 'protolaunch.json'));
-		const data: any = {
+	writeLaunchJson(project: Project, from: string, to: string, platform: string, vrApi: any, options: any) {
+		const launchJsonPath = path.join(from, '.vscode', 'launch.json');
+
+		let data: any = {
+			configurations: [],
+			compounds: []
+		};
+
+		if (fs.existsSync(launchJsonPath)) {
+			data = JSON.parse(fs.readFileSync(launchJsonPath, {encoding: 'utf8'}));
+		}
+
+		const configurations = [];
+		for (let config of data.configurations) {
+			if (!config.name.startsWith('Kinc:')) {
+				configurations.push(config);
+			}
+		}
+
+		this.writeFile(launchJsonPath);
+		const kincConfig: any = {
 			name: 'Kinc: Launch',
 			type: platform === Platform.Windows ? 'cppvsdbg' : 'cppdbg',
 			request: 'launch',
@@ -115,17 +133,20 @@ export class VSCodeExporter extends Exporter {
 		};
 
 		if (platform === Platform.Windows) {
-			// data.symbolSearchPath = 'C:\\Symbols;C:\\SymbolDir2';
-			data.externalConsole = true;
-			data.logging = {
+			// kincConfig.symbolSearchPath = 'C:\\Symbols;C:\\SymbolDir2';
+			kincConfig.externalConsole = true;
+			kincConfig.logging = {
 				moduleLoad: false,
 				trace: true
 			};
-			// data.visualizerFile = '${workspaceFolder}/my.natvis';
+			// kincConfig.visualizerFile = '${workspaceFolder}/my.natvis';
 		}
 		else if (platform === Platform.OSX) {
-			data.MIMode = 'lldb';
+			kincConfig.MIMode = 'lldb';
 		}
+
+		configurations.push(kincConfig);
+		data.configurations = configurations;
 
 		this.p(JSON.stringify(data, null, '\t'));
 		this.closeFile();

@@ -89,11 +89,25 @@ class VSCodeExporter extends Exporter_1.Exporter {
         };
         this.p(JSON.stringify(data, null, '\t'));
         this.closeFile();
-        this.writeProtoLaunchJson(project, from, to, platform, vrApi, options);
+        this.writeLaunchJson(project, from, to, platform, vrApi, options);
     }
-    writeProtoLaunchJson(project, from, to, platform, vrApi, options) {
-        this.writeFile(path.join(from, '.vscode', 'protolaunch.json'));
-        const data = {
+    writeLaunchJson(project, from, to, platform, vrApi, options) {
+        const launchJsonPath = path.join(from, '.vscode', 'launch.json');
+        let data = {
+            configurations: [],
+            compounds: []
+        };
+        if (fs.existsSync(launchJsonPath)) {
+            data = JSON.parse(fs.readFileSync(launchJsonPath, { encoding: 'utf8' }));
+        }
+        const configurations = [];
+        for (let config of data.configurations) {
+            if (!config.name.startsWith('Kinc:')) {
+                configurations.push(config);
+            }
+        }
+        this.writeFile(launchJsonPath);
+        const kincConfig = {
             name: 'Kinc: Launch',
             type: platform === Platform_1.Platform.Windows ? 'cppvsdbg' : 'cppdbg',
             request: 'launch',
@@ -102,17 +116,19 @@ class VSCodeExporter extends Exporter_1.Exporter {
             preLaunchTask: 'Kinc: Build for ' + this.preLaunchTask(platform)
         };
         if (platform === Platform_1.Platform.Windows) {
-            // data.symbolSearchPath = 'C:\\Symbols;C:\\SymbolDir2';
-            data.externalConsole = true;
-            data.logging = {
+            // kincConfig.symbolSearchPath = 'C:\\Symbols;C:\\SymbolDir2';
+            kincConfig.externalConsole = true;
+            kincConfig.logging = {
                 moduleLoad: false,
                 trace: true
             };
-            // data.visualizerFile = '${workspaceFolder}/my.natvis';
+            // kincConfig.visualizerFile = '${workspaceFolder}/my.natvis';
         }
         else if (platform === Platform_1.Platform.OSX) {
-            data.MIMode = 'lldb';
+            kincConfig.MIMode = 'lldb';
         }
+        configurations.push(kincConfig);
+        data.configurations = configurations;
         this.p(JSON.stringify(data, null, '\t'));
         this.closeFile();
     }
