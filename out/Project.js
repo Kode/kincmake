@@ -455,6 +455,18 @@ class Project {
             this.addDefine(arguments[i]);
         }
     }
+    addDefineFor(system, define) {
+        if (this.systemDependendDefines[system] === undefined)
+            this.systemDependendDefines[system] = [];
+        this.systemDependendDefines[system].push(define);
+    }
+    addDefinesFor() {
+        if (this.systemDependendDefines[arguments[0]] === undefined)
+            this.systemDependendDefines[arguments[0]] = [];
+        for (let i = 1; i < arguments.length; ++i) {
+            this.systemDependendDefines[arguments[0]].push(arguments[i]);
+        }
+    }
     addIncludeDir(include) {
         if (contains(this.includeDirs, include))
             return;

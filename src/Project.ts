@@ -185,6 +185,7 @@ export class Project {
 	subProjects: Project[];
 	includeDirs: string[];
 	defines: Define[];
+	systemDependendDefines: any;
 	libs: string[];
 	systemDependendLibraries: any;
 	includes: {file: string, options: any}[];
@@ -558,6 +559,18 @@ export class Project {
 	addDefines() {
 		for (let i = 0; i < arguments.length; ++i) {
 			this.addDefine(arguments[i]);
+		}
+	}
+
+	addDefineFor(system: string, define: string) {
+		if (this.systemDependendDefines[system] === undefined) this.systemDependendDefines[system] = [];
+		this.systemDependendDefines[system].push(define);
+	}
+
+	addDefinesFor() {
+		if (this.systemDependendDefines[arguments[0]] === undefined) this.systemDependendDefines[arguments[0]] = [];
+		for (let i = 1; i < arguments.length; ++i) {
+			this.systemDependendDefines[arguments[0]].push(arguments[i]);
 		}
 	}
 
