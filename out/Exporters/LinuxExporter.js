@@ -236,6 +236,10 @@ class LinuxExporter extends Exporter_1.Exporter {
             this.p('<Add option="-static" />', 3);
         }*/
         this.p('<Add option="-Wl,-rpath,." />', 3);
+        const flags = [].concat(project.cFlags, project.cppFlags);
+        for (const flag of flags) {
+            this.p('<Add option="' + flag.replace(/\"/g, '\\"') + '" />', 3);
+        }
         for (let lib of project.getLibs()) {
             this.p('<Add library="' + lib + '" />', 3);
         }
