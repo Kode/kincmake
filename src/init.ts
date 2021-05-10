@@ -21,7 +21,7 @@ export function run(name: string, from: string) {
 	friendlyName = friendlyName.replace(/-/g, '_');
 
 	if (!fs.existsSync(path.join(from, 'Sources', 'main.c'))) {
-		let mainsource = '#include <kinc/pch.h>\n\n'
+		let mainsource = '\n'
 			+ 'int kickstart(int argc, char** argv) {\n'
 			+ '\treturn 0;\n'
 			+ '}\n';
