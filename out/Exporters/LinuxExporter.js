@@ -90,7 +90,7 @@ class LinuxExporter extends Exporter_1.Exporter {
             if (def.config && def.config.toLowerCase() === 'release' && options.debug) {
                 continue;
             }
-            defline += '-D' + def.value + ' ';
+            defline += '-D' + def.value.replace(/\"/g, '\\"') + ' ';
         }
         this.p('DEF=' + defline);
         this.p();

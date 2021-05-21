@@ -101,7 +101,7 @@ export class LinuxExporter extends Exporter {
 				continue;
 			}
 
-			defline += '-D' + def.value + ' ';
+			defline += '-D' + def.value.replace(/\"/g, '\\"') + ' ';
 		}
 		this.p('DEF=' + defline);
 		this.p();
