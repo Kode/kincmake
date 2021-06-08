@@ -198,6 +198,7 @@ export class Project {
 	targetOptions: any;
 	rotated: boolean;
 	cmd: boolean;
+	cmdArgs: string[] = [];
 	cFlags: string[] = [];
 	cppFlags: string[] = [];
 	stackSize: number;
