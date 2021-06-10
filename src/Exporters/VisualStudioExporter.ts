@@ -90,6 +90,10 @@ export class VisualStudioExporter extends Exporter {
 		if (platform === Platform.Windows) {
 			this.p('<LocalDebuggerWorkingDirectory>' + this.getDebugDir(from, project) + '</LocalDebuggerWorkingDirectory>', 2);
 			this.p('<DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>', 2);
+			if (project.cmdArgs.length > 0) {
+				this.p('<LocalDebuggerCommandArguments>' + project.cmdArgs.join(' ') + '</LocalDebuggerCommandArguments>', 2);
+			}
+
 			// java.io.File baseDir = new File(project.getBasedir());
 			// p("<LocalDebuggerCommandArguments>\"SOURCEDIR=" + baseDir.getAbsolutePath() + "\" \"KTSOURCEDIR=" + baseDir.getAbsolutePath() + "\\Kt\"</LocalDebuggerCommandArguments>", 2);
 		}
@@ -97,11 +101,6 @@ export class VisualStudioExporter extends Exporter {
 			this.userPropertyGroup(this.getDebugDir(from, project), 2);
 		}
 		this.p('</PropertyGroup>', 1);
-		if (project.isCmd() && project.cmdArgs.length > 0) {
-			this.p('<PropertyGroup Condition="\'$(Configuration)|$(Platform)\'==\'Debug|' + this.GetSys(platform) + '\'">', 1);
-			this.p('<LocalDebuggerCommandArguments>' + project.cmdArgs.join(' ') + '</LocalDebuggerCommandArguments>', 2);
-			this.p('</PropertyGroup>', 1);
-		}
 
 		this.p('</Project>');
 
