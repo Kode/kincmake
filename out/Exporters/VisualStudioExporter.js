@@ -100,6 +100,11 @@ class VisualStudioExporter extends Exporter_1.Exporter {
             this.userPropertyGroup(this.getDebugDir(from, project), 2);
         }
         this.p('</PropertyGroup>', 1);
+        if (project.isCmd() && project.cmdArgs.length > 0) {
+            this.p('<PropertyGroup Condition="\'$(Configuration)|$(Platform)\'==\'Debug|' + this.GetSys(platform) + '\'">', 1);
+            this.p('<LocalDebuggerCommandArguments>' + project.cmdArgs.join(' ') + '</LocalDebuggerCommandArguments>', 2);
+            this.p('</PropertyGroup>', 1);
+        }
         this.p('</Project>');
         this.closeFile();
     }

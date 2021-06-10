@@ -110,6 +110,7 @@ class Define {
 exports.Define = Define;
 class Project {
     constructor(name) {
+        this.cmdArgs = [];
         this.cFlags = [];
         this.cppFlags = [];
         this.icon = null;
