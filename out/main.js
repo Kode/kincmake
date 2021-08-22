@@ -388,32 +388,31 @@ function compileProject(make, project, solutionName, options, dothemath) {
             log.error(data.toString(), false);
         });
         make.on('close', function (code) {
-            var _a, _b, _c, _d, _e, _f;
             const time = (new Date().getTime() - startDate.getTime()) / 1000;
             const min = Math.floor(time / 60);
             const sec = Math.floor(time - min * 60);
             log.info(`Build time: ${min}m ${sec}s`);
             if (code === 0) {
                 if ((options.customTarget && options.customTarget.baseTarget === Platform_1.Platform.Linux) || options.target === Platform_1.Platform.Linux) {
-                    const file = (_b = ((_a = project.outputName) !== null && _a !== void 0 ? _a : solutionName) + ('.' + project.outputExt)) !== null && _b !== void 0 ? _b : (options.dynlib ? '.so' : (options.lib ? '.a' : ''));
-                    fs.copySync(path.resolve(path.join(options.to.toString(), options.buildPath), file), path.resolve(options.from.toString(), project.getDebugDir(), file), { overwrite: true });
+                    if (options.lib) {
+                        fs.copySync(path.resolve(path.join(options.to.toString(), options.buildPath), solutionName + '.a'), path.resolve(options.from.toString(), project.getDebugDir(), solutionName + '.a'), { overwrite: true });
+                    }
+                    else if (options.dynlib) {
+                        fs.copySync(path.resolve(path.join(options.to.toString(), options.buildPath), solutionName + '.so'), path.resolve(options.from.toString(), project.getDebugDir(), solutionName + '.so'), { overwrite: true });
+                    }
+                    else {
+                        fs.copySync(path.resolve(path.join(options.to.toString(), options.buildPath), solutionName), path.resolve(options.from.toString(), project.getDebugDir(), solutionName), { overwrite: true });
+                    }
                 }
                 else if ((options.customTarget && options.customTarget.baseTarget === Platform_1.Platform.Windows) || options.target === Platform_1.Platform.Windows) {
-                    const extension = (_c = project.outputExt) !== null && _c !== void 0 ? _c : ((options.lib || options.dynlib) ? (options.lib ? '.lib' : '.dll') : '.exe');
-                    const file = ((_d = project.outputName) !== null && _d !== void 0 ? _d : solutionName) + extension;
+                    const extension = (options.lib || options.dynlib) ? (options.lib ? '.lib' : '.dll') : '.exe';
                     const from = dothemath
-                        ? path.join(options.to.toString(), 'x64', options.debug ? 'Debug' : 'Release', file)
-                        : path.join(options.to.toString(), options.debug ? 'Debug' : 'Release', file);
+                        ? path.join(options.to.toString(), 'x64', options.debug ? 'Debug' : 'Release', solutionName + extension)
+                        : path.join(options.to.toString(), options.debug ? 'Debug' : 'Release', solutionName + extension);
                     const dir = path.isAbsolute(project.getDebugDir())
                         ? project.getDebugDir()
                         : path.join(options.from.toString(), project.getDebugDir());
-                    fs.copySync(from, path.join(dir, file), { overwrite: true });
-                }
-                else if (options.target === Platform_1.Platform.OSX || options.target === Platform_1.Platform.iOS) {
-                    const from = 'build/Release/';
-                    const to = path.isAbsolute(project.getDebugDir()) ? project.getDebugDir() : path.join(options.from.toString(), project.getDebugDir());
-                    const file = ((_e = project.outputName) !== null && _e !== void 0 ? _e : project.name) + ((_f = project.outputExt) !== null && _f !== void 0 ? _f : (options.dynlib ? '.dylib' : (options.lib ? '.a' : '.app')));
-                    fs.copySync(from + file, path.join(to, file), { overwrite: true });
+                    fs.copySync(from, path.join(dir, solutionName + extension), { overwrite: true });
                 }
                 if (options.run) {
                     if ((options.customTarget && options.customTarget.baseTarget === Platform_1.Platform.OSX) || options.target === Platform_1.Platform.OSX) {

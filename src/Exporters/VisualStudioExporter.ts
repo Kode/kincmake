@@ -168,7 +168,7 @@ export class VisualStudioExporter extends Exporter {
 		}
 	}
 
-	getConfigurationType(options: any) {
+	getConfiguationType(options: any) {
 		if (options.lib) {
 			return 'StaticLibrary';
 		}
@@ -476,7 +476,7 @@ export class VisualStudioExporter extends Exporter {
 
 	addPropertyGroup(buildType: string, wholeProgramOptimization: boolean, platform: string, project: Project, options: any) {
 		this.p('<PropertyGroup Condition="\'$(Configuration)|$(Platform)\'==\'' + buildType + '|' + this.GetSys(platform) + '\'" Label="Configuration">', 1);
-		this.p('<ConfigurationType>' + this.getConfigurationType(options) + '</ConfigurationType>', 2);
+		this.p('<ConfigurationType>' + this.getConfiguationType(options) + '</ConfigurationType>', 2);
 		this.p('<WholeProgramOptimization>' + ((wholeProgramOptimization && project.linkTimeOptimization) ? 'true' : 'false') + '</WholeProgramOptimization>', 2);
 		this.p('<CharacterSet>MultiByte</CharacterSet>', 2);
 		this.p('</PropertyGroup>', 1);
@@ -503,7 +503,7 @@ export class VisualStudioExporter extends Exporter {
 
 	addWin8PropertyGroup(debug: boolean, platform: string, project: Project, options: any) {
 		this.p('<PropertyGroup Condition="\'$(Configuration)|$(Platform)\'==\'' + (debug ? 'Debug' : 'Release') + '|' + platform + '\'" Label="Configuration">', 1);
-		this.p('<ConfigurationType>' + this.getConfigurationType(options) + '</ConfigurationType>', 2);
+		this.p('<ConfigurationType>' + this.getConfiguationType(options) + '</ConfigurationType>', 2);
 		this.p('<UseDebugLibraries>' + (debug ? 'true' : 'false') + '</UseDebugLibraries>', 2);
 		if (!debug && project.linkTimeOptimization) this.p('<WholeProgramOptimization>true</WholeProgramOptimization>', 2);
 		this.p('<PlatformToolset>' + this.getPlatformToolset() + '</PlatformToolset>', 2);
@@ -513,7 +513,7 @@ export class VisualStudioExporter extends Exporter {
 
 	configuration(config: string, system: string, indent: number, project: Project, options: any) {
 		this.p('<PropertyGroup Condition="\'$(Configuration)\'==\'' + config + '\'" Label="Configuration">', indent);
-		this.p('<ConfigurationType>' + this.getConfigurationType(options) + '</ConfigurationType>', indent + 1);
+		this.p('<ConfigurationType>' + this.getConfiguationType(options) + '</ConfigurationType>', indent + 1);
 		this.p('<UseDebugLibraries>' + (config === 'Release' ? 'false' : 'true') + '</UseDebugLibraries>', indent + 1);
 		this.p('<PlatformToolset>' + this.getPlatformToolset() + '</PlatformToolset>', indent + 1);
 		this.p('<PreferredToolArchitecture>x64</PreferredToolArchitecture>', indent + 1);
@@ -839,20 +839,6 @@ export class VisualStudioExporter extends Exporter {
 				this.addOns2(config, system, this.getDebugDir(from, project), 1);
 			}
 		}
-
-		for (let system of this.getSystems(platform)) {
-			for (let config of this.getConfigs(platform)) {
-				this.p('<PropertyGroup Condition="\'$(Configuration)|$(Platform)\'==\'' + config + '|' + system + '\'">', 1);
-				if (project.outputName) {
-					this.p('<TargetName>' + project.outputName + '</TargetName>', 2);
-				}
-				if (project.outputExt) {
-					this.p('<TargetExt>' + '.' + project.outputExt + '</TargetExt>', 2);
-				}
-				this.p('</PropertyGroup>', 1);
-			}
-		}
-
 
 		let debugDefines = '_DEBUG;';
 		let releaseDefines = 'NDEBUG;';

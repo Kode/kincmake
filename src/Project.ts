@@ -206,8 +206,6 @@ export class Project {
 	additionalBackends: string[] = [];
 	vsdeploy: boolean = false;
 	linkTimeOptimization: boolean = true;
-	outputName: string | null = null;
-	outputExt: string | null = null;
 
 	constructor(name: string) {
 		this.name = name;
@@ -245,11 +243,6 @@ export class Project {
 		this.cmd = false;
 		this.stackSize = 0;
 		this.kincProcessed = false;
-	}
-
-	setOutput(name: string, ext: string | null): void {
-		this.outputName = name;
-		this.outputExt = ext;
 	}
 
 	addBackend(name: string) {

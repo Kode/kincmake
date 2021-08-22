@@ -117,8 +117,6 @@ class Project {
         this.additionalBackends = [];
         this.vsdeploy = false;
         this.linkTimeOptimization = true;
-        this.outputName = null;
-        this.outputExt = null;
         this.name = name;
         this.safeName = name.replace(/[^A-z0-9\-\_]/g, '-');
         this.version = '1.0';
@@ -153,10 +151,6 @@ class Project {
         this.cmd = false;
         this.stackSize = 0;
         this.kincProcessed = false;
-    }
-    setOutput(name, ext) {
-        this.outputName = name;
-        this.outputExt = ext;
     }
     addBackend(name) {
         this.additionalBackends.push(name);

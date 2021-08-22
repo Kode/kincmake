@@ -130,18 +130,27 @@ export class FreeBSDExporter extends Exporter {
 		if (!options.debug) optimization = '-O2';
 		else optimization = '-g';
 
-		let fileName = (project.outputName ?? project.getSafeName()) + (('.' + project.outputExt) ?? (options.lib ? '.a' : (options.dynlib ? '.so' : '')));
-
-		this.p(fileName + ': ' + gchfilelist + ofilelist);
+		if (options.lib) {
+			this.p(project.getSafeName() + '.a: ' + gchfilelist + ofilelist);
+		}
+		else if (options.dynlib) {
+			this.p(project.getSafeName() + '.so: ' + gchfilelist + ofilelist);
+		}
+		else {
+			this.p(project.getSafeName() + ': ' + gchfilelist + ofilelist);
+		}
 
 		let cpp = '';
 		if (project.cpp11 && options.compiler !== Compiler.Clang) {
 			cpp = '-std=c++11';
 		}
 
-		let output = '-o "' + fileName + '"';
-		if (options.dynlib) {
-			output = '-shared' + output;
+		let output = '-o "' + project.getSafeName() + '"';
+		if (options.lib) {
+			output = '-o "' + project.getSafeName() + '.a"';
+		}
+		else if (options.dynlib) {
+			output = '-shared -o "' + project.getSafeName() + '.so"';
 		}
 		this.p('\t' + (options.lib ? 'ar rcs' : cppCompiler) + ' ' + output + ' ' + cpp + ' ' + optimization + ' ' + ofilelist + ' $(LIB)');
 
