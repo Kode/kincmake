@@ -425,7 +425,7 @@ function compileProject(make: child_process.ChildProcess, project: Project, solu
 			log.info(`Build time: ${min}m ${sec}s`);
 			if (code === 0) {
 				if ((options.customTarget && options.customTarget.baseTarget === Platform.Linux) || options.target === Platform.Linux) {
-					const file = (project.outputName ?? solutionName) + ("." + project.outputExt) ?? (options.dynlib ? ".so" : (options.lib ? ".a" : ""));
+					const file = (project.outputName ?? solutionName) + ('.' + project.outputExt) ?? (options.dynlib ? '.so' : (options.lib ? '.a' : ''));
 					fs.copySync(path.resolve(path.join(options.to.toString(), options.buildPath), file), path.resolve(options.from.toString(), project.getDebugDir(), file), { overwrite: true });
 				}
 				else if ((options.customTarget && options.customTarget.baseTarget === Platform.Windows) || options.target === Platform.Windows) {
@@ -439,10 +439,11 @@ function compileProject(make: child_process.ChildProcess, project: Project, solu
 						? project.getDebugDir()
 						: path.join(options.from.toString(), project.getDebugDir());
 					fs.copySync(from, path.join(dir, file), { overwrite: true });
-				} else if(options.target == Platform.OSX || options.target == Platform.iOS) {
-					const from = "build/Release/";
+				}
+				else if (options.target === Platform.OSX || options.target === Platform.iOS) {
+					const from = 'build/Release/';
 					const to = path.isAbsolute(project.getDebugDir()) ? project.getDebugDir() : path.join(options.from.toString(), project.getDebugDir());
-					const file = (project.outputName ?? project.name) + (project.outputExt ?? (options.dynlib ? ".dylib" : (options.lib ? ".a" : ".app")));
+					const file = (project.outputName ?? project.name) + (project.outputExt ?? (options.dynlib ? '.dylib' : (options.lib ? '.a' : '.app')));
 					fs.copySync(from + file, path.join(to, file), { overwrite: true });
 				}
 				if (options.run) {

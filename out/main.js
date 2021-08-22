@@ -395,7 +395,7 @@ function compileProject(make, project, solutionName, options, dothemath) {
             log.info(`Build time: ${min}m ${sec}s`);
             if (code === 0) {
                 if ((options.customTarget && options.customTarget.baseTarget === Platform_1.Platform.Linux) || options.target === Platform_1.Platform.Linux) {
-                    const file = (_b = ((_a = project.outputName) !== null && _a !== void 0 ? _a : solutionName) + ("." + project.outputExt)) !== null && _b !== void 0 ? _b : (options.dynlib ? ".so" : (options.lib ? ".a" : ""));
+                    const file = (_b = ((_a = project.outputName) !== null && _a !== void 0 ? _a : solutionName) + ('.' + project.outputExt)) !== null && _b !== void 0 ? _b : (options.dynlib ? '.so' : (options.lib ? '.a' : ''));
                     fs.copySync(path.resolve(path.join(options.to.toString(), options.buildPath), file), path.resolve(options.from.toString(), project.getDebugDir(), file), { overwrite: true });
                 }
                 else if ((options.customTarget && options.customTarget.baseTarget === Platform_1.Platform.Windows) || options.target === Platform_1.Platform.Windows) {
@@ -409,10 +409,10 @@ function compileProject(make, project, solutionName, options, dothemath) {
                         : path.join(options.from.toString(), project.getDebugDir());
                     fs.copySync(from, path.join(dir, file), { overwrite: true });
                 }
-                else if (options.target == Platform_1.Platform.OSX || options.target == Platform_1.Platform.iOS) {
-                    const from = "build/Release/";
+                else if (options.target === Platform_1.Platform.OSX || options.target === Platform_1.Platform.iOS) {
+                    const from = 'build/Release/';
                     const to = path.isAbsolute(project.getDebugDir()) ? project.getDebugDir() : path.join(options.from.toString(), project.getDebugDir());
-                    const file = ((_e = project.outputName) !== null && _e !== void 0 ? _e : project.name) + ((_f = project.outputExt) !== null && _f !== void 0 ? _f : (options.dynlib ? ".dylib" : (options.lib ? ".a" : ".app")));
+                    const file = ((_e = project.outputName) !== null && _e !== void 0 ? _e : project.name) + ((_f = project.outputExt) !== null && _f !== void 0 ? _f : (options.dynlib ? '.dylib' : (options.lib ? '.a' : '.app')));
                     fs.copySync(from + file, path.join(to, file), { overwrite: true });
                 }
                 if (options.run) {

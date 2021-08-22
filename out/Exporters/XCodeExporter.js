@@ -296,9 +296,9 @@ class XCodeExporter extends Exporter_1.Exporter {
         this.p('/* End PBXBuildFile section */');
         this.p();
         this.p('/* Begin PBXFileReference section */');
-        let ext = (_a = project.outputExt) !== null && _a !== void 0 ? _a : (options.lib ? "a" : (options.dynlib ? "dylib" : "app"));
-        let fileName = ((_b = project.outputName) !== null && _b !== void 0 ? _b : project.getSafeName()) + "." + ext;
-        let fileType = options.lib ? "archive.ar" : (options.dynlib ? '"compiled.mach-o.dylib"' : "wrapper.application");
+        let ext = (_a = project.outputExt) !== null && _a !== void 0 ? _a : (options.lib ? 'a' : (options.dynlib ? 'dylib' : 'app'));
+        let fileName = ((_b = project.outputName) !== null && _b !== void 0 ? _b : project.getSafeName()) + '.' + ext;
+        let fileType = options.lib ? 'archive.ar' : (options.dynlib ? '"compiled.mach-o.dylib"' : 'wrapper.application');
         this.p(appFileId + ' /* ' + fileName + '*/ = {isa = PBXFileReference; explicitFileType = ' + fileType + '; includeInIndex = 0; path = "' + fileName + '"; sourceTree = BUILT_PRODUCTS_DIR; };', 2);
         for (let framework of frameworks) {
             if (framework.toString().endsWith('.framework')) {
@@ -464,7 +464,7 @@ class XCodeExporter extends Exporter_1.Exporter {
         this.p('productName = "' + project.getName() + '";', 3);
         if (project.outputName) {
             this.p('productReference = ' + appFileId + ' /* ' + project.outputName + '*/;', 3);
-            this.p('productType = "com.apple.product-type.' + (options.lib ? "library.static" : (options.dynlib ? "library.dynamic" : (project.isCmd() ? 'tool' : 'application') + '";')), 3);
+            this.p('productType = "com.apple.product-type.' + (options.lib ? 'library.static' : (options.dynlib ? 'library.dynamic' : (project.isCmd() ? 'tool' : 'application') + '";')), 3);
         }
         else if (options.lib) {
             this.p('productReference = ' + appFileId + ' /* ' + project.getSafeName() + '.a */;', 3);

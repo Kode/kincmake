@@ -119,8 +119,8 @@ class FreeBSDExporter extends Exporter_1.Exporter {
             optimization = '-O2';
         else
             optimization = '-g';
-        let fileName = ((_a = project.outputName) !== null && _a !== void 0 ? _a : project.getSafeName()) + ((_b = ("." + project.outputExt)) !== null && _b !== void 0 ? _b : (options.lib ? ".a" : (options.dynlib ? ".so" : "")));
-        this.p(fileName + ": " + gchfilelist + ofilelist);
+        let fileName = ((_a = project.outputName) !== null && _a !== void 0 ? _a : project.getSafeName()) + ((_b = ('.' + project.outputExt)) !== null && _b !== void 0 ? _b : (options.lib ? '.a' : (options.dynlib ? '.so' : '')));
+        this.p(fileName + ': ' + gchfilelist + ofilelist);
         let cpp = '';
         if (project.cpp11 && options.compiler !== Compiler_1.Compiler.Clang) {
             cpp = '-std=c++11';

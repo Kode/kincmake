@@ -340,9 +340,9 @@ export class XCodeExporter extends Exporter {
 		this.p('/* End PBXBuildFile section */');
 		this.p();
 		this.p('/* Begin PBXFileReference section */');
-		let ext = project.outputExt ?? (options.lib ? "a" : (options.dynlib ? "dylib" : "app"));
-		let fileName = (project.outputName ?? project.getSafeName()) + "." + ext;
-		let fileType = options.lib ? "archive.ar" : (options.dynlib ? '"compiled.mach-o.dylib"' : "wrapper.application");
+		let ext = project.outputExt ?? (options.lib ? 'a' : (options.dynlib ? 'dylib' : 'app'));
+		let fileName = (project.outputName ?? project.getSafeName()) + '.' + ext;
+		let fileType = options.lib ? 'archive.ar' : (options.dynlib ? '"compiled.mach-o.dylib"' : 'wrapper.application');
 		this.p(appFileId + ' /* ' + fileName + '*/ = {isa = PBXFileReference; explicitFileType = ' + fileType + '; includeInIndex = 0; path = "' + fileName + '"; sourceTree = BUILT_PRODUCTS_DIR; };', 2);
 
 		for (let framework of frameworks) {
@@ -493,10 +493,11 @@ export class XCodeExporter extends Exporter {
 		this.p(');', 3);
 		this.p('name = "' + project.getName() + '";', 3);
 		this.p('productName = "' + project.getName() + '";', 3);
-		if(project.outputName) {
+		if (project.outputName) {
 			this.p('productReference = ' + appFileId + ' /* ' + project.outputName + '*/;', 3);
-			this.p('productType = "com.apple.product-type.' + (options.lib ? "library.static" : (options.dynlib ? "library.dynamic" : (project.isCmd() ? 'tool' : 'application') + '";')), 3);
-		} else if (options.lib) {
+			this.p('productType = "com.apple.product-type.' + (options.lib ? 'library.static' : (options.dynlib ? 'library.dynamic' : (project.isCmd() ? 'tool' : 'application') + '";')), 3);
+		}
+		else if (options.lib) {
 			this.p('productReference = ' + appFileId + ' /* ' + project.getSafeName() + '.a */;', 3);
 			this.p('productType = "com.apple.product-type.library.static";', 3);
 		}

@@ -130,9 +130,9 @@ export class FreeBSDExporter extends Exporter {
 		if (!options.debug) optimization = '-O2';
 		else optimization = '-g';
 
-		let fileName = (project.outputName ?? project.getSafeName()) + (("." + project.outputExt) ?? (options.lib ? ".a" : (options.dynlib ? ".so" : "")));
+		let fileName = (project.outputName ?? project.getSafeName()) + (('.' + project.outputExt) ?? (options.lib ? '.a' : (options.dynlib ? '.so' : '')));
 
-		this.p(fileName + ": " + gchfilelist + ofilelist);
+		this.p(fileName + ': ' + gchfilelist + ofilelist);
 
 		let cpp = '';
 		if (project.cpp11 && options.compiler !== Compiler.Clang) {

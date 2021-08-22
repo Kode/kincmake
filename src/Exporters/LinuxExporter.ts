@@ -128,9 +128,9 @@ export class LinuxExporter extends Exporter {
 		if (!options.debug) optimization = '-O2';
 		else optimization = '-g';
 
-		let fileName = (project.outputName ?? project.getSafeName()) + (("." + project.outputExt) ?? (options.lib ? ".a" : (options.dynlib ? ".so" : "")));
+		let fileName = (project.outputName ?? project.getSafeName()) + (('.' + project.outputExt) ?? (options.lib ? '.a' : (options.dynlib ? '.so' : '')));
 
-		this.p(fileName + ": " + gchfilelist + ofilelist);
+		this.p(fileName + ': ' + gchfilelist + ofilelist);
 
 		let cpp = '';
 		if (project.cpp11 && options.compiler !== Compiler.Clang) {
@@ -198,7 +198,7 @@ export class LinuxExporter extends Exporter {
 		this.p('<Option compiler="gcc" />', 2);
 		this.p('<Build>', 2);
 		this.p('<Target title="Debug">', 3);
-		this.p('<Option output="bin/Debug/' + (project.outputName ?? project.getSafeName()) + '" prefix_auto="' + project.outputName ? "0" : "1" + '" extension_auto="' + project.outputName ? "0" : "1" + '" />', 4);
+		this.p('<Option output="bin/Debug/' + (project.outputName ?? project.getSafeName()) + '" prefix_auto="' + project.outputName ? '0' : '1' + '" extension_auto="' + project.outputName ? '0' : '1' + '" />', 4);
 		if (project.getDebugDir().length > 0) this.p('<Option working_dir="' + path.resolve(from, project.getDebugDir()) + '" />', 4);
 		this.p('<Option object_output="obj/Debug/" />', 4);
 		this.p('<Option type="1" />', 4);
@@ -211,7 +211,7 @@ export class LinuxExporter extends Exporter {
 		this.p('</Compiler>', 4);
 		this.p('</Target>', 3);
 		this.p('<Target title="Release">', 3);
-		this.p('<Option output="bin/Release/' + (project.outputName ?? project.getSafeName()) + '" prefix_auto="' + project.outputName ? "0" : "1" + '" extension_auto="' + project.outputName ? "0" : "1" + '" />', 4);
+		this.p('<Option output="bin/Release/' + (project.outputName ?? project.getSafeName()) + '" prefix_auto="' + project.outputName ? '0' : '1' + '" extension_auto="' + project.outputName ? '0' : '1' + '" />', 4);
 		if (project.getDebugDir().length > 0) this.p('<Option working_dir="' + path.resolve(from, project.getDebugDir()) + '" />', 4);
 		this.p('<Option object_output="obj/Release/" />', 4);
 		this.p('<Option type="0" />', 4);

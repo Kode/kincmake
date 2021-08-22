@@ -790,9 +790,9 @@ class VisualStudioExporter extends Exporter_1.Exporter {
                     this.p('<TargetName>' + project.outputName + '</TargetName>', 2);
                 }
                 if (project.outputExt) {
-                    this.p('<TargetExt>' + "." + project.outputExt + '</TargetExt>', 2);
+                    this.p('<TargetExt>' + '.' + project.outputExt + '</TargetExt>', 2);
                 }
-                this.p("</PropertyGroup>", 1);
+                this.p('</PropertyGroup>', 1);
             }
         }
         let debugDefines = '_DEBUG;';
