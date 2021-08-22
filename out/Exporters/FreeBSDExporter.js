@@ -17,6 +17,7 @@ class FreeBSDExporter extends Exporter_1.Exporter {
         this.exportCLion(project, from, to, platform, vrApi, options);
     }
     exportMakefile(project, from, to, platform, vrApi, options) {
+        var _a, _b;
         const cCompiler = Options_1.Options.compiler === Compiler_1.Compiler.GCC ? 'gcc' : 'clang';
         const cppCompiler = Options_1.Options.compiler === Compiler_1.Compiler.GCC ? 'g++' : 'clang++';
         let objects = {};
@@ -118,25 +119,15 @@ class FreeBSDExporter extends Exporter_1.Exporter {
             optimization = '-O2';
         else
             optimization = '-g';
-        if (options.lib) {
-            this.p(project.getSafeName() + '.a: ' + gchfilelist + ofilelist);
-        }
-        else if (options.dynlib) {
-            this.p(project.getSafeName() + '.so: ' + gchfilelist + ofilelist);
-        }
-        else {
-            this.p(project.getSafeName() + ': ' + gchfilelist + ofilelist);
-        }
+        let fileName = ((_a = project.outputName) !== null && _a !== void 0 ? _a : project.getSafeName()) + ((_b = ("." + project.outputExt)) !== null && _b !== void 0 ? _b : (options.lib ? ".a" : (options.dynlib ? ".so" : "")));
+        this.p(fileName + ": " + gchfilelist + ofilelist);
         let cpp = '';
         if (project.cpp11 && options.compiler !== Compiler_1.Compiler.Clang) {
             cpp = '-std=c++11';
         }
-        let output = '-o "' + project.getSafeName() + '"';
-        if (options.lib) {
-            output = '-o "' + project.getSafeName() + '.a"';
-        }
-        else if (options.dynlib) {
-            output = '-shared -o "' + project.getSafeName() + '.so"';
+        let output = '-o "' + fileName + '"';
+        if (options.dynlib) {
+            output = '-shared' + output;
         }
         this.p('\t' + (options.lib ? 'ar rcs' : cppCompiler) + ' ' + output + ' ' + cpp + ' ' + optimization + ' ' + ofilelist + ' $(LIB)');
         for (let file of project.getFiles()) {
