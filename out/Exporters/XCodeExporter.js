@@ -135,7 +135,6 @@ class XCodeExporter extends Exporter_1.Exporter {
         this.closeFile();
     }
     async exportSolution(project, from, to, platform, vrApi, options) {
-        var _a, _b;
         const xdir = path.resolve(to, project.getSafeName() + '.xcodeproj');
         fs.ensureDirSync(xdir);
         this.exportWorkspace(to, project);
@@ -296,10 +295,15 @@ class XCodeExporter extends Exporter_1.Exporter {
         this.p('/* End PBXBuildFile section */');
         this.p();
         this.p('/* Begin PBXFileReference section */');
-        let ext = (_a = project.outputExt) !== null && _a !== void 0 ? _a : (options.lib ? 'a' : (options.dynlib ? 'dylib' : 'app'));
-        let fileName = ((_b = project.outputName) !== null && _b !== void 0 ? _b : project.getSafeName()) + '.' + ext;
-        let fileType = options.lib ? 'archive.ar' : (options.dynlib ? '"compiled.mach-o.dylib"' : 'wrapper.application');
-        this.p(appFileId + ' /* ' + fileName + '*/ = {isa = PBXFileReference; explicitFileType = ' + fileType + '; includeInIndex = 0; path = "' + fileName + '"; sourceTree = BUILT_PRODUCTS_DIR; };', 2);
+        if (options.lib) {
+            this.p(appFileId + ' /* ' + project.getSafeName() + '.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "' + project.getSafeName() + '.a"; sourceTree = BUILT_PRODUCTS_DIR; };', 2);
+        }
+        else if (options.dynlib) {
+            this.p(appFileId + ' /* ' + project.getSafeName() + '.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "' + project.getSafeName() + '.dylib"; sourceTree = BUILT_PRODUCTS_DIR; };', 2);
+        }
+        else {
+            this.p(appFileId + ' /* ' + project.getSafeName() + '.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "' + project.getSafeName() + '.app"; sourceTree = BUILT_PRODUCTS_DIR; };', 2);
+        }
         for (let framework of frameworks) {
             if (framework.toString().endsWith('.framework')) {
                 // Local framework - a directory is specified
@@ -462,11 +466,7 @@ class XCodeExporter extends Exporter_1.Exporter {
         this.p(');', 3);
         this.p('name = "' + project.getName() + '";', 3);
         this.p('productName = "' + project.getName() + '";', 3);
-        if (project.outputName) {
-            this.p('productReference = ' + appFileId + ' /* ' + project.outputName + '*/;', 3);
-            this.p('productType = "com.apple.product-type.' + (options.lib ? 'library.static' : (options.dynlib ? 'library.dynamic' : (project.isCmd() ? 'tool' : 'application') + '";')), 3);
-        }
-        else if (options.lib) {
+        if (options.lib) {
             this.p('productReference = ' + appFileId + ' /* ' + project.getSafeName() + '.a */;', 3);
             this.p('productType = "com.apple.product-type.library.static";', 3);
         }
