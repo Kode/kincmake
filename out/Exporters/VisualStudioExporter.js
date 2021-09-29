@@ -860,11 +860,11 @@ class VisualStudioExporter extends Exporter_1.Exporter {
                 this.p('<ItemDefinitionGroup Condition="\'$(Configuration)|$(Platform)\'==\'' + config.config + '|' + config.system + '\'">', 1);
                 this.p('<Link>', 2);
                 if (config.config === 'Debug') {
-                    this.p('<AdditionalDependencies>d3d11.lib; dxgi.lib; windowscodecs.lib; vccorlibd.lib; msvcrtd.lib; %(AdditionalDependencies)</AdditionalDependencies>', 3);
+                    this.p('<AdditionalDependencies>d3d11.lib; dxgi.lib; windowscodecs.lib; vccorlibd.lib; msvcrtd.lib; dxguid.lib; %(AdditionalDependencies)</AdditionalDependencies>', 3);
                     this.p('<IgnoreSpecificDefaultLibraries>vccorlibd; msvcrtd</IgnoreSpecificDefaultLibraries>', 3);
                 }
                 else {
-                    this.p('<AdditionalDependencies>d3d11.lib; dxgi.lib; windowscodecs.lib; vccorlib.lib; msvcrt.lib; %(AdditionalDependencies)</AdditionalDependencies>', 3);
+                    this.p('<AdditionalDependencies>d3d11.lib; dxgi.lib; windowscodecs.lib; vccorlib.lib; msvcrt.lib; dxguid.lib; %(AdditionalDependencies)</AdditionalDependencies>', 3);
                     this.p('<IgnoreSpecificDefaultLibraries>vccorlib; msvcrt</IgnoreSpecificDefaultLibraries>', 3);
                 }
                 this.p('<AdditionalLibraryDirectories>%(AdditionalLibraryDirectories); $(VCInstallDir)\\lib\\store\\' + libdir + '; $(VCInstallDir)\\lib\\' + libdir + '</AdditionalLibraryDirectories>', 3);
