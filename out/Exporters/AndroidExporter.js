@@ -76,10 +76,15 @@ class AndroidExporter extends Exporter_1.Exporter {
         this.exportIcons(project.icon, outdir, from, to);
         fs.copySync(path.join(indir, 'gradle', 'wrapper', 'gradle-wrapper.jar'), path.join(outdir, 'gradle', 'wrapper', 'gradle-wrapper.jar'));
         fs.copySync(path.join(indir, 'gradle', 'wrapper', 'gradle-wrapper.properties'), path.join(outdir, 'gradle', 'wrapper', 'gradle-wrapper.properties'));
+        fs.copySync(path.join(indir, 'idea', 'gitignore'), path.join(outdir, 'idea', '.gitignore'));
         fs.copySync(path.join(indir, 'idea', 'gradle.xml'), path.join(outdir, '.idea', 'gradle.xml'));
         fs.copySync(path.join(indir, 'idea', 'misc.xml'), path.join(outdir, '.idea', 'misc.xml'));
-        fs.copySync(path.join(indir, 'idea', 'runConfigurations.xml'), path.join(outdir, '.idea', 'runConfigurations.xml'));
-        fs.copySync(path.join(indir, 'idea', 'codeStyles', 'Project.xml'), path.join(outdir, '.idea', 'codeStyles', 'Project.xml'));
+        let modules = fs.readFileSync(path.join(indir, 'idea', 'modules.xml'), 'utf8');
+        modules = modules.replace(/{name}/g, project.getName());
+        fs.copySync(path.join(indir, 'idea', 'modules.xml'), path.join(outdir, '.idea', 'modules.xml'));
+        fs.writeFileSync(path.join(outdir, '.idea', 'modules.xml'), modules);
+        fs.ensureDirSync(path.join(outdir, '.idea', 'modules'));
+        fs.copySync(path.join(indir, 'idea', 'modules', 'My Application.iml'), path.join(outdir, '.idea', 'modules', project.getName() + '.xml'));
         if (targetOptions.customFilesPath != null) {
             const dir = targetOptions.customFilesPath;
             if (!fs.existsSync(dir))
@@ -230,6 +235,7 @@ class AndroidExporter extends Exporter_1.Exporter {
             const dpi = dpis[i];
             fs.ensureDirSync(path.join(outdir, 'app', 'src', 'main', 'res', folder));
             Icon.exportPng(icon, path.resolve(to, this.safeName, 'app', 'src', 'main', 'res', folder, 'ic_launcher.png'), dpi, dpi, undefined, from);
+            Icon.exportPng(icon, path.resolve(to, this.safeName, 'app', 'src', 'main', 'res', folder, 'ic_launcher_round.png'), dpi, dpi, undefined, from);
         }
     }
 }
