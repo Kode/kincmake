@@ -1,10 +1,11 @@
-import {Exporter} from './Exporter';
-import {GraphicsApi} from '../GraphicsApi';
-import {Options} from '../Options';
-import {Platform} from '../Platform';
-import {Project} from '../Project';
+import { Exporter } from './Exporter';
+import { GraphicsApi } from '../GraphicsApi';
+import { Options } from '../Options';
+import { Platform } from '../Platform';
+import { Project } from '../Project';
 import * as fs from 'fs-extra';
 import * as path from 'path';
+import * as process from 'process';
 import { Compiler } from '../Compiler';
 
 export class LinuxExporter extends Exporter {
@@ -16,6 +17,7 @@ export class LinuxExporter extends Exporter {
 		this.exportMakefile(project, from, to, platform, vrApi, options);
 		this.exportCodeBlocks(project, from, to, platform, vrApi, options);
 		this.exportCLion(project, from, to, platform, vrApi, options);
+		this.exportCompileCommands(project, from, to, platform, vrApi, options);
 	}
 
 	exportMakefile(project: Project, from: string, to: string, platform: string, vrApi: any, options: any) {
@@ -96,7 +98,7 @@ export class LinuxExporter extends Exporter {
 			if (def.config && def.config.toLowerCase() === 'debug' && !options.debug) {
 				continue;
 			}
-			
+
 			if (def.config && def.config.toLowerCase() === 'release' && options.debug) {
 				continue;
 			}
@@ -303,6 +305,102 @@ export class LinuxExporter extends Exporter {
 		this.p('</Extensions>', 2);
 		this.p('</Project>', 1);
 		this.p('</CodeBlocks_project_file>');
+		this.closeFile();
+	}
+
+	exportCompileCommands(project: Project, _from: string, to: string, platform: string, vrApi: any, options: any) {
+		let from = path.resolve(process.cwd(), _from);
+		// TODO : assembly files, precompiled headers and all that stuff
+		// compile_commands.json is primarily for code completion so those things shouldn't matter too much
+		this.writeFile(path.resolve(to, 'compile_commands.json'));
+		let includes = [];
+		for (let inc of project.getIncludeDirs()) {
+			includes.push('-I');
+			includes.push(path.resolve(from, inc));
+		}
+		let defines = [];
+		for (let def of project.getDefines()) {
+			defines.push('-D');
+			defines.push(def.value.replace(/\"/g, '\\"'));
+		}
+		let libs = [];
+		for (let lib of project.getLibs()) {
+			libs.push('-l' + lib);
+		}
+		let optimization = options.debug ? '-g' : '-O2';
+
+		let objects: any = {};
+		let ofiles: any = {};
+		for (let fileobject of project.getFiles()) {
+			let file = fileobject.file;
+			if (file.endsWith('.cpp') || file.endsWith('.c') || file.endsWith('.cc') || file.endsWith('.s') || file.endsWith('.S')) {
+				let name = file.toLowerCase();
+				if (name.indexOf('/') >= 0) name = name.substr(name.lastIndexOf('/') + 1);
+				name = name.substr(0, name.lastIndexOf('.'));
+				if (!objects[name]) {
+					objects[name] = true;
+					ofiles[file] = name;
+				}
+				else {
+					while (objects[name]) {
+						name = name + '_';
+					}
+					objects[name] = true;
+					ofiles[file] = name;
+				}
+			}
+		}
+
+		let commands = [];
+		for (let fileobject of project.getFiles()) {
+			let file = fileobject.file;
+			if (file.endsWith('.c') || file.endsWith('.cpp') || file.endsWith('.cc')) {
+				let args = [file.endsWith('.c') ? '/usr/bin/clang' : '/usr/bin/clang++', optimization, '-c', '-o', (options.debug ? 'Debug' : 'Release') + ofiles[file] + '.o'];
+				if (file.endsWith('.c')) {
+					args.push('-std=c99');
+				}
+				if (options.dynlib) {
+					args.push('-fPIC');
+				}
+				args.push(path.resolve(from, file));
+				let command = {
+					directory: from,
+					file: path.resolve(from, file),
+					output: path.resolve(to, ofiles[file] + '.o'),
+					arguments: args.concat(includes).concat(defines)
+				};
+				commands.push(command);
+			}
+		}
+		let linker_args = ['/usr/bin/clang', '-O2', '-static-libgcc', '-static-libstdc++', '-pthread'];
+		for (let file in ofiles) {
+			linker_args.push(path.resolve(to, ofiles[file] + '.o'));
+		}
+		linker_args.push('-o');
+		if (options.lib) {
+			linker_args.push('-o');
+			linker_args.push(project.getSafeName() + '.a');
+		}
+		else if (options.dynlib) {
+			linker_args.push('-shared');
+			linker_args.push('-fPIC');
+			linker_args.push('-o');
+			linker_args.push(project.getSafeName() + '.so');
+
+		}
+		else {
+			linker_args.push('-o');
+			linker_args.push(project.getSafeName());
+		}
+
+		commands.push({
+			directory: from,
+			output: linker_args[linker_args.length - 1],
+			arguments: linker_args.concat(libs)
+		});
+
+
+		this.p(JSON.stringify(commands));
 		this.closeFile();
 	}
 }
