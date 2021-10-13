@@ -1,5 +1,5 @@
 import * as idl from 'webidl2';
-import {Language} from './Language';
+import { Language } from './Language';
 import * as path from 'path';
 
 export class BeefLang extends Language {

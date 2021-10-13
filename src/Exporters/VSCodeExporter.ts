@@ -1,6 +1,6 @@
-import {Exporter} from './Exporter';
-import {Project} from '../Project';
-import {Platform} from '../Platform';
+import { Exporter } from './Exporter';
+import { Project } from '../Project';
+import { Platform } from '../Platform';
 import * as fs from 'fs-extra';
 import * as path from 'path';
 

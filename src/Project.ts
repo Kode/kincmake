@@ -1,13 +1,13 @@
 import * as fs from 'fs-extra';
 import * as path from 'path';
 import * as log from './log';
-import {GraphicsApi} from './GraphicsApi';
-import {Architecture} from './Architecture';
-import {AudioApi} from './AudioApi';
-import {VrApi} from './VrApi';
-import {RayTraceApi} from './RayTraceApi';
-import {Options} from './Options';
-import {Platform} from './Platform';
+import { GraphicsApi } from './GraphicsApi';
+import { Architecture } from './Architecture';
+import { AudioApi } from './AudioApi';
+import { VrApi } from './VrApi';
+import { RayTraceApi } from './RayTraceApi';
+import { Options } from './Options';
+import { Platform } from './Platform';
 const uuid = require('uuid');
 
 function getDefines(platform: string, rotated: boolean) {

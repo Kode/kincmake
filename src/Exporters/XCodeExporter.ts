@@ -1,9 +1,9 @@
-import {Exporter} from './Exporter';
-import {GraphicsApi} from '../GraphicsApi';
+import { Exporter } from './Exporter';
+import { GraphicsApi } from '../GraphicsApi';
 import * as Icon from '../Icon';
-import {Platform} from '../Platform';
-import {Options} from '../Options';
-import {Project} from '../Project';
+import { Platform } from '../Platform';
+import { Options } from '../Options';
+import { Project } from '../Project';
 import * as Proj from '../Project';
 import * as fs from 'fs-extra';
 import * as path from 'path';

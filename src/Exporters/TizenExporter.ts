@@ -1,5 +1,5 @@
-import {Exporter} from './Exporter';
-import {Project} from '../Project';
+import { Exporter } from './Exporter';
+import { Project } from '../Project';
 import * as fs from 'fs-extra';
 import * as path from 'path';
 

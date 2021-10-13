@@ -1,14 +1,14 @@
 import * as os from 'os';
 import * as path from 'path';
-import {Options} from './Options';
-import {Platform} from './Platform';
-import {GraphicsApi} from './GraphicsApi';
-import {Architecture} from './Architecture';
-import {AudioApi} from './AudioApi';
-import {VrApi} from './VrApi';
-import {RayTraceApi} from './RayTraceApi';
-import {Compiler} from './Compiler';
-import {VisualStudioVersion} from './VisualStudioVersion';
+import { Options } from './Options';
+import { Platform } from './Platform';
+import { GraphicsApi } from './GraphicsApi';
+import { Architecture } from './Architecture';
+import { AudioApi } from './AudioApi';
+import { VrApi } from './VrApi';
+import { RayTraceApi } from './RayTraceApi';
+import { Compiler } from './Compiler';
+import { VisualStudioVersion } from './VisualStudioVersion';
 
 let defaultTarget: string;
 if (os.platform() === 'linux') {

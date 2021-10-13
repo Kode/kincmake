@@ -1,6 +1,6 @@
-import {Block} from './Block';
-import {Configuration} from './Configuration';
-import {Platform} from './Platform';
+import { Block } from './Block';
+import { Configuration } from './Configuration';
+import { Platform } from './Platform';
 
 function toLine(options: any) {
 	let line = '';

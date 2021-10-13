@@ -1,10 +1,10 @@
-import {GraphicsApi} from './GraphicsApi';
-import {Architecture} from './Architecture';
-import {AudioApi} from './AudioApi';
-import {VrApi} from './VrApi';
-import {RayTraceApi} from './RayTraceApi';
-import {VisualStudioVersion} from './VisualStudioVersion';
-import {Compiler} from './Compiler';
+import { GraphicsApi } from './GraphicsApi';
+import { Architecture } from './Architecture';
+import { AudioApi } from './AudioApi';
+import { VrApi } from './VrApi';
+import { RayTraceApi } from './RayTraceApi';
+import { VisualStudioVersion } from './VisualStudioVersion';
+import { Compiler } from './Compiler';
 
 export let Options = {
 	precompiledHeaders: false,

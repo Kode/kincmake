@@ -1,4 +1,4 @@
-import {Project} from '../Project';
+import { Project } from '../Project';
 import * as fs from 'fs-extra';
 import * as path from 'path';
 import { resolve } from 'dns';
