@@ -185,7 +185,13 @@ export class VisualStudioExporter extends Exporter {
 
 		this.writeFile(path.resolve(to, project.getSafeName() + '.sln'));
 
-		if (Options.visualStudioVersion === VisualStudioVersion.VS2019) {
+		if (Options.visualStudioVersion === VisualStudioVersion.VS2022) {
+			this.p('Microsoft Visual Studio Solution File, Format Version 12.00');
+			this.p('# Visual Studio Version 17');
+			this.p('VisualStudioVersion = 17.0.31903.59');
+			this.p('MinimumVisualStudioVersion = 10.0.40219.1');
+		}
+		else if (Options.visualStudioVersion === VisualStudioVersion.VS2019) {
 			this.p('Microsoft Visual Studio Solution File, Format Version 12.00');
 			this.p('# Visual Studio Version 16');
 			this.p('VisualStudioVersion = 16.0.28729.10');
@@ -496,6 +502,8 @@ export class VisualStudioExporter extends Exporter {
 				return 'v141';
 			case VisualStudioVersion.VS2019:
 				return 'v142';
+			case VisualStudioVersion.VS2022:
+				return 'v143';
 			default:
 				throw 'Unknown Visual Studio version';
 		}
@@ -706,7 +714,7 @@ export class VisualStudioExporter extends Exporter {
 			windowsTargetVersion = foundVersion;
 		}
 
-		if (Options.visualStudioVersion === VisualStudioVersion.VS2019) {
+		if (Options.visualStudioVersion === VisualStudioVersion.VS2022 || Options.visualStudioVersion === VisualStudioVersion.VS2019) {
 			this.p('<VCProjectVersion>16.0</VCProjectVersion>', indent);
 		}
 		else if (Options.visualStudioVersion === VisualStudioVersion.VS2017) {
@@ -727,7 +735,7 @@ export class VisualStudioExporter extends Exporter {
 		else if (Options.visualStudioVersion === VisualStudioVersion.VS2017) {
 			this.p('<WindowsTargetPlatformVersion>' + windowsTargetVersion + '</WindowsTargetPlatformVersion>', indent);
 		}
-		else if (Options.visualStudioVersion === VisualStudioVersion.VS2019) {
+		else if (Options.visualStudioVersion === VisualStudioVersion.VS2022 || Options.visualStudioVersion === VisualStudioVersion.VS2019) {
 			this.p('<WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>', indent);
 		}
 	}

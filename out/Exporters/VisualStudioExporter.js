@@ -175,7 +175,13 @@ class VisualStudioExporter extends Exporter_1.Exporter {
     async exportSolution(project, from, to, platform, vrApi, options) {
         this.exportCLion(project, from, to, platform, vrApi, options);
         this.writeFile(path.resolve(to, project.getSafeName() + '.sln'));
-        if (Options_1.Options.visualStudioVersion === VisualStudioVersion_1.VisualStudioVersion.VS2019) {
+        if (Options_1.Options.visualStudioVersion === VisualStudioVersion_1.VisualStudioVersion.VS2022) {
+            this.p('Microsoft Visual Studio Solution File, Format Version 12.00');
+            this.p('# Visual Studio Version 17');
+            this.p('VisualStudioVersion = 17.0.31903.59');
+            this.p('MinimumVisualStudioVersion = 10.0.40219.1');
+        }
+        else if (Options_1.Options.visualStudioVersion === VisualStudioVersion_1.VisualStudioVersion.VS2019) {
             this.p('Microsoft Visual Studio Solution File, Format Version 12.00');
             this.p('# Visual Studio Version 16');
             this.p('VisualStudioVersion = 16.0.28729.10');
@@ -470,6 +476,8 @@ class VisualStudioExporter extends Exporter_1.Exporter {
                 return 'v141';
             case VisualStudioVersion_1.VisualStudioVersion.VS2019:
                 return 'v142';
+            case VisualStudioVersion_1.VisualStudioVersion.VS2022:
+                return 'v143';
             default:
                 throw 'Unknown Visual Studio version';
         }
@@ -666,7 +674,7 @@ class VisualStudioExporter extends Exporter_1.Exporter {
         if (foundVersion) {
             windowsTargetVersion = foundVersion;
         }
-        if (Options_1.Options.visualStudioVersion === VisualStudioVersion_1.VisualStudioVersion.VS2019) {
+        if (Options_1.Options.visualStudioVersion === VisualStudioVersion_1.VisualStudioVersion.VS2022 || Options_1.Options.visualStudioVersion === VisualStudioVersion_1.VisualStudioVersion.VS2019) {
             this.p('<VCProjectVersion>16.0</VCProjectVersion>', indent);
         }
         else if (Options_1.Options.visualStudioVersion === VisualStudioVersion_1.VisualStudioVersion.VS2017) {
@@ -686,7 +694,7 @@ class VisualStudioExporter extends Exporter_1.Exporter {
         else if (Options_1.Options.visualStudioVersion === VisualStudioVersion_1.VisualStudioVersion.VS2017) {
             this.p('<WindowsTargetPlatformVersion>' + windowsTargetVersion + '</WindowsTargetPlatformVersion>', indent);
         }
-        else if (Options_1.Options.visualStudioVersion === VisualStudioVersion_1.VisualStudioVersion.VS2019) {
+        else if (Options_1.Options.visualStudioVersion === VisualStudioVersion_1.VisualStudioVersion.VS2022 || Options_1.Options.visualStudioVersion === VisualStudioVersion_1.VisualStudioVersion.VS2019) {
             this.p('<WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>', indent);
         }
     }

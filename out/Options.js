@@ -17,7 +17,7 @@ exports.Options = {
     vrApi: VrApi_1.VrApi.None,
     rayTraceApi: RayTraceApi_1.RayTraceApi.None,
     compiler: Compiler_1.Compiler.Default,
-    visualStudioVersion: VisualStudioVersion_1.VisualStudioVersion.VS2019,
+    visualStudioVersion: VisualStudioVersion_1.VisualStudioVersion.VS2022,
     compile: false,
     run: false
 };
