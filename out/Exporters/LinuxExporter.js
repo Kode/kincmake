@@ -348,7 +348,7 @@ class LinuxExporter extends Exporter_1.Exporter {
                 commands.push(command);
             }
         }
-        let linker_args = ['/usr/bin/clang', '-O2', '-static-libgcc', '-static-libstdc++', '-pthread'];
+        /*let linker_args = ['/usr/bin/clang', '-O2', '-static-libgcc', '-static-libstdc++', '-pthread'];
         for (let file in ofiles) {
             linker_args.push(path.resolve(to, ofiles[file] + '.o'));
         }
@@ -362,16 +362,18 @@ class LinuxExporter extends Exporter_1.Exporter {
             linker_args.push('-fPIC');
             linker_args.push('-o');
             linker_args.push(project.getSafeName() + '.so');
+
         }
         else {
             linker_args.push('-o');
             linker_args.push(project.getSafeName());
         }
+
         commands.push({
             directory: from,
             output: linker_args[linker_args.length - 1],
             arguments: linker_args.concat(libs)
-        });
+        });*/
         this.p(JSON.stringify(commands));
         this.closeFile();
     }
