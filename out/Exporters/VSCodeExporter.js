@@ -113,7 +113,7 @@ class VSCodeExporter extends Exporter_1.Exporter {
             request: 'launch',
             program: this.program(project, platform),
             cwd: project.getDebugDir(),
-            preLaunchTask: 'Kinc: Build for ' + this.preLaunchTask(platform)
+            preLaunchTask: 'Kinc: Debug Build for ' + this.preLaunchTask(platform)
         };
         if (platform === Platform_1.Platform.Windows) {
             // kincConfig.symbolSearchPath = 'C:\\Symbols;C:\\SymbolDir2';

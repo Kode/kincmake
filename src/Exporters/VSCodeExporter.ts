@@ -129,7 +129,7 @@ export class VSCodeExporter extends Exporter {
 			request: 'launch',
 			program: this.program(project, platform),
 			cwd: project.getDebugDir(),
-			preLaunchTask: 'Kinc: Build for ' + this.preLaunchTask(platform)
+			preLaunchTask: 'Kinc: Debug Build for ' + this.preLaunchTask(platform)
 		};
 
 		if (platform === Platform.Windows) {
