@@ -206,6 +206,7 @@ export class Project {
 	additionalBackends: string[] = [];
 	vsdeploy: boolean = false;
 	linkTimeOptimization: boolean = true;
+	macOSnoArm: boolean = false;
 
 	constructor(name: string) {
 		this.name = name;
@@ -300,6 +301,9 @@ export class Project {
 			}
 			if (!sub.linkTimeOptimization) {
 				this.linkTimeOptimization = false;
+			}
+			if (sub.macOSnoArm) {
+				this.macOSnoArm = true;
 			}
 			let subbasedir = sub.basedir;
 

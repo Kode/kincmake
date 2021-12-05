@@ -781,6 +781,9 @@ export class XCodeExporter extends Exporter {
 		this.p(nativeDebugId + ' /* Debug */ = {', 2);
 		this.p('isa = XCBuildConfiguration;', 3);
 		this.p('buildSettings = {', 3);
+		if (project.macOSnoArm) {
+			this.p('ARCHS = x86_64;', 4);
+		}
 		if (!options.lib && !options.dynlib) {
 			this.p('ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;', 4);
 		}
@@ -873,6 +876,9 @@ export class XCodeExporter extends Exporter {
 		this.p(nativeReleaseId + ' /* Release */ = {', 2);
 		this.p('isa = XCBuildConfiguration;', 3);
 		this.p('buildSettings = {', 3);
+		if (project.macOSnoArm) {
+			this.p('ARCHS = x86_64;', 4);
+		}
 		if (!options.lib && !options.dynlib) {
 			this.p('ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;', 4);
 		}
