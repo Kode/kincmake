@@ -117,6 +117,7 @@ class Project {
         this.additionalBackends = [];
         this.vsdeploy = false;
         this.linkTimeOptimization = true;
+        this.macOSnoArm = false;
         this.name = name;
         this.safeName = name.replace(/[^A-z0-9\-\_]/g, '-');
         this.version = '1.0';
@@ -202,6 +203,9 @@ class Project {
             }
             if (!sub.linkTimeOptimization) {
                 this.linkTimeOptimization = false;
+            }
+            if (sub.macOSnoArm) {
+                this.macOSnoArm = true;
             }
             let subbasedir = sub.basedir;
             for (let tkey of Object.keys(sub.targetOptions)) {
