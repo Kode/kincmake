@@ -6,7 +6,6 @@ import { GraphicsApi } from './GraphicsApi';
 import { Architecture } from './Architecture';
 import { AudioApi } from './AudioApi';
 import { VrApi } from './VrApi';
-import { RayTraceApi } from './RayTraceApi';
 import { Compiler } from './Compiler';
 import { VisualStudioVersion } from './VisualStudioVersion';
 
@@ -49,12 +48,6 @@ let options = [
 		value: true,
 		description: 'Target VR device',
 		default: VrApi.None
-	},
-	{
-		full: 'raytrace',
-		value: true,
-		description: 'Target ray-tracing API',
-		default: RayTraceApi.None
 	},
 	{
 		full: 'pch',

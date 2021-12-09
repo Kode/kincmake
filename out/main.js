@@ -489,9 +489,6 @@ async function run(options, loglog) {
     if (options.vr !== undefined) {
         Options_1.Options.vrApi = options.vr;
     }
-    if (options.raytrace !== undefined) {
-        Options_1.Options.rayTraceApi = options.raytrace;
-    }
     if (options.compiler !== undefined) {
         Options_1.Options.compiler = options.compiler;
     }

@@ -5,7 +5,6 @@ import { GraphicsApi } from './GraphicsApi';
 import { Architecture } from './Architecture';
 import { AudioApi } from './AudioApi';
 import { VrApi } from './VrApi';
-import { RayTraceApi } from './RayTraceApi';
 import { Options } from './Options';
 import { Platform } from './Platform';
 const uuid = require('uuid');
@@ -118,8 +117,6 @@ async function loadProject(directory: string, options: any =  {}, korefile: stri
 				'audio',
 				'VrApi',
 				'vr',
-				'RayTraceApi',
-				'raytrace',
 				'cpp',
 				'require',
 				'resolve',
@@ -140,8 +137,6 @@ async function loadProject(directory: string, options: any =  {}, korefile: stri
 				Options.audioApi,
 				VrApi,
 				Options.vrApi,
-				RayTraceApi,
-				Options.rayTraceApi,
 				cppEnabled,
 				require,
 				resolver,

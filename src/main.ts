@@ -534,10 +534,6 @@ export async function run(options: any, loglog: any): Promise<string> {
 		Options.vrApi = options.vr;
 	}
 
-	if (options.raytrace !== undefined) {
-		Options.rayTraceApi = options.raytrace;
-	}
-
 	if (options.compiler !== undefined) {
 		Options.compiler = options.compiler;
 	}
