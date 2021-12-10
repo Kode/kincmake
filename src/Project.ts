@@ -117,6 +117,8 @@ async function loadProject(directory: string, options: any =  {}, korefile: stri
 				'audio',
 				'VrApi',
 				'vr',
+				'RayTraceApi',
+				'raytrace',
 				'cpp',
 				'require',
 				'resolve',
@@ -202,6 +204,7 @@ export class Project {
 	vsdeploy: boolean = false;
 	linkTimeOptimization: boolean = true;
 	macOSnoArm: boolean = false;
+	noFlatten: boolean = false;
 
 	constructor(name: string) {
 		this.name = name;
@@ -280,101 +283,108 @@ export class Project {
 	}
 
 	flatten() {
+		let out = [];
 		for (let sub of this.subProjects) sub.flatten();
 		for (let sub of this.subProjects) {
-			if (sub.cpp11) {
-				this.cpp11 = true;
+			if(sub.noFlatten){
+				out.push(sub);
 			}
-			if (sub.c11) {
-				this.c11 = true;
-			}
-			if (sub.cmd) {
-				this.cmd = true;
-			}
-			if (sub.vsdeploy) {
-				this.vsdeploy = true;
-			}
-			if (!sub.linkTimeOptimization) {
-				this.linkTimeOptimization = false;
-			}
-			if (sub.macOSnoArm) {
-				this.macOSnoArm = true;
-			}
-			let subbasedir = sub.basedir;
+			else {
+				if (sub.cpp11) {
+					this.cpp11 = true;
+				}
+				if (sub.c11) {
+					this.c11 = true;
+				}
+				if (sub.cmd) {
+					this.cmd = true;
+				}
+				if (sub.vsdeploy) {
+					this.vsdeploy = true;
+				}
+				if (!sub.linkTimeOptimization) {
+					this.linkTimeOptimization = false;
+				}
+				if (sub.macOSnoArm) {
+					this.macOSnoArm = true;
+				}
+				let subbasedir = sub.basedir;
 
-			for (let tkey of Object.keys(sub.targetOptions)) {
-				const target = sub.targetOptions[tkey];
-				for (let key of Object.keys(target)) {
-					const options = this.targetOptions[tkey];
-					const option = target[key];
-					if (options[key] == null) options[key] = option;
-					// push library properties to current array instead
-					else if (Array.isArray(options[key]) && Array.isArray(option)) {
-						for (let value of option) {
-							if (!options[key].includes(value)) options[key].push(value);
+				for (let tkey of Object.keys(sub.targetOptions)) {
+					const target = sub.targetOptions[tkey];
+					for (let key of Object.keys(target)) {
+						const options = this.targetOptions[tkey];
+						const option = target[key];
+						if (options[key] == null) options[key] = option;
+						// push library properties to current array instead
+						else if (Array.isArray(options[key]) && Array.isArray(option)) {
+							for (let value of option) {
+								if (!options[key].includes(value)) options[key].push(value);
+							}
 						}
 					}
 				}
-			}
 
-			for (let d of sub.defines) {
-				if (d.value.indexOf('=') >= 0) {
-					if (!containsFancyDefine(this.defines, d)) {
-						this.defines.push(d);
+				for (let d of sub.defines) {
+					if (d.value.indexOf('=') >= 0) {
+						if (!containsFancyDefine(this.defines, d)) {
+							this.defines.push(d);
+						}
+					}
+					else {
+						if (!containsDefine(this.defines, d)) {
+							this.defines.push(d);
+						}
 					}
 				}
-				else {
-					if (!containsDefine(this.defines, d)) {
-						this.defines.push(d);
+				for (let file of sub.files) {
+					let absolute = file.file;
+					if (!path.isAbsolute(absolute)) {
+						absolute = path.join(subbasedir, file.file);
+					}
+					this.files.push({file: absolute.replace(/\\/g, '/'), options: file.options, projectDir: subbasedir, projectName: sub.name });
+				}
+				for (const custom of sub.customs) {
+					let absolute = custom.file;
+					if (!path.isAbsolute(absolute)) {
+						absolute = path.join(subbasedir, custom.file);
+					}
+					this.customs.push({file: absolute.replace(/\\/g, '/'), command: custom.command, output: custom.output });
+				}
+				for (let i of sub.includeDirs) if (!contains(this.includeDirs, path.resolve(subbasedir, i))) this.includeDirs.push(path.resolve(subbasedir, i));
+				for (let j of sub.javadirs) if (!contains(this.javadirs, path.resolve(subbasedir, j))) this.javadirs.push(path.resolve(subbasedir, j));
+				for (let lib of sub.libs) {
+					if (lib.indexOf('/') < 0 && lib.indexOf('\\') < 0) {
+						if (!contains(this.libs, lib)) this.libs.push(lib);
+					}
+					else {
+						if (!contains(this.libs, path.resolve(subbasedir, lib))) this.libs.push(path.resolve(subbasedir, lib));
+					}
+				}
+				for (let system in sub.systemDependendLibraries) {
+					let libs = sub.systemDependendLibraries[system];
+					for (let lib of libs) {
+						if (this.systemDependendLibraries[system] === undefined) this.systemDependendLibraries[system] = [];
+						if (!contains(this.systemDependendLibraries[system], this.stringify(path.resolve(subbasedir, lib)))) {
+							if (!contains(lib, '/') && !contains(lib, '\\')) this.systemDependendLibraries[system].push(lib);
+							else this.systemDependendLibraries[system].push(this.stringify(path.resolve(subbasedir, lib)));
+						}
+					}
+				}
+				for (let flag of sub.cFlags) {
+					if (!this.cFlags.includes(flag)) {
+						this.cFlags.push(flag);
+					}
+				}
+				for (let flag of sub.cppFlags) {
+					if (!this.cppFlags.includes(flag)) {
+						this.cppFlags.push(flag);
 					}
 				}
 			}
-			for (let file of sub.files) {
-				let absolute = file.file;
-				if (!path.isAbsolute(absolute)) {
-					absolute = path.join(subbasedir, file.file);
-				}
-				this.files.push({file: absolute.replace(/\\/g, '/'), options: file.options, projectDir: subbasedir, projectName: sub.name });
-			}
-			for (const custom of sub.customs) {
-				let absolute = custom.file;
-				if (!path.isAbsolute(absolute)) {
-					absolute = path.join(subbasedir, custom.file);
-				}
-				this.customs.push({file: absolute.replace(/\\/g, '/'), command: custom.command, output: custom.output });
-			}
-			for (let i of sub.includeDirs) if (!contains(this.includeDirs, path.resolve(subbasedir, i))) this.includeDirs.push(path.resolve(subbasedir, i));
-			for (let j of sub.javadirs) if (!contains(this.javadirs, path.resolve(subbasedir, j))) this.javadirs.push(path.resolve(subbasedir, j));
-			for (let lib of sub.libs) {
-				if (lib.indexOf('/') < 0 && lib.indexOf('\\') < 0) {
-					if (!contains(this.libs, lib)) this.libs.push(lib);
-				}
-				else {
-					if (!contains(this.libs, path.resolve(subbasedir, lib))) this.libs.push(path.resolve(subbasedir, lib));
-				}
-			}
-			for (let system in sub.systemDependendLibraries) {
-				let libs = sub.systemDependendLibraries[system];
-				for (let lib of libs) {
-					if (this.systemDependendLibraries[system] === undefined) this.systemDependendLibraries[system] = [];
-					if (!contains(this.systemDependendLibraries[system], this.stringify(path.resolve(subbasedir, lib)))) {
-						if (!contains(lib, '/') && !contains(lib, '\\')) this.systemDependendLibraries[system].push(lib);
-						else this.systemDependendLibraries[system].push(this.stringify(path.resolve(subbasedir, lib)));
-					}
-				}
-			}
-			for (let flag of sub.cFlags) {
-				if (!this.cFlags.includes(flag)) {
-					this.cFlags.push(flag);
-				}
-			}
-			for (let flag of sub.cppFlags) {
-				if (!this.cppFlags.includes(flag)) {
-					this.cppFlags.push(flag);
-				}
-			}
+			
 		}
-		this.subProjects = [];
+		this.subProjects = out;
 	}
 
 	getName() {
@@ -650,6 +660,17 @@ export class Project {
 
 	async addProject(directory: string, options: any = {}, projectFile: string = 'kincfile.js') {
 		this.subProjects.push(await loadProject(path.isAbsolute(directory) ? directory : path.join(this.basedir, directory), options, projectFile));
+		let proj = this.subProjects[this.subProjects.length-1];
+		if(options.noFlatten !== undefined){
+			proj.noFlatten = options.noFlatten;
+			if (options.lib) {
+				proj.addDefine('KINC_NO_MAIN');
+			}
+			else if (options.dynlib) {
+				proj.addDefine('KINC_NO_MAIN');
+				proj.addDefine('KINC_DYNAMIC_COMPILE');
+			}
+		}
 	}
 
 	static async create(directory: string, platform: string, korefile: string) {
