@@ -369,7 +369,7 @@ class VisualStudioExporter extends Exporter_1.Exporter {
             if (dir !== lastdir)
                 lastdir = dir;
             if (file.file.endsWith('.h') || file.file.endsWith('.hpp')) {
-                let filepath = "";
+                let filepath = '';
                 if (project.noFlatten && !path.isAbsolute(file.file)) {
                     filepath = path.resolve(project.basedir + '/' + file.file);
                 }
@@ -389,7 +389,7 @@ class VisualStudioExporter extends Exporter_1.Exporter {
             if (dir !== lastdir)
                 lastdir = dir;
             if (file.file.endsWith('.cpp') || file.file.endsWith('.c') || file.file.endsWith('.cc') || file.file.endsWith('.cxx')) {
-                let filepath = "";
+                let filepath = '';
                 if (project.noFlatten && !path.isAbsolute(file.file)) {
                     filepath = path.resolve(project.basedir + '/' + file.file);
                 }
@@ -987,7 +987,7 @@ class VisualStudioExporter extends Exporter_1.Exporter {
         }
         this.p('<ItemGroup>', 1);
         for (let file of project.getFiles()) {
-            let filepath = "";
+            let filepath = '';
             if (project.noFlatten && !path.isAbsolute(file.file)) {
                 filepath = path.resolve(project.basedir + '/' + file.file);
             }
@@ -1029,7 +1029,7 @@ class VisualStudioExporter extends Exporter_1.Exporter {
                 if (name.indexOf('/') >= 0)
                     name = name.substr(name.lastIndexOf('/') + 1);
                 name = name.substr(0, name.lastIndexOf('.'));
-                let filepath = "";
+                let filepath = '';
                 if (project.noFlatten && !path.isAbsolute(file)) {
                     filepath = path.resolve(project.basedir + '/' + file);
                 }

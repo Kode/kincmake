@@ -286,7 +286,7 @@ export class Project {
 		let out = [];
 		for (let sub of this.subProjects) sub.flatten();
 		for (let sub of this.subProjects) {
-			if(sub.noFlatten){
+			if (sub.noFlatten) {
 				out.push(sub);
 			}
 			else {
@@ -660,8 +660,8 @@ export class Project {
 
 	async addProject(directory: string, options: any = {}, projectFile: string = 'kincfile.js') {
 		this.subProjects.push(await loadProject(path.isAbsolute(directory) ? directory : path.join(this.basedir, directory), options, projectFile));
-		let proj = this.subProjects[this.subProjects.length-1];
-		if(options.noFlatten !== undefined){
+		let proj = this.subProjects[this.subProjects.length - 1];
+		if (options.noFlatten !== undefined) {
 			proj.noFlatten = options.noFlatten;
 			if (options.lib) {
 				proj.addDefine('KINC_NO_MAIN');

@@ -391,9 +391,9 @@ export class VisualStudioExporter extends Exporter {
 			let dir = getDir(file);
 			if (dir !== lastdir) lastdir = dir;
 			if (file.file.endsWith('.h') || file.file.endsWith('.hpp')) {
-				let filepath = "";
-				if(project.noFlatten && !path.isAbsolute(file.file)){
-					filepath = path.resolve(project.basedir +'/'+ file.file);
+				let filepath = '';
+				if (project.noFlatten && !path.isAbsolute(file.file)) {
+					filepath = path.resolve(project.basedir + '/' + file.file);
 				}
 				else {
 					filepath = this.nicePath(from, to, file.file);
@@ -411,9 +411,9 @@ export class VisualStudioExporter extends Exporter {
 			let dir = getDir(file);
 			if (dir !== lastdir) lastdir = dir;
 			if (file.file.endsWith('.cpp') || file.file.endsWith('.c') || file.file.endsWith('.cc') || file.file.endsWith('.cxx')) {
-				let filepath = "";
-				if(project.noFlatten && !path.isAbsolute(file.file)){
-					filepath = path.resolve(project.basedir +'/'+ file.file);
+				let filepath = '';
+				if (project.noFlatten && !path.isAbsolute(file.file)) {
+					filepath = path.resolve(project.basedir + '/' + file.file);
 				}
 				else {
 					filepath = this.nicePath(from, to, file.file);
@@ -497,22 +497,22 @@ export class VisualStudioExporter extends Exporter {
 	addPropertyGroup(buildType: string, wholeProgramOptimization: boolean, platform: string, project: Project, options: any) {
 		this.p('<PropertyGroup Condition="\'$(Configuration)|$(Platform)\'==\'' + buildType + '|' + this.GetSys(platform) + '\'" Label="Configuration">', 1);
 		let opts = options;
-		if(project.noFlatten){
+		if (project.noFlatten) {
 			opts = {};
 			let isDyn = false;
 			let noMain = false;
-			for(let def of project.defines){
-				if(def.value.lastIndexOf('KINC_DYNAMIC_COMPILE') > -1){
+			for (let def of project.defines) {
+				if (def.value.lastIndexOf('KINC_DYNAMIC_COMPILE') > -1) {
 					isDyn = true;
 				}
-				if(def.value.lastIndexOf('KINC_NO_MAIN') > -1){
+				if (def.value.lastIndexOf('KINC_NO_MAIN') > -1) {
 					noMain = true;
 				}
 			}
-			if(noMain && !isDyn){
+			if (noMain && !isDyn) {
 				opts.lib = true;
 			}
-			else if(isDyn && noMain){
+			else if (isDyn && noMain) {
 				opts.dynlib = true;
 			}
 		}
@@ -546,22 +546,22 @@ export class VisualStudioExporter extends Exporter {
 	addWin8PropertyGroup(debug: boolean, platform: string, project: Project, options: any) {
 		this.p('<PropertyGroup Condition="\'$(Configuration)|$(Platform)\'==\'' + (debug ? 'Debug' : 'Release') + '|' + platform + '\'" Label="Configuration">', 1);
 		let opts = options;
-		if(project.noFlatten){
+		if (project.noFlatten) {
 			opts = {};
 			let isDyn = false;
 			let noMain = false;
-			for(let def of project.defines){
-				if(def.value.lastIndexOf('KINC_DYNAMIC_COMPILE') > -1){
+			for (let def of project.defines) {
+				if (def.value.lastIndexOf('KINC_DYNAMIC_COMPILE') > -1) {
 					isDyn = true;
 				}
-				if(def.value.lastIndexOf('KINC_NO_MAIN') > -1){
+				if (def.value.lastIndexOf('KINC_NO_MAIN') > -1) {
 					noMain = true;
 				}
 			}
-			if(noMain && !isDyn){
+			if (noMain && !isDyn) {
 				opts.lib = true;
 			}
-			else if(isDyn && noMain){
+			else if (isDyn && noMain) {
 				opts.dynlib = true;
 			}
 		}
@@ -576,22 +576,22 @@ export class VisualStudioExporter extends Exporter {
 	configuration(config: string, system: string, indent: number, project: Project, options: any) {
 		this.p('<PropertyGroup Condition="\'$(Configuration)\'==\'' + config + '\'" Label="Configuration">', indent);
 		let opts = options;
-		if(project.noFlatten){
+		if (project.noFlatten) {
 			opts = {};
 			let isDyn = false;
 			let noMain = false;
-			for(let def of project.defines){
-				if(def.value.lastIndexOf('KINC_DYNAMIC_COMPILE') > -1){
+			for (let def of project.defines) {
+				if (def.value.lastIndexOf('KINC_DYNAMIC_COMPILE') > -1) {
 					isDyn = true;
 				}
-				if(def.value.lastIndexOf('KINC_NO_MAIN') > -1){
+				if (def.value.lastIndexOf('KINC_NO_MAIN') > -1) {
 					noMain = true;
 				}
 			}
-			if(noMain && !isDyn){
+			if (noMain && !isDyn) {
 				opts.lib = true;
 			}
-			else if(isDyn && noMain){
+			else if (isDyn && noMain) {
 				opts.dynlib = true;
 			}
 		}
@@ -949,11 +949,11 @@ export class VisualStudioExporter extends Exporter {
 		if (incstring.length > 0) incstring = incstring.substr(0, incstring.length - 1);
 
 		let debuglibs = '';
-		for (let proj of project.getSubProjects()){
-			if(proj.noFlatten){
-				debuglibs += project.basedir+'\\build\\x64\\Debug\\' + proj.getSafeName() + '.lib;';
+		for (let proj of project.getSubProjects()) {
+			if (proj.noFlatten) {
+				debuglibs += project.basedir + '\\build\\x64\\Debug\\' + proj.getSafeName() + '.lib;';
 			}
-			else{
+			else {
 				debuglibs += 'Debug\\' + proj.getSafeName() + '.lib;';
 			}
 			
@@ -964,11 +964,11 @@ export class VisualStudioExporter extends Exporter {
 		}
 
 		let releaselibs = '';
-		for (let proj of project.getSubProjects()){
-			if(proj.noFlatten){
-				releaselibs += project.basedir+'\\build\\x64\\Release\\' + proj.getSafeName() + '.lib;';
+		for (let proj of project.getSubProjects()) {
+			if (proj.noFlatten) {
+				releaselibs += project.basedir + '\\build\\x64\\Release\\' + proj.getSafeName() + '.lib;';
 			}
-			else{
+			else {
 				releaselibs += 'Release\\' + proj.getSafeName() + '.lib;';
 			}
 			
@@ -1048,9 +1048,9 @@ export class VisualStudioExporter extends Exporter {
 
 		this.p('<ItemGroup>', 1);
 		for (let file of project.getFiles()) {
-			let filepath = "";
-			if(project.noFlatten && !path.isAbsolute(file.file)){
-				filepath = path.resolve(project.basedir +'/'+ file.file);
+			let filepath = '';
+			if (project.noFlatten && !path.isAbsolute(file.file)) {
+				filepath = path.resolve(project.basedir + '/' + file.file);
 			}
 			else {
 				filepath = this.nicePath(from, to, file.file);
@@ -1093,9 +1093,9 @@ export class VisualStudioExporter extends Exporter {
 				let name = file.toLowerCase();
 				if (name.indexOf('/') >= 0) name = name.substr(name.lastIndexOf('/') + 1);
 				name = name.substr(0, name.lastIndexOf('.'));
-				let filepath = "";
-				if(project.noFlatten && !path.isAbsolute(file)){
-					filepath = path.resolve(project.basedir +'/'+ file);
+				let filepath = '';
+				if (project.noFlatten && !path.isAbsolute(file)) {
+					filepath = path.resolve(project.basedir + '/' + file);
 				}
 				else {
 					filepath = this.nicePath(from, to, file);
