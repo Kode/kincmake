@@ -161,11 +161,11 @@ class VisualStudioExporter extends Exporter_1.Exporter {
             return system;
         }
     }
-    getConfiguationType(options) {
-        if (options.lib) {
+    getConfiguationType(proj) {
+        if (proj.isStaticLib) {
             return 'StaticLibrary';
         }
-        else if (options.dynlib) {
+        else if (proj.isDynamicLib) {
             return 'DynamicLibrary';
         }
         else {
@@ -369,7 +369,14 @@ class VisualStudioExporter extends Exporter_1.Exporter {
             if (dir !== lastdir)
                 lastdir = dir;
             if (file.file.endsWith('.h') || file.file.endsWith('.hpp')) {
-                this.p('<ClInclude Include="' + this.nicePath(from, to, file.file) + '">', 2);
+                let filepath = '';
+                if (project.noFlatten && !path.isAbsolute(file.file)) {
+                    filepath = path.resolve(project.basedir + '/' + file.file);
+                }
+                else {
+                    filepath = this.nicePath(from, to, file.file);
+                }
+                this.p('<ClInclude Include="' + filepath + '">', 2);
                 this.p('<Filter>' + dir.replace(/\//g, '\\') + '</Filter>', 3);
                 this.p('</ClInclude>', 2);
             }
@@ -382,7 +389,14 @@ class VisualStudioExporter extends Exporter_1.Exporter {
             if (dir !== lastdir)
                 lastdir = dir;
             if (file.file.endsWith('.cpp') || file.file.endsWith('.c') || file.file.endsWith('.cc') || file.file.endsWith('.cxx')) {
-                this.p('<ClCompile Include="' + this.nicePath(from, to, file.file) + '">', 2);
+                let filepath = '';
+                if (project.noFlatten && !path.isAbsolute(file.file)) {
+                    filepath = path.resolve(project.basedir + '/' + file.file);
+                }
+                else {
+                    filepath = this.nicePath(from, to, file.file);
+                }
+                this.p('<ClCompile Include="' + filepath + '">', 2);
                 this.p('<Filter>' + dir.replace(/\//g, '\\') + '</Filter>', 3);
                 this.p('</ClCompile>', 2);
             }
@@ -457,7 +471,7 @@ class VisualStudioExporter extends Exporter_1.Exporter {
     }
     addPropertyGroup(buildType, wholeProgramOptimization, platform, project, options) {
         this.p('<PropertyGroup Condition="\'$(Configuration)|$(Platform)\'==\'' + buildType + '|' + this.GetSys(platform) + '\'" Label="Configuration">', 1);
-        this.p('<ConfigurationType>' + this.getConfiguationType(options) + '</ConfigurationType>', 2);
+        this.p('<ConfigurationType>' + this.getConfiguationType(project) + '</ConfigurationType>', 2);
         this.p('<WholeProgramOptimization>' + ((wholeProgramOptimization && project.linkTimeOptimization) ? 'true' : 'false') + '</WholeProgramOptimization>', 2);
         this.p('<CharacterSet>MultiByte</CharacterSet>', 2);
         this.p('</PropertyGroup>', 1);
@@ -484,7 +498,7 @@ class VisualStudioExporter extends Exporter_1.Exporter {
     }
     addWin8PropertyGroup(debug, platform, project, options) {
         this.p('<PropertyGroup Condition="\'$(Configuration)|$(Platform)\'==\'' + (debug ? 'Debug' : 'Release') + '|' + platform + '\'" Label="Configuration">', 1);
-        this.p('<ConfigurationType>' + this.getConfiguationType(options) + '</ConfigurationType>', 2);
+        this.p('<ConfigurationType>' + this.getConfiguationType(project) + '</ConfigurationType>', 2);
         this.p('<UseDebugLibraries>' + (debug ? 'true' : 'false') + '</UseDebugLibraries>', 2);
         if (!debug && project.linkTimeOptimization)
             this.p('<WholeProgramOptimization>true</WholeProgramOptimization>', 2);
@@ -495,7 +509,7 @@ class VisualStudioExporter extends Exporter_1.Exporter {
     }
     configuration(config, system, indent, project, options) {
         this.p('<PropertyGroup Condition="\'$(Configuration)\'==\'' + config + '\'" Label="Configuration">', indent);
-        this.p('<ConfigurationType>' + this.getConfiguationType(options) + '</ConfigurationType>', indent + 1);
+        this.p('<ConfigurationType>' + this.getConfiguationType(project) + '</ConfigurationType>', indent + 1);
         this.p('<UseDebugLibraries>' + (config === 'Release' ? 'false' : 'true') + '</UseDebugLibraries>', indent + 1);
         this.p('<PlatformToolset>' + this.getPlatformToolset() + '</PlatformToolset>', indent + 1);
         this.p('<PreferredToolArchitecture>x64</PreferredToolArchitecture>', indent + 1);
@@ -817,8 +831,14 @@ class VisualStudioExporter extends Exporter_1.Exporter {
         if (incstring.length > 0)
             incstring = incstring.substr(0, incstring.length - 1);
         let debuglibs = '';
-        for (let proj of project.getSubProjects())
-            debuglibs += 'Debug\\' + proj.getSafeName() + '.lib;';
+        for (let proj of project.getSubProjects()) {
+            if (proj.noFlatten) {
+                debuglibs += project.basedir + '\\build\\x64\\Debug\\' + proj.getSafeName() + '.lib;';
+            }
+            else {
+                debuglibs += 'Debug\\' + proj.getSafeName() + '.lib;';
+            }
+        }
         for (let lib of project.getLibs()) {
             if (fs.existsSync(path.resolve(from, lib + '.lib')))
                 debuglibs += path.resolve(from, lib) + '.lib;';
@@ -826,6 +846,14 @@ class VisualStudioExporter extends Exporter_1.Exporter {
                 debuglibs += lib + '.lib;';
         }
         let releaselibs = '';
+        for (let proj of project.getSubProjects()) {
+            if (proj.noFlatten) {
+                releaselibs += project.basedir + '\\build\\x64\\Release\\' + proj.getSafeName() + '.lib;';
+            }
+            else {
+                releaselibs += 'Release\\' + proj.getSafeName() + '.lib;';
+            }
+        }
         for (let proj of project.getSubProjects())
             releaselibs += 'Release\\' + proj.getSafeName() + '.lib;';
         for (let lib of project.getLibs()) {
@@ -899,8 +927,15 @@ class VisualStudioExporter extends Exporter_1.Exporter {
         }
         this.p('<ItemGroup>', 1);
         for (let file of project.getFiles()) {
+            let filepath = '';
+            if (project.noFlatten && !path.isAbsolute(file.file)) {
+                filepath = path.resolve(project.basedir + '/' + file.file);
+            }
+            else {
+                filepath = this.nicePath(from, to, file.file);
+            }
             if (file.file.endsWith('.h') || file.file.endsWith('.hpp'))
-                this.p('<ClInclude Include="' + this.nicePath(from, to, file.file) + '" />', 2);
+                this.p('<ClInclude Include="' + filepath + '" />', 2);
         }
         this.p('</ItemGroup>', 1);
         if (platform === Platform_1.Platform.WindowsApp) {
@@ -934,6 +969,13 @@ class VisualStudioExporter extends Exporter_1.Exporter {
                 if (name.indexOf('/') >= 0)
                     name = name.substr(name.lastIndexOf('/') + 1);
                 name = name.substr(0, name.lastIndexOf('.'));
+                let filepath = '';
+                if (project.noFlatten && !path.isAbsolute(file)) {
+                    filepath = path.resolve(project.basedir + '/' + file);
+                }
+                else {
+                    filepath = this.nicePath(from, to, file);
+                }
                 if (!objects[name]) {
                     let headerfile = null;
                     for (let header of precompiledHeaders) {
@@ -949,19 +991,19 @@ class VisualStudioExporter extends Exporter_1.Exporter {
                         this.p('</ClCompile>', 2);
                     }
                     else if ((platform === Platform_1.Platform.WindowsApp || platform === Platform_1.Platform.XboxOne) && !file.endsWith('.winrt.cpp')) {
-                        this.p('<ClCompile Include="' + this.nicePath(from, to, file) + '">', 2);
+                        this.p('<ClCompile Include="' + filepath + '">', 2);
                         this.p('<CompileAsWinRT>false</CompileAsWinRT>', 3);
                         this.p('</ClCompile>', 2);
                     }
                     else {
                         if (fileobject.options && fileobject.options.pch && platform === Platform_1.Platform.Windows) {
-                            this.p('<ClCompile Include="' + this.nicePath(from, to, file) + '">', 2);
+                            this.p('<ClCompile Include="' + filepath + '">', 2);
                             this.p('<PrecompiledHeader>Use</PrecompiledHeader>', 3);
                             this.p('<PrecompiledHeaderFile>' + fileobject.options.pch + '</PrecompiledHeaderFile>', 3);
                             this.p('</ClCompile>', 2);
                         }
                         else {
-                            this.p('<ClCompile Include="' + this.nicePath(from, to, file) + '" />', 2);
+                            this.p('<ClCompile Include="' + filepath + '" />', 2);
                         }
                     }
                     objects[name] = true;
@@ -970,7 +1012,7 @@ class VisualStudioExporter extends Exporter_1.Exporter {
                     while (objects[name]) {
                         name = name + '_';
                     }
-                    this.p('<ClCompile Include="' + this.nicePath(from, to, file) + '">', 2);
+                    this.p('<ClCompile Include="' + filepath + '">', 2);
                     this.p('<ObjectFileName>$(IntDir)\\' + name + '.obj</ObjectFileName>', 3);
                     if ((platform === Platform_1.Platform.WindowsApp || platform === Platform_1.Platform.XboxOne) && !file.endsWith('.winrt.cpp')) {
                         this.p('<CompileAsWinRT>false</CompileAsWinRT>', 3);
