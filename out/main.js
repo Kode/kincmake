@@ -261,10 +261,12 @@ async function exportKoremakeProject(from, to, platform, korefile, options) {
         project.flatten();
         if (options.lib) {
             project.addDefine('KINC_NO_MAIN');
+            project.isStaticLib = true;
         }
         else if (options.dynlib) {
             project.addDefine('KINC_NO_MAIN');
             project.addDefine('KINC_DYNAMIC_COMPILE');
+            project.isDynamicLib = true;
         }
     }
     catch (error) {
