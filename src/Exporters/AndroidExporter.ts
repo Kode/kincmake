@@ -1,4 +1,5 @@
 import { Exporter } from './Exporter';
+import { GraphicsApi } from '../GraphicsApi';
 import { Project } from '../Project';
 import { Architecture } from '../Architecture';
 import { Options } from '../Options';
@@ -45,7 +46,7 @@ export class AndroidExporter extends Exporter {
 			versionCode: 1,
 			versionName: '1.0',
 			compileSdkVersion: 29,
-			minSdkVersion: 14,
+			minSdkVersion: Options.graphicsApi === GraphicsApi.Vulkan ? 24 : 15,
 			targetSdkVersion: 29,
 			screenOrientation: 'sensor',
 			permissions: new Array<string>(),

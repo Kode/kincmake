@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AndroidExporter = void 0;
 const Exporter_1 = require("./Exporter");
+const GraphicsApi_1 = require("../GraphicsApi");
 const Project_1 = require("../Project");
 const Architecture_1 = require("../Architecture");
 const Options_1 = require("../Options");
@@ -22,7 +23,7 @@ class AndroidExporter extends Exporter_1.Exporter {
             versionCode: 1,
             versionName: '1.0',
             compileSdkVersion: 29,
-            minSdkVersion: 14,
+            minSdkVersion: Options_1.Options.graphicsApi === GraphicsApi_1.GraphicsApi.Vulkan ? 24 : 15,
             targetSdkVersion: 29,
             screenOrientation: 'sensor',
             permissions: new Array(),
