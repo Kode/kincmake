@@ -84,7 +84,7 @@ class AndroidExporter extends Exporter_1.Exporter {
         fs.copySync(path.join(indir, 'idea', 'modules.xml'), path.join(outdir, '.idea', 'modules.xml'));
         fs.writeFileSync(path.join(outdir, '.idea', 'modules.xml'), modules);
         fs.ensureDirSync(path.join(outdir, '.idea', 'modules'));
-        fs.copySync(path.join(indir, 'idea', 'modules', 'My Application.iml'), path.join(outdir, '.idea', 'modules', project.getName() + '.xml'));
+        fs.copySync(path.join(indir, 'idea', 'modules', 'MyApplication.iml'), path.join(outdir, '.idea', 'modules', project.getName() + '.xml'));
         if (targetOptions.customFilesPath != null) {
             const dir = targetOptions.customFilesPath;
             if (!fs.existsSync(dir))
