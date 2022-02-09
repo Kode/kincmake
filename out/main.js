@@ -252,7 +252,7 @@ async function exportKoremakeProject(from, to, platform, korefile, options) {
     Project_1.Project.root = path.resolve(from);
     let project;
     try {
-        project = await Project_1.Project.create(from, platform, korefile);
+        project = await Project_1.Project.create(from, to, platform, korefile);
         if (shaderLang(platform) === 'metal') {
             project.addFile('build/Sources/*', {});
         }

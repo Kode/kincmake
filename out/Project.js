@@ -96,7 +96,7 @@ async function loadProject(directory, options = {}, korefile = 'kincfile.js') {
             scriptdir = directory;
             let file = fs.readFileSync(path.resolve(directory, korefile), 'utf8');
             let AsyncFunction = Object.getPrototypeOf(async () => { }).constructor;
-            let project = new AsyncFunction('log', 'Project', 'Platform', 'platform', 'GraphicsApi', 'graphics', 'Architecture', 'arch', 'AudioApi', 'audio', 'VrApi', 'vr', 'cpp', 'require', 'resolve', 'reject', '__dirname', 'Options', file)(log, Project, Platform_1.Platform, Project.platform, GraphicsApi_1.GraphicsApi, Options_1.Options.graphicsApi, Architecture_1.Architecture, Options_1.Options.architecture, AudioApi_1.AudioApi, Options_1.Options.audioApi, VrApi_1.VrApi, Options_1.Options.vrApi, cppEnabled, require, resolver, reject, directory, options);
+            let project = new AsyncFunction('log', 'Project', 'Platform', 'platform', 'GraphicsApi', 'graphics', 'Architecture', 'arch', 'AudioApi', 'audio', 'VrApi', 'vr', 'cpp', 'require', 'resolve', 'reject', '__dirname', 'Options', 'targetDirectory', file)(log, Project, Platform_1.Platform, Project.platform, GraphicsApi_1.GraphicsApi, Options_1.Options.graphicsApi, Architecture_1.Architecture, Options_1.Options.architecture, AudioApi_1.AudioApi, Options_1.Options.audioApi, VrApi_1.VrApi, Options_1.Options.vrApi, cppEnabled, require, resolver, reject, directory, options, Project.to);
         }
         catch (error) {
             log.error(error);
@@ -558,9 +558,10 @@ class Project {
             }
         }
     }
-    static async create(directory, platform, korefile) {
+    static async create(directory, to, platform, korefile) {
         Project.koreDir = path.join(__dirname, '../../..');
         Project.platform = platform;
+        Project.to = path.resolve(to);
         let project = await loadProject(path.resolve(directory), null, korefile);
         if (project.kore && !project.kincProcessed) {
             await project.addProject(Project.koreDir);

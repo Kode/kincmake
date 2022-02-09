@@ -123,6 +123,7 @@ async function loadProject(directory: string, options: any =  {}, korefile: stri
 				'reject',
 				'__dirname',
 				'Options',
+				'targetDirectory',
 				file)
 			(
 				log,
@@ -142,7 +143,8 @@ async function loadProject(directory: string, options: any =  {}, korefile: stri
 				resolver,
 				reject,
 				directory,
-				options);
+				options,
+				Project.to);
 			}
 		catch (error) {
 			log.error(error);
@@ -167,6 +169,7 @@ export class Project {
 	static platform: string;
 	static koreDir: string;
 	static root: string;
+	static to: string;
 	name: string;
 	safeName: string;
 	version: string;
@@ -675,9 +678,10 @@ export class Project {
 		}
 	}
 
-	static async create(directory: string, platform: string, korefile: string) {
+	static async create(directory: string, to: string, platform: string, korefile: string) {
 		Project.koreDir = path.join(__dirname, '../../..');
 		Project.platform = platform;
+		Project.to = path.resolve(to);
 		let project = await loadProject(path.resolve(directory), null, korefile);
 		if (project.kore && !project.kincProcessed) {
 			await project.addProject(Project.koreDir);
